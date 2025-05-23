@@ -12,5 +12,5 @@ develop-eggs/
 dist/
 eggs/
 parts/
-src/
+sources/
 var/
