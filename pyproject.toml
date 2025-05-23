@@ -56,7 +56,7 @@ Tracker = "https://github.com/collective/collective.ftw.upgrade/issues"
 [project.entry-points."plone.autoinclude.plugin"]
 target = "plone"
 
-[project.entry-points."console_scripts"]
+[project.scripts]
 upgrade = "collective.ftw.upgrade.command:main"
 
 [tool.uv]
