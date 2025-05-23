@@ -2,7 +2,7 @@
            i18n_domain="ftw.upgrade">
 
   <subscriber
-      for="ftw.upgrade.interfaces.IClassMigratedEvent"
+      for="collective.ftw.upgrade.interfaces.IClassMigratedEvent"
       handler=".migrate.update_intids_after_class_migration"
       />
 

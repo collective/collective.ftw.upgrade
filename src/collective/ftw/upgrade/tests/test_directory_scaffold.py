@@ -1,6 +1,6 @@
 from datetime import datetime
 from ftw.testing import freeze
-from ftw.upgrade.directory.scaffold import UpgradeStepCreator
+from collective.ftw.upgrade.directory.scaffold import UpgradeStepCreator
 from unittest import TestCase
 
 import os.path
@@ -33,7 +33,7 @@ class TestUpgradeStepCreator(TestCase):
         self.maxDiff = None
         self.assertMultiLineEqual(
             '\n'.join((
-                    'from ftw.upgrade import UpgradeStep',
+                    'from collective.ftw.upgrade import UpgradeStep',
                     '',
                     '',
                     'class AddControlpanelAction(UpgradeStep):',

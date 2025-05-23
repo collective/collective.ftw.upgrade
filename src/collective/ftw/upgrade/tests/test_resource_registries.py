@@ -1,5 +1,5 @@
-from ftw.upgrade.resource_registries import recook_resources
-from ftw.upgrade.tests.base import UpgradeTestCase
+from collective.ftw.upgrade.resource_registries import recook_resources
+from collective.ftw.upgrade.tests.base import UpgradeTestCase
 
 
 class TestResourceRegistries(UpgradeTestCase):

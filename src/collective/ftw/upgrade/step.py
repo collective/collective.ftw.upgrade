@@ -1,15 +1,15 @@
 from AccessControl.SecurityInfo import ClassSecurityInformation
 from Acquisition import aq_base
 from Acquisition import aq_parent
-from ftw.upgrade.events import ClassMigratedEvent
-from ftw.upgrade.exceptions import NoAssociatedProfileError
-from ftw.upgrade.helpers import update_security_for
-from ftw.upgrade.interfaces import IUpgradeStep
-from ftw.upgrade.progresslogger import ProgressLogger
-from ftw.upgrade.utils import log_silencer
-from ftw.upgrade.utils import SafeObjectGetter
-from ftw.upgrade.utils import SavepointIterator
-from ftw.upgrade.utils import SizedGenerator
+from collective.ftw.upgrade.events import ClassMigratedEvent
+from collective.ftw.upgrade.exceptions import NoAssociatedProfileError
+from collective.ftw.upgrade.helpers import update_security_for
+from collective.ftw.upgrade.interfaces import IUpgradeStep
+from collective.ftw.upgrade.progresslogger import ProgressLogger
+from collective.ftw.upgrade.utils import log_silencer
+from collective.ftw.upgrade.utils import SafeObjectGetter
+from collective.ftw.upgrade.utils import SavepointIterator
+from collective.ftw.upgrade.utils import SizedGenerator
 from plone.browserlayer.interfaces import ILocalBrowserLayerType
 from plone.portlets.interfaces import IPortletManager
 from plone.portlets.interfaces import IPortletManagerRenderer
@@ -485,7 +485,7 @@ class UpgradeStep(object):
             raise ValueError(
                 '"workflows" must be a list of workflow names.')
 
-        from ftw.upgrade.workflow import WorkflowSecurityUpdater
+        from collective.ftw.upgrade.workflow import WorkflowSecurityUpdater
         updater = WorkflowSecurityUpdater()
         updater.update(workflow_names, reindex_security=reindex_security,
                        savepoints=savepoints)

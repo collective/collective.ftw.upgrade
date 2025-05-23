@@ -1,7 +1,7 @@
 from datetime import datetime
 from ftw.builder import Builder
-from ftw.upgrade.command import jsonapi
-from ftw.upgrade.tests.base import CommandAndInstanceTestCase
+from collective.ftw.upgrade.command import jsonapi
+from collective.ftw.upgrade.tests.base import CommandAndInstanceTestCase
 from six.moves import map
 
 import json

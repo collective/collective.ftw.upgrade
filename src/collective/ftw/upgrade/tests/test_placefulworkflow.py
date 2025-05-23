@@ -1,7 +1,7 @@
 from ftw.builder import Builder
 from ftw.builder import create
-from ftw.upgrade.placefulworkflow import PlacefulWorkflowPolicyActivator
-from ftw.upgrade.tests.base import WorkflowTestCase
+from collective.ftw.upgrade.placefulworkflow import PlacefulWorkflowPolicyActivator
+from collective.ftw.upgrade.tests.base import WorkflowTestCase
 
 
 class TestPlacefulWorkflowPolicyActivator(WorkflowTestCase):

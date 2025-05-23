@@ -6,7 +6,7 @@ import os
 import re
 
 
-PYTHON_TEMPLATE = '''from ftw.upgrade import UpgradeStep
+PYTHON_TEMPLATE = '''from collective.ftw.upgrade import UpgradeStep
 
 
 class {classname}(UpgradeStep):

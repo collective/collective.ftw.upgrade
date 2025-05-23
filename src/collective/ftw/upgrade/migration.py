@@ -2,7 +2,7 @@ from Acquisition import aq_base
 from Acquisition import aq_inner
 from Acquisition import aq_parent
 from DateTime import DateTime
-from ftw.upgrade.helpers import update_security_for
+from collective.ftw.upgrade.helpers import update_security_for
 from functools import partial
 from operator import methodcaller
 from persistent.mapping import PersistentMapping

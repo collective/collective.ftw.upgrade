@@ -1,4 +1,4 @@
-from ftw.upgrade.tests.base import CommandAndInstanceTestCase
+from collective.ftw.upgrade.tests.base import CommandAndInstanceTestCase
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import TEST_USER_PASSWORD
 

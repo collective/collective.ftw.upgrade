@@ -1,4 +1,4 @@
-from ftw.upgrade.workflow import WorkflowChainUpdater
+from collective.ftw.upgrade.workflow import WorkflowChainUpdater
 from Products.CMFCore.utils import getToolByName
 
 import logging

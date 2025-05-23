@@ -1,10 +1,10 @@
 from datetime import datetime
 from ftw.builder import Builder
-from ftw.upgrade import UpgradeStep
-from ftw.upgrade.directory.subscribers import no_upgrade_step_marking
-from ftw.upgrade.interfaces import IExecutioner
-from ftw.upgrade.interfaces import IUpgradeStepRecorder
-from ftw.upgrade.tests.base import UpgradeTestCase
+from collective.ftw.upgrade import UpgradeStep
+from collective.ftw.upgrade.directory.subscribers import no_upgrade_step_marking
+from collective.ftw.upgrade.interfaces import IExecutioner
+from collective.ftw.upgrade.interfaces import IUpgradeStepRecorder
+from collective.ftw.upgrade.tests.base import UpgradeTestCase
 from Products.CMFCore.utils import getToolByName
 from zope.component import getMultiAdapter
 

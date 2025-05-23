@@ -1,6 +1,6 @@
 from ftw.builder import Builder
-from ftw.upgrade.interfaces import IPostUpgrade
-from ftw.upgrade.tests.base import UpgradeTestCase
+from collective.ftw.upgrade.interfaces import IPostUpgrade
+from collective.ftw.upgrade.tests.base import UpgradeTestCase
 from six.moves import map
 from zope.interface import Interface
 

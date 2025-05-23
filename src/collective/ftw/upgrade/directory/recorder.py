@@ -1,5 +1,5 @@
 from BTrees.OOBTree import OOBTree
-from ftw.upgrade.interfaces import IUpgradeStepRecorder
+from collective.ftw.upgrade.interfaces import IUpgradeStepRecorder
 from Products.CMFPlone.interfaces import IPloneSiteRoot
 from zope.annotation import IAnnotations
 from zope.component import adapts

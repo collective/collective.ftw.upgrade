@@ -2,9 +2,9 @@ from contextlib import contextmanager
 from datetime import datetime
 from ftw.builder import Builder
 from ftw.builder import create
-from ftw.upgrade.directory.scanner import Scanner
-from ftw.upgrade.exceptions import UpgradeStepDefinitionError
-from ftw.upgrade.tests.base import UpgradeTestCase
+from collective.ftw.upgrade.directory.scanner import Scanner
+from collective.ftw.upgrade.exceptions import UpgradeStepDefinitionError
+from collective.ftw.upgrade.tests.base import UpgradeTestCase
 from six.moves import map
 
 import six
@@ -73,7 +73,7 @@ class TestDirectoryScanner(UpgradeTestCase):
     )
     def test_exception_raised_when_multiple_upgrade_steps_detected_py27(self):
         code = '\n'.join((
-                'from ftw.upgrade import UpgradeStep',
+                'from collective.ftw.upgrade import UpgradeStep',
                 'class Foo(UpgradeStep): pass',
                 'class Bar(UpgradeStep): pass'))
 
@@ -113,7 +113,7 @@ class TestDirectoryScanner(UpgradeTestCase):
     )
     def test_exception_raised_when_multiple_upgrade_steps_detected(self):
         code = '\n'.join((
-                'from ftw.upgrade import UpgradeStep',
+                'from collective.ftw.upgrade import UpgradeStep',
                 'class Foo(UpgradeStep): pass',
                 'class Bar(UpgradeStep): pass'))
 

@@ -1,4 +1,4 @@
-from ftw.upgrade.tests.base import CommandAndInstanceTestCase
+from collective.ftw.upgrade.tests.base import CommandAndInstanceTestCase
 from Products.CMFPlone.utils import getFSVersionTuple
 from unittest import skipIf
 

@@ -2,8 +2,8 @@ from datetime import datetime
 from ftw.builder import Builder
 from ftw.testbrowser import browsing
 from ftw.testbrowser.pages import statusmessages
-from ftw.upgrade.browser.manage import ResponseLogger
-from ftw.upgrade.tests.base import UpgradeTestCase
+from collective.ftw.upgrade.browser.manage import ResponseLogger
+from collective.ftw.upgrade.tests.base import UpgradeTestCase
 from plone.app.testing import SITE_OWNER_NAME
 from Products.CMFCore.utils import getToolByName
 from six import BytesIO

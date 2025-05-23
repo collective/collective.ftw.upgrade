@@ -1,4 +1,4 @@
-from ftw.upgrade.tests.base import CommandTestCase
+from collective.ftw.upgrade.tests.base import CommandTestCase
 
 
 class TestHelpCommand(CommandTestCase):

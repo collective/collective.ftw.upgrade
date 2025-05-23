@@ -1,7 +1,7 @@
 from ftw.builder import Builder
 from ftw.builder import create
-from ftw.upgrade.helpers import update_security_for
-from ftw.upgrade.tests.base import WorkflowTestCase
+from collective.ftw.upgrade.helpers import update_security_for
+from collective.ftw.upgrade.tests.base import WorkflowTestCase
 from Products.CMFPlone.utils import getFSVersionTuple
 
 

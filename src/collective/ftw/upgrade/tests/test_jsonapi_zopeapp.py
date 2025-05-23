@@ -1,5 +1,5 @@
 from ftw.testbrowser import browsing
-from ftw.upgrade.tests.base import JsonApiTestCase
+from collective.ftw.upgrade.tests.base import JsonApiTestCase
 
 
 class TestZopeAppJsonApi(JsonApiTestCase):

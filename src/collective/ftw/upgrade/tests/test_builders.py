@@ -1,7 +1,7 @@
 from datetime import datetime
 from ftw.builder import Builder
-from ftw.upgrade import UpgradeStep
-from ftw.upgrade.tests.base import UpgradeTestCase
+from collective.ftw.upgrade import UpgradeStep
+from collective.ftw.upgrade.tests.base import UpgradeTestCase
 from Products.CMFCore.utils import getToolByName
 
 
@@ -23,7 +23,7 @@ class TestUpgradeStepBuilder(UpgradeTestCase):
             self.assertTrue(upgrade_path.isdir(),
                             'Upgrade directory was not created {0}'.format(upgrade_path))
             self.assertMultiLineEqual(
-                '\n'.join(('from ftw.upgrade import UpgradeStep',
+                '\n'.join(('from collective.ftw.upgrade import UpgradeStep',
                            '',
                            '',
                            'class MigrateFileContentType(UpgradeStep):',

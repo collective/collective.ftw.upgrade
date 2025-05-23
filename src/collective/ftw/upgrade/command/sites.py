@@ -1,10 +1,10 @@
 from __future__ import print_function
-from ftw.upgrade.command.jsonapi import add_json_argument
-from ftw.upgrade.command.jsonapi import add_requestor_authentication_argument
-from ftw.upgrade.command.jsonapi import add_requestor_instance_argument
-from ftw.upgrade.command.jsonapi import error_handling
-from ftw.upgrade.command.jsonapi import with_api_requestor
-from ftw.upgrade.command.terminal import TERMINAL
+from collective.ftw.upgrade.command.jsonapi import add_json_argument
+from collective.ftw.upgrade.command.jsonapi import add_requestor_authentication_argument
+from collective.ftw.upgrade.command.jsonapi import add_requestor_instance_argument
+from collective.ftw.upgrade.command.jsonapi import error_handling
+from collective.ftw.upgrade.command.jsonapi import with_api_requestor
+from collective.ftw.upgrade.command.terminal import TERMINAL
 
 import six
 

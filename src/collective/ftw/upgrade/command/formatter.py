@@ -1,6 +1,6 @@
 # Source: http://bugs.python.org/issue12806
 
-from ftw.upgrade.command.terminal import TERMINAL
+from collective.ftw.upgrade.command.terminal import TERMINAL
 
 import argparse
 import re

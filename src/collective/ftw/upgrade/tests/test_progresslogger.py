@@ -1,4 +1,4 @@
-from ftw.upgrade.progresslogger import ProgressLogger
+from collective.ftw.upgrade.progresslogger import ProgressLogger
 from six import StringIO
 from six.moves import range
 from time import sleep

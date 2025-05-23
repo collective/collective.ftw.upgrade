@@ -1,15 +1,15 @@
-from ftw.upgrade.command.jsonapi import add_json_argument
-from ftw.upgrade.command.jsonapi import add_requestor_authentication_argument
-from ftw.upgrade.command.jsonapi import add_requestor_instance_argument
-from ftw.upgrade.command.jsonapi import add_site_path_argument
-from ftw.upgrade.command.jsonapi import error_handling
-from ftw.upgrade.command.jsonapi import with_api_requestor
-from ftw.upgrade.command.terminal import colorize_profile_id
-from ftw.upgrade.command.terminal import colorized_profile_flags
-from ftw.upgrade.command.terminal import colorized_profile_versions
-from ftw.upgrade.command.terminal import print_table
-from ftw.upgrade.command.terminal import TERMINAL
-from ftw.upgrade.command.terminal import upgrade_id_with_flags
+from collective.ftw.upgrade.command.jsonapi import add_json_argument
+from collective.ftw.upgrade.command.jsonapi import add_requestor_authentication_argument
+from collective.ftw.upgrade.command.jsonapi import add_requestor_instance_argument
+from collective.ftw.upgrade.command.jsonapi import add_site_path_argument
+from collective.ftw.upgrade.command.jsonapi import error_handling
+from collective.ftw.upgrade.command.jsonapi import with_api_requestor
+from collective.ftw.upgrade.command.terminal import colorize_profile_id
+from collective.ftw.upgrade.command.terminal import colorized_profile_flags
+from collective.ftw.upgrade.command.terminal import colorized_profile_versions
+from collective.ftw.upgrade.command.terminal import print_table
+from collective.ftw.upgrade.command.terminal import TERMINAL
+from collective.ftw.upgrade.command.terminal import upgrade_id_with_flags
 
 
 DOCS = """

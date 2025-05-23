@@ -2,10 +2,10 @@ from ftw.builder import Builder
 from ftw.builder import create
 from ftw.builder.testing import BUILDER_LAYER
 from ftw.testing.layer import TempDirectoryLayer
-from ftw.upgrade.command.utils import find_egginfo
-from ftw.upgrade.command.utils import find_package_namespace_path
-from ftw.upgrade.tests.helpers import capture_streams
-from ftw.upgrade.tests.helpers import chdir
+from collective.ftw.upgrade.command.utils import find_egginfo
+from collective.ftw.upgrade.command.utils import find_package_namespace_path
+from collective.ftw.upgrade.tests.helpers import capture_streams
+from collective.ftw.upgrade.tests.helpers import chdir
 from path import Path
 from six import StringIO
 from unittest import TestCase

@@ -3,7 +3,7 @@ from App.config import getConfiguration
 from collections import defaultdict
 from contextlib import contextmanager
 from copy import deepcopy
-from ftw.upgrade.exceptions import CyclicDependencies
+from collective.ftw.upgrade.exceptions import CyclicDependencies
 from path import Path
 from six.moves import map
 from zExceptions import NotFound

@@ -1,4 +1,4 @@
-from ftw.upgrade.command.terminal import TERMINAL
+from collective.ftw.upgrade.command.terminal import TERMINAL
 
 import argparse
 import os

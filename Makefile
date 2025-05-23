@@ -90,10 +90,6 @@ start: $(VENV_FOLDER) instance/etc/zope.ini ## Start a Plone instance on localho
 console: $(VENV_FOLDER) instance/etc/zope.ini ## Start a console into a Plone instance
 	@uv run zconsole debug instance/etc/zope.conf
 
-.PHONY: create-site
-create-site: $(VENV_FOLDER) instance/etc/zope.ini ## Create a new site from scratch
-	@uv run zconsole run instance/etc/zope.conf ./scripts/create_site.py
-
 # QA
 .PHONY: lint
 lint: ## Check and fix code base according to Plone standards
@@ -117,16 +113,14 @@ check: format lint ## Check and fix code base according to Plone standards
 .PHONY: i18n
 i18n: $(VENV_FOLDER) ## Update locales
 	@echo "$(GREEN)==> Updating locales$(RESET)"
-	@uv run python -m collective.collectiveftwupgrade.locales
+	@uv run python -m collective.ftw.upgrade.locales
 
 # Tests
 .PHONY: test
 test: $(VENV_FOLDER) ## run tests
-	@uv run pytest
-
-.PHONY: test-coverage
-test-coverage: $(VENV_FOLDER) ## run tests with coverage
-	@uv run pytest --cov=collective.collectiveftwupgrade --cov-report term-missing
+	@echo "$(GREEN)Install zope.testrunner$(RESET)"
+	@uv pip install zope.testrunner
+	${BIN_FOLDER}/zope-testrunner --auto-color --auto-progress --test-path="./src"
 
 ## Add bobtemplates features (check bobtemplates.plone's documentation to get the list of available features)
 add: $(VENV_FOLDER)

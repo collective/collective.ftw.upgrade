@@ -1,10 +1,10 @@
 from datetime import datetime
 from ftw.builder import Builder
 from ftw.builder import create
-from ftw.upgrade.interfaces import IRecordableHandler
-from ftw.upgrade.interfaces import IUpgradeStep
-from ftw.upgrade.tests.base import UpgradeTestCase
-from ftw.upgrade.utils import get_sorted_profile_ids
+from collective.ftw.upgrade.interfaces import IRecordableHandler
+from collective.ftw.upgrade.interfaces import IUpgradeStep
+from collective.ftw.upgrade.tests.base import UpgradeTestCase
+from collective.ftw.upgrade.utils import get_sorted_profile_ids
 from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone.interfaces import IMigratingPloneSiteRoot
 from Products.GenericSetup.interfaces import EXTENSION
@@ -165,7 +165,7 @@ class TestDirectoryMetaDirective(UpgradeTestCase):
                          profile_path.joinpath('metadata.xml').text())
 
         with package.zcml_loaded(self.layer['configurationContext']):
-            from ftw.upgrade.directory.zcml import find_start_version
+            from collective.ftw.upgrade.directory.zcml import find_start_version
             find_start_version(u'the.package:default')
             self.assert_profile(
                 {'id': u'the.package:default',
@@ -267,8 +267,8 @@ class TestDirectoryMetaDirective(UpgradeTestCase):
 
     def test_handler_step_provides_interfaces_implemented_by_upgrade_step_class(self):
         code = '\n'.join((
-            'from ftw.upgrade import UpgradeStep',
-            'from ftw.upgrade.tests.test_directory_meta_directive import IFoo',
+            'from collective.ftw.upgrade import UpgradeStep',
+            'from collective.ftw.upgrade.tests.test_directory_meta_directive import IFoo',
             'from zope.interface import implementer',
             '',
             '@implementer(IFoo)',

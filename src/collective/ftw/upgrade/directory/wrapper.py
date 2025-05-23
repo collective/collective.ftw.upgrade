@@ -1,5 +1,5 @@
-from ftw.upgrade.interfaces import IRecordableHandler
-from ftw.upgrade.interfaces import IUpgradeStepRecorder
+from collective.ftw.upgrade.interfaces import IRecordableHandler
+from collective.ftw.upgrade.interfaces import IUpgradeStepRecorder
 from Products.CMFCore.utils import getToolByName
 from zope.component import getMultiAdapter
 from zope.interface import alsoProvides

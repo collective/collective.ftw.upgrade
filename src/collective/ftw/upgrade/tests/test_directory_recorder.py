@@ -1,5 +1,5 @@
-from ftw.upgrade.interfaces import IUpgradeStepRecorder
-from ftw.upgrade.tests.base import UpgradeTestCase
+from collective.ftw.upgrade.interfaces import IUpgradeStepRecorder
+from collective.ftw.upgrade.tests.base import UpgradeTestCase
 from zope.component import getMultiAdapter
 
 

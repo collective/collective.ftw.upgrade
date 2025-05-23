@@ -1,4 +1,4 @@
-from ftw.upgrade.tests.base import CommandAndInstanceTestCase
+from collective.ftw.upgrade.tests.base import CommandAndInstanceTestCase
 from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone.factory import _DEFAULT_PROFILE
 

@@ -24,8 +24,8 @@ else:
 
 
 if HAS_INDEXING:
-    from ftw.upgrade.interfaces import IDuringUpgrade
-    from ftw.upgrade.progresslogger import ProgressLogger
+    from collective.ftw.upgrade.interfaces import IDuringUpgrade
+    from collective.ftw.upgrade.progresslogger import ProgressLogger
     from zope.globalrequest import getRequest
 
     class LoggingQueueProcessor(object):

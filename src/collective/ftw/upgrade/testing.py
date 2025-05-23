@@ -1,7 +1,7 @@
 from ftw.builder.testing import BUILDER_LAYER
 from ftw.builder.testing import functional_session_factory
 from ftw.builder.testing import set_builder_session_factory
-from ftw.testbrowser import browser
+# from ftw.testbrowser import browser
 from ftw.testing.layer import COMPONENT_REGISTRY_ISOLATION
 from ftw.testing.layer import ConsoleScriptLayer
 from ftw.testing.layer import TEMP_DIRECTORY
@@ -20,12 +20,11 @@ from six.moves import map
 from zope.component import getUtility
 from zope.configuration import xmlconfig
 
-import ftw.upgrade.tests.builders
+import collective.ftw.upgrade.tests.builders
 import pkg_resources
-import transaction
 
 
-ftw.upgrade.tests.builders  # pyflakes
+collective.ftw.upgrade.tests.builders  # pyflakes
 
 
 COMMAND_LAYER = ConsoleScriptLayer('ftw.upgrade',
@@ -43,8 +42,8 @@ class UpgradeLayer(PloneSandboxLayer):
         xmlconfig.file('configure.zcml', Products.CMFPlacefulWorkflow,
                        context=configurationContext)
 
-        import ftw.upgrade
-        xmlconfig.file('configure.zcml', ftw.upgrade,
+        import collective.ftw.upgrade
+        xmlconfig.file('configure.zcml', collective.ftw.upgrade,
                        context=configurationContext)
 
         z2.installProduct(app, 'Products.DateRecurringIndex')
@@ -73,7 +72,7 @@ class UpgradeLayer(PloneSandboxLayer):
 
         applyProfile(
             portal, 'Products.CMFPlacefulWorkflow:CMFPlacefulWorkflow')
-        applyProfile(portal, 'ftw.upgrade:default')
+        applyProfile(portal, 'collective.ftw.upgrade:default')
 
         self.fix_plone_app_jquery_version(portal)
         self.prevent_csrf_by_initializing_site_storages(portal)
@@ -97,16 +96,16 @@ class UpgradeLayer(PloneSandboxLayer):
         except ImportError:
             return
 
-        transaction.commit()
-        with browser(portal.aq_inner.aq_parent):
-            crsrf_disabled_ori = auto.CSRF_DISABLED
-            auto.CSRF_DISABLED = True
-            try:
-                browser.login(SITE_OWNER_NAME).open(
-                    view='overview-controlpanel')
-            finally:
-                auto.CSRF_DISABLED = crsrf_disabled_ori
-                transaction.begin()
+        # transaction.commit()
+        # with browser(portal.aq_inner.aq_parent):
+        #     crsrf_disabled_ori = auto.CSRF_DISABLED
+        #     auto.CSRF_DISABLED = True
+        #     try:
+        #         browser.login(SITE_OWNER_NAME).open(
+        #             view='overview-controlpanel')
+        #     finally:
+        #         auto.CSRF_DISABLED = crsrf_disabled_ori
+        #         transaction.begin()
 
     def fix_plone_app_jquery_version(self, portal):
         try:

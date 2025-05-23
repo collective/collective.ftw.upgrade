@@ -1,8 +1,8 @@
 from datetime import datetime
 from ftw.builder import Builder
 from ftw.testbrowser import browsing
-from ftw.upgrade.tests.base import JsonApiTestCase
-from ftw.upgrade.utils import get_portal_migration
+from collective.ftw.upgrade.tests.base import JsonApiTestCase
+from collective.ftw.upgrade.utils import get_portal_migration
 from Products.CMFPlone.factory import _DEFAULT_PROFILE
 
 import re

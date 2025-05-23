@@ -1,5 +1,5 @@
-from ftw.upgrade.testing import UPGRADE_FUNCTIONAL_TESTING
-from ftw.upgrade.utils import SavepointIterator
+from collective.ftw.upgrade.testing import UPGRADE_FUNCTIONAL_TESTING
+from collective.ftw.upgrade.utils import SavepointIterator
 from unittest import TestCase
 
 import os

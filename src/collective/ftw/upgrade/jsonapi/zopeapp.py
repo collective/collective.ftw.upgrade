@@ -1,7 +1,7 @@
 from AccessControl import getSecurityManager
-from ftw.upgrade.jsonapi.base import APIView
-from ftw.upgrade.jsonapi.utils import action
-from ftw.upgrade.jsonapi.utils import jsonify
+from collective.ftw.upgrade.jsonapi.base import APIView
+from collective.ftw.upgrade.jsonapi.utils import action
+from collective.ftw.upgrade.jsonapi.utils import jsonify
 
 
 class ZopeAppAPI(APIView):

@@ -1,4 +1,4 @@
-from ftw.upgrade.transactionnote import TransactionNote
+from collective.ftw.upgrade.transactionnote import TransactionNote
 from six.moves import range
 from unittest import TestCase
 

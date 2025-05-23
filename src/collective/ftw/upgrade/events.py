@@ -1,4 +1,4 @@
-from ftw.upgrade.interfaces import IClassMigratedEvent
+from collective.ftw.upgrade.interfaces import IClassMigratedEvent
 from zope.interface import implementer
 
 try:

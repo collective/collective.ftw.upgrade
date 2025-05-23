@@ -1,8 +1,8 @@
 from __future__ import print_function
-from ftw.upgrade.command.terminal import TERMINAL
-from ftw.upgrade.command.utils import find_egginfo
-from ftw.upgrade.command.utils import find_package_namespace_path
-from ftw.upgrade.directory.scaffold import UpgradeStepCreator
+from collective.ftw.upgrade.command.terminal import TERMINAL
+from collective.ftw.upgrade.command.utils import find_egginfo
+from collective.ftw.upgrade.command.utils import find_package_namespace_path
+from collective.ftw.upgrade.directory.scaffold import UpgradeStepCreator
 from path import Path
 
 import argparse
