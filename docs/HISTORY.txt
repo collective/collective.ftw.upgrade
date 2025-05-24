@@ -5,6 +5,7 @@ Changelog
 3.3.2 (unreleased)
 ------------------
 
+- Remove streaming the uprade results, since it only worked with Zope2 server. [mathias.leimgruber]
 - Remove ftw.testbrowser dependency [mathias.leimgruber]
 - Remove combine_bundle [mathias.leimgruber]
 - Remove recook feature [mathias.leimgruber]

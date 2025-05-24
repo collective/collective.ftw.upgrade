@@ -14,7 +14,7 @@ import time
 import traceback
 
 
-LOG = logging.getLogger('ftw.upgrade')
+LOG = logging.getLogger('collective.ftw.upgrade')
 
 
 class ResponseLogger(object):
@@ -82,12 +82,7 @@ class ManageUpgrades(BrowserView):
             assert not self.plone_needs_upgrading(), \
                 'Plone is outdated. Upgrading add-ons is disabled.'
 
-            if self.request.get('ajax', False):
-                return self.install_with_ajax_stream()
-
-            else:
-                self.install()
-
+            self.install()
         return super(ManageUpgrades, self).__call__(self)
 
     security.declarePrivate('install')
@@ -101,31 +96,11 @@ class ManageUpgrades(BrowserView):
         data = self._get_upgrades_to_install()
         executioner.install(data)
 
-        logging.getLogger('ftw.upgrade').info('FINISHED')
+        logging.getLogger('collective.ftw.upgrade').info('FINISHED')
 
-        logging.getLogger('ftw.upgrade').info(
+        logging.getLogger('collective.ftw.upgrade').info(
             'Duration for all selected upgrade steps: %s' % (
                 format_duration(time.time() - start)))
-
-    security.declarePrivate('install_with_ajax_stream')
-    def install_with_ajax_stream(self):
-        """Installs the selected upgrades and streams the log into
-        the HTTP response.
-        """
-        response = self.request.RESPONSE
-        response.setHeader('Content-Type', 'text/html')
-        response.setHeader('Transfer-Encoding', 'chunked')
-        response.write(b'<html>')
-        response.write(b'<body>')
-        response.write(b'  ' * getattr(response, 'http_chunk_size', 100))
-        response.write(b'<pre>')
-
-        with ResponseLogger(self.request.RESPONSE):
-            self.install()
-
-        response.write(b'</pre>')
-        response.write(b'</body>')
-        response.write(b'</html>')
 
     security.declarePrivate('get_data')
     def get_data(self):

@@ -63,7 +63,7 @@
 
             <form
                 tal:condition="not:plone_needs_upgrading"
-                tal:attributes="action string:${context/absolute_url}/@@manage-upgrades?ajax=1"
+                tal:attributes="action string:${context/absolute_url}/@@manage-upgrades"
                 tal:define="profiles view/get_data;
                             cyclic_dependencies view/cyclic_dependencies"
                 method="post"
