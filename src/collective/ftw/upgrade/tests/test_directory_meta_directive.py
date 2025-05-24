@@ -102,7 +102,7 @@ class TestDirectoryMetaDirective(UpgradeTestCase):
 
             .with_directory('upgrades')
             .with_file('upgrades/__init__.py', 'PACKAGE = "upgrades package"')
-            .with_zcml_include('ftw.upgrade', file='meta.zcml')
+            .with_zcml_include('collective.ftw.upgrade', file='meta.zcml')
             .with_zcml_node('upgrade-step:directory',
                             profile='other.package:default',
                             directory='upgrades'))
@@ -115,7 +115,7 @@ class TestDirectoryMetaDirective(UpgradeTestCase):
         package_builder = (Builder('python package')
                            .named('other.package')
                            .at_path(self.layer['temp_directory'])
-                           .with_zcml_include('ftw.upgrade', file='meta.zcml')
+                           .with_zcml_include('collective.ftw.upgrade', file='meta.zcml')
                            .with_zcml_node('upgrade-step:directory',
                                            profile='other.package:default',
                                            directory='.'))
@@ -139,7 +139,7 @@ class TestDirectoryMetaDirective(UpgradeTestCase):
                 {'id': u'the.package:default',
                  'title': u'the.package',
                  'description': u'',
-                 'ftw.upgrade:dependencies': None,
+                 'collective.ftw.upgrade:dependencies': None,
                  'path': profile_path,
                  'version': '20110202080000',
                  'product': 'the.package',
@@ -171,7 +171,7 @@ class TestDirectoryMetaDirective(UpgradeTestCase):
                 {'id': u'the.package:default',
                  'title': u'the.package',
                  'description': u'',
-                 'ftw.upgrade:dependencies': None,
+                 'collective.ftw.upgrade:dependencies': None,
                  'path': str(profile_path),
                  'version': '1001',
                  'product': 'the.package',
@@ -180,7 +180,7 @@ class TestDirectoryMetaDirective(UpgradeTestCase):
 
     def test_version_set_to_default_when_no_upgrades_defined(self):
         upgrades = self.package.package.get_subpackage('upgrades')
-        upgrades.with_zcml_include('ftw.upgrade', file='meta.zcml')
+        upgrades.with_zcml_include('collective.ftw.upgrade', file='meta.zcml')
         upgrades.with_zcml_node('upgrade-step:directory',
                                 profile='the.package:default',
                                 directory='.')
@@ -191,7 +191,7 @@ class TestDirectoryMetaDirective(UpgradeTestCase):
                 {'id': u'the.package:default',
                  'title': u'the.package',
                  'description': u'',
-                 'ftw.upgrade:dependencies': None,
+                 'collective.ftw.upgrade:dependencies': None,
                  'path': profile_path,
                  'version': u'10000000000000',
                  'product': 'the.package',
@@ -245,7 +245,7 @@ class TestDirectoryMetaDirective(UpgradeTestCase):
                 {'id': u'the.package:foo',
                  'title': u'the.package',
                  'description': u'',
-                 'ftw.upgrade:dependencies': [u'the.package:bar',
+                 'collective.ftw.upgrade:dependencies': [u'the.package:bar',
                                               u'the.package:baz'],
                  'path': package.package_path.joinpath('profiles', 'foo'),
                  'version': u'20100101010100',

@@ -110,7 +110,7 @@ class UpgradeStepBuilder(object):
         if zcml._upgrade_step_declarations.get(self.profile_builder.name):
             return
 
-        zcml.include('ftw.upgrade', file='meta.zcml')
+        zcml.include('collective.ftw.upgrade', file='meta.zcml')
         zcml.with_node('upgrade-step:directory',
                        profile=self.profile_builder.profile_name,
                        directory='.',

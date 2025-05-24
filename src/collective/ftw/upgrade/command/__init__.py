@@ -21,8 +21,8 @@ import logging
 import sys
 
 
-VERSION = get_distribution('ftw.upgrade').version
-logger = logging.getLogger('ftw.upgrade')
+VERSION = get_distribution('collective.ftw.upgrade').version
+logger = logging.getLogger('collective.ftw.upgrade')
 
 
 DOCS = """
