@@ -119,12 +119,9 @@ class TestUpgradeInformationGatherer(UpgradeTestCase):
             self.assertIn('the.package:default', self.get_listed_profiles(),
                           'Installed profiles should be listed.')
 
-            if getFSVersionTuple() > (5, 1):
-                installer = getMultiAdapter(
-                    (self.portal, self.layer['request']), name='installer')
-                installer.uninstall_product('the.package')
-            else:
-                self.portal_quickinstaller.uninstallProducts(['the.package'])
+            installer = getMultiAdapter(
+                (self.portal, self.layer['request']), name='installer')
+            installer.uninstall_product('the.package')
             self.assertNotIn('the.package:default', self.get_listed_profiles(),
                              'Packages uninstalled by quickinstaller should not be listed.')
 

@@ -57,7 +57,6 @@ class UpgradeTestCase(TestCase, AssertMixin):
                         .named('the.package'))
         self.portal = self.layer['portal']
         self.portal_setup = getToolByName(self.portal, 'portal_setup')
-        self.portal_quickinstaller = getToolByName(self.portal, 'portal_quickinstaller')
 
     def tearDown(self):
         self.teardown_logging()
