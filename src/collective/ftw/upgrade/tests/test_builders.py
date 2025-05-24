@@ -20,7 +20,7 @@ class TestUpgradeStepBuilder(UpgradeTestCase):
         with self.package_created() as package:
             upgrade_path = package.package_path.joinpath(
                 'upgrades', '20110101000000_migrate_file_content_type')
-            self.assertTrue(upgrade_path.isdir(),
+            self.assertTrue(upgrade_path.is_dir(),
                             'Upgrade directory was not created {0}'.format(upgrade_path))
             self.assertMultiLineEqual(
                 '\n'.join(('from collective.ftw.upgrade import UpgradeStep',
@@ -33,7 +33,7 @@ class TestUpgradeStepBuilder(UpgradeTestCase):
                            '    def __call__(self):',
                            '        self.install_upgrade_profile()',
                            '')),
-                upgrade_path.joinpath('upgrade.py').text())
+                upgrade_path.joinpath('upgrade.py').read_text())
 
     def test_executing_upgrade_step_with_custom_code(self):
         class AddExcludeFromNavIndex(UpgradeStep):
@@ -64,13 +64,13 @@ class TestUpgradeStepBuilder(UpgradeTestCase):
         with self.package_created() as package:
             upgrade_path = package.package_path.joinpath('upgrades',
                                                          '20110101000000_upgrade')
-            self.assertTrue(upgrade_path.isdir(),
+            self.assertTrue(upgrade_path.is_dir(),
                             'Upgrade directory was not created {0}'.format(upgrade_path))
 
-            self.assertEqual('FOO', upgrade_path.joinpath('foo.txt').text())
-            self.assertTrue(upgrade_path.joinpath('bar').isdir(),
+            self.assertEqual('FOO', upgrade_path.joinpath('foo.txt').read_text())
+            self.assertTrue(upgrade_path.joinpath('bar').is_dir(),
                             'directory "bar" was not created.')
-            self.assertEqual('BAZ', upgrade_path.joinpath('baz', 'baz.txt').text())
+            self.assertEqual('BAZ', upgrade_path.joinpath('baz', 'baz.txt').read_text())
 
     def test_importing_upgrade_step_with_import_profile_files(self):
         self.profile.with_upgrade(

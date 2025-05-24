@@ -162,7 +162,7 @@ class TestDirectoryMetaDirective(UpgradeTestCase):
 
         profile_path = package.package_path.joinpath('profiles', 'default')
         self.assertNotIn('<version',
-                         profile_path.joinpath('metadata.xml').text())
+                         profile_path.joinpath('metadata.xml').read_text())
 
         with package.zcml_loaded(self.layer['configurationContext']):
             from collective.ftw.upgrade.directory.zcml import find_start_version

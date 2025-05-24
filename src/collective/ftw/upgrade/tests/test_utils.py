@@ -275,7 +275,7 @@ class TestGetTempfileAuthenticationDirectory(TestCase):
 
     def test_directory_is_created(self):
         tmpdir = get_tempfile_authentication_directory(self.buildoutdir)
-        self.assertTrue(tmpdir.isdir())
+        self.assertTrue(tmpdir.is_dir())
 
     def test_supports_setguid_flag(self):
         tmpdir = get_tempfile_authentication_directory(self.buildoutdir)

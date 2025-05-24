@@ -169,7 +169,7 @@ class UpgradeTestCase(TestCase, AssertMixin):
                 [profile['id'] for profile in result]))
 
     def asset(self, filename):
-        return Path(__file__).dirname().joinpath('assets', filename).text()
+        return Path(__file__).dirname().joinpath('assets', filename).read_text()
 
     @contextmanager
     def assert_resources_recooked(self):
