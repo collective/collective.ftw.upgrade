@@ -9,7 +9,6 @@ from collective.ftw.upgrade.jsonapi.exceptions import ProfileNotFound
 from collective.ftw.upgrade.jsonapi.utils import action
 from collective.ftw.upgrade.jsonapi.utils import jsonify
 from collective.ftw.upgrade.jsonapi.utils import parse_bool
-from collective.ftw.upgrade.resource_registries import recook_resources
 from collective.ftw.upgrade.utils import get_portal_migration
 from functools import reduce
 from operator import itemgetter
@@ -99,14 +98,6 @@ class PloneSiteAPI(APIView):
         self._validate_profile_ids(*profiles)
         return self._install_profiles(*profiles,
                                       force_reinstall=force_reinstall)
-
-    @jsonify
-    @action('POST')
-    def recook_resources(self):
-        """Recook CSS and JavaScript resource bundles.
-        """
-        recook_resources()
-        return 'OK'
 
     @jsonify
     @action('POST')

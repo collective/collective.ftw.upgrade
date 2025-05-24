@@ -1141,17 +1141,6 @@ For checking whether a Plone upgrade is needed, you can do:
     $ curl -uadmin:admin -X POST "http://localhost:8080/test/upgrades-api/plone_upgrade_needed"
 
 
-Recook resources
-----------------
-
-CSS and JavaScript resource bundles can be recooked:
-
-.. code:: sh
-
-    $ curl -uadmin:admin -X POST http://localhost:8080/Plone/upgrades-api/recook_resources
-    "OK"
-
-
 Combine bundles
 ---------------
 

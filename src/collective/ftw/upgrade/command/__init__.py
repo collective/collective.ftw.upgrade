@@ -5,7 +5,6 @@ from collective.ftw.upgrade.command import install
 from collective.ftw.upgrade.command import list_cmd
 from collective.ftw.upgrade.command import plone_upgrade
 from collective.ftw.upgrade.command import plone_upgrade_needed
-from collective.ftw.upgrade.command import recook
 from collective.ftw.upgrade.command import sites
 from collective.ftw.upgrade.command import touch
 from collective.ftw.upgrade.command import user
@@ -137,7 +136,6 @@ class UpgradeCommand(object):
         list_cmd.setup_argparser(commands)
         plone_upgrade.setup_argparser(commands)
         plone_upgrade_needed.setup_argparser(commands)
-        recook.setup_argparser(commands)
         sites.setup_argparser(commands)
         touch.setup_argparser(commands)
         user.setup_argparser(commands)

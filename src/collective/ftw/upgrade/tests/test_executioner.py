@@ -109,15 +109,6 @@ class TestExecutioner(UpgradeTestCase):
                 list(transaction.get().getAfterCommitHooks()),
                 'Hook registrations should not persist across transactions')
 
-    def test_resources_are_recooked_after_installing_upgrades(self):
-        self.package.with_profile(
-            Builder('genericsetup profile')
-            .with_upgrade(Builder('plone upgrade step').upgrading('1000', to='1001')))
-        with self.package_created():
-            self.install_profile('the.package:default', version='1000')
-            with self.assert_resources_recooked():
-                self.install_profile_upgrades('the.package:default')
-
     @skipIf(getFSVersionTuple() > (5, 1), 'QuickInstaller has been deprecated in Plone 5.1')
     def test_updates_quickinstaller_version(self):
         quickinstaller = getToolByName(self.portal, 'portal_quickinstaller')

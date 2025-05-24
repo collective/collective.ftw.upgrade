@@ -172,19 +172,6 @@ class UpgradeTestCase(TestCase, AssertMixin):
         return Path(__file__).dirname().joinpath('assets', filename).read_text()
 
     @contextmanager
-    def assert_resources_recooked(self):
-        def get_resources():
-            doc = lxml.html.fromstring(self.portal())
-            return list(map(str.strip, map(six.ensure_str, map(lxml.html.tostring,
-                            doc.xpath('//link[@rel="stylesheet"][@href]'
-                                      ' | //script[@src]')))))
-
-        resources = get_resources()
-        yield
-        self.assertNotEqual(resources, get_resources(),
-                            'Resurces are not recooked.')
-
-    @contextmanager
     def assert_bundles_combined(self):
         # Note: this is for Plone 5.
 

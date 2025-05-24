@@ -5,7 +5,6 @@ from collective.ftw.upgrade.interfaces import IDuringUpgrade
 from collective.ftw.upgrade.interfaces import IExecutioner
 from collective.ftw.upgrade.interfaces import IPostUpgrade
 from collective.ftw.upgrade.interfaces import IUpgradeInformationGatherer
-from collective.ftw.upgrade.resource_registries import recook_resources
 from collective.ftw.upgrade.transactionnote import TransactionNote
 from collective.ftw.upgrade.utils import format_duration
 from collective.ftw.upgrade.utils import get_logdir
@@ -62,7 +61,6 @@ class Executioner(object):
             transaction.get().note('finalizing installing upgrades')
 
         TransactionNote().set_transaction_note()
-        recook_resources()
         self._process_indexing_queue()
 
     security.declarePrivate('install_upgrades_by_api_ids')

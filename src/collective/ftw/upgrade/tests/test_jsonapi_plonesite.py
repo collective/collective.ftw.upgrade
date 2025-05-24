@@ -70,12 +70,7 @@ class TestPloneSiteJsonApi(JsonApiTestCase):
                   {'name': 'plone_upgrade_needed',
                    'required_params': [],
                    'description': 'Returns "true" when Plone needs to be upgraded.',
-                   'request_method': 'GET'},
-
-                  {'name': 'recook_resources',
-                   'required_params': [],
-                   'description': 'Recook CSS and JavaScript resource bundles.',
-                   'request_method': 'POST'}]},
+                   'request_method': 'GET'}]},
 
             browser.json)
 
@@ -487,12 +482,6 @@ class TestPloneSiteJsonApi(JsonApiTestCase):
             self.install_profile('the.package:default', version='1')
             self.api_request('POST', 'execute_proposed_upgrades')
             self.assertIn('Result: FAILURE', browser.contents)
-
-    @browsing
-    def test_recook_resources(self, browser):
-        with self.assert_resources_recooked():
-            self.api_request('POST', 'recook_resources')
-            self.assertEqual('OK', browser.json)
 
     @browsing
     def test_execute_profiles_standard(self, browser):

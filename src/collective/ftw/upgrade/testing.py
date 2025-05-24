@@ -77,12 +77,6 @@ class UpgradeLayer(PloneSandboxLayer):
         self.fix_plone_app_jquery_version(portal)
         self.prevent_csrf_by_initializing_site_storages(portal)
 
-        # Enable development mode so that resources are included in separately
-        # in the HTML so that we can test for recooked resources.
-        registry = getUtility(IRegistry)
-        if 'plone.resources.development' in registry:
-            registry['plone.resources.development'] = True
-
     def prevent_csrf_by_initializing_site_storages(self, portal):
         """Plone auto-protection results in confirmation pages
         when first hitting Plone with the browser.
