@@ -315,6 +315,8 @@ class TestPloneSiteJsonApi(JsonApiTestCase):
             response = self.api_request('POST', 'execute_upgrades', (
                     ('upgrades:list', '20120202000000@the.package:default'),
                     ('upgrades:list', '20110101000000@the.package:default')))
+
+            transaction.begin()
             self.assertTrue(self.is_installed('the.package:default', datetime(2011, 1, 1)))
             self.assertTrue(self.is_installed('the.package:default', datetime(2012, 2, 2)))
             self.assertEqual(
@@ -389,6 +391,8 @@ class TestPloneSiteJsonApi(JsonApiTestCase):
                 'execute_upgrades',
                 {'upgrades:list': '20110101000000@the.package:default',
                  'allow_outdated': True})
+
+            transaction.begin()
             self.assertTrue(self.is_installed('the.package:default', datetime(2011, 1, 1)))
             self.assertEqual(
                 ['UPGRADE STEP the.package:default: The first upgrade step.'],
@@ -407,6 +411,7 @@ class TestPloneSiteJsonApi(JsonApiTestCase):
 
             self.assertFalse(self.is_installed('the.package:default', datetime(2011, 1, 1)))
             response = self.api_request('POST', 'execute_proposed_upgrades')
+            transaction.begin()
             self.assertTrue(self.is_installed('the.package:default', datetime(2011, 1, 1)))
 
             self.assertIn('UPGRADE STEP the.package:default: The upgrade.',
@@ -434,6 +439,7 @@ class TestPloneSiteJsonApi(JsonApiTestCase):
             self.assertFalse(self.is_installed('the.package:foo', datetime(2011, 1, 1)))
             response = self.api_request('POST', 'execute_proposed_upgrades',
                                         {'profiles:list': ['the.package:default']})
+            transaction.begin()
             self.assertTrue(self.is_installed('the.package:default', datetime(2011, 1, 1)))
             self.assertFalse(self.is_installed('the.package:foo', datetime(2011, 1, 1)))
 
@@ -465,6 +471,8 @@ class TestPloneSiteJsonApi(JsonApiTestCase):
         with self.package_created():
             response = self.api_request('POST', 'execute_profiles',
                                         {'profiles:list': ['the.package:default']})
+
+            transaction.begin()
             self.assertEqual(self.portal_setup.getLastVersionForProfile(
                 'the.package:default'), ('20110101000000', ))
             self.assertTrue(self.is_installed(
