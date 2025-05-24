@@ -106,7 +106,7 @@ def upgrade_step_directory_action(profile, dottedname, path,
 
     profile = GlobalRegistryStorage(IProfile).get(profile)
     profile['version'] = last_version
-    profile['ftw.upgrade:dependencies'] = soft_dependencies
+    profile['collective.ftw.upgrade:dependencies'] = soft_dependencies
 
 
 def find_start_version(profile):

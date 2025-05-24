@@ -13,7 +13,7 @@ class TestImportProfileUpgradeStepDirective(UpgradeTestCase):
 
     def test_upgrade_step_directive_without_handler(self):
         self.package.with_profile(Builder('genericsetup profile').with_fs_version('2'))
-        self.package.with_zcml_include('ftw.upgrade', file='meta.zcml')
+        self.package.with_zcml_include('collective.ftw.upgrade', file='meta.zcml')
         self.package.with_zcml_node('upgrade-step:importProfile',
                                     title='Add test action.',
                                     profile='the.package:default',
@@ -39,7 +39,7 @@ class TestImportProfileUpgradeStepDirective(UpgradeTestCase):
                 action.title = 'Title was changed.'
 
         self.package.with_profile(Builder('genericsetup profile').with_fs_version('2'))
-        self.package.with_zcml_include('ftw.upgrade', file='meta.zcml')
+        self.package.with_zcml_include('collective.ftw.upgrade', file='meta.zcml')
         self.package.with_zcml_node('upgrade-step:importProfile',
                                     title='Add and rename test action.',
                                     profile='the.package:default',

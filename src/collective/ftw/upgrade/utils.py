@@ -288,7 +288,7 @@ def get_sorted_profile_ids(portal_setup):
 
     for profile in portal_setup.listProfileInfo():
         for dependency in (list(profile.get('dependencies') or []) +
-                           list(profile.get('ftw.upgrade:dependencies') or [])):
+                           list(profile.get('collective.ftw.upgrade:dependencies') or [])):
             dependency = re.sub('^profile-', '', dependency)
             if dependency in profile_ids:
                 dependencies.append((profile['id'], dependency))
