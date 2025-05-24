@@ -70,8 +70,8 @@ class TestDirectoryMetaDirective(UpgradeTestCase):
                                   .named('add_an_action'))
 
         with self.package_created() as package:
-            upgrade_path = package.package_path.joinpath(
-                'upgrades', '20110101080000_add_an_action')
+            upgrade_path = str(package.package_path.joinpath(
+                'upgrades', '20110101080000_add_an_action'))
             self.assert_profile(
                 {'id': 'the.package.upgrades:default-upgrade-20110101080000',
                  'title': 'Upgrade the.package:default ' + \
@@ -134,7 +134,7 @@ class TestDirectoryMetaDirective(UpgradeTestCase):
         self.profile.with_upgrade(Builder('ftw upgrade step').to(datetime(2011, 2, 2, 8)))
 
         with self.package_created() as package:
-            profile_path = package.package_path.joinpath('profiles', 'default')
+            profile_path = str(package.package_path.joinpath('profiles', 'default'))
             self.assert_profile(
                 {'id': u'the.package:default',
                  'title': u'the.package',
@@ -186,7 +186,7 @@ class TestDirectoryMetaDirective(UpgradeTestCase):
                                 directory='.')
 
         with self.package_created() as package:
-            profile_path = package.package_path.joinpath('profiles', 'default')
+            profile_path = str(package.package_path.joinpath('profiles', 'default'))
             self.assert_profile(
                 {'id': u'the.package:default',
                  'title': u'the.package',
@@ -247,7 +247,7 @@ class TestDirectoryMetaDirective(UpgradeTestCase):
                  'description': u'',
                  'collective.ftw.upgrade:dependencies': [u'the.package:bar',
                                               u'the.package:baz'],
-                 'path': package.package_path.joinpath('profiles', 'foo'),
+                 'path': str(package.package_path.joinpath('profiles', 'foo')),
                  'version': u'20100101010100',
                  'product': 'the.package',
                  'type': EXTENSION,
