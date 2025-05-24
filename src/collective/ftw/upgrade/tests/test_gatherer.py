@@ -209,16 +209,8 @@ class TestUpgradeInformationGatherer(UpgradeTestCase):
         # Since we want those profiles to appear in manage-upgrades, we dont verify in the
         # quickinstaller that the product is installed, since it is always not installed because
         # there is no known product.
-        # - Products.CMFEditions:CMFEditions
-        # - Products.TinyMCE:TinyMCE
-        # - plone.app.discussion:default
-        # - plone.formwidget.autocomplete:default (depends on Plone version)
-
         profiles = self.get_listed_profiles(filter_package=None)
-        if getFSVersionTuple() < (5,):
-            self.assertIn('Products.CMFEditions:CMFEditions', profiles)
-            self.assertIn('Products.TinyMCE:TinyMCE', profiles)
-        self.assertIn('plone.app.discussion:default', profiles)
+        self.assertIn('plone.app.event:default', profiles)
 
     def test_profile_infos(self):
         self.package.with_profile(Builder('genericsetup profile')
