@@ -1,10 +1,7 @@
 from datetime import datetime
 from ftw.builder import Builder
-from ftw.testbrowser import browsing
-from ftw.testbrowser.pages import statusmessages
 from collective.ftw.upgrade.browser.manage import ResponseLogger
-from collective.ftw.upgrade.tests.base import UpgradeTestCase
-from plone.app.testing import SITE_OWNER_NAME
+from collective.ftw.upgrade.tests.base import JsonApiTestCase
 from Products.CMFCore.utils import getToolByName
 from six import BytesIO
 from unittest import TestCase
@@ -99,7 +96,7 @@ class TestResponseLogger(TestCase):
             output.split(b'\n'))
 
 
-class TestManageUpgrades(UpgradeTestCase):
+class TestManageUpgrades(JsonApiTestCase):
 
     def setUp(self):
         super(TestManageUpgrades, self).setUp()
@@ -112,29 +109,26 @@ class TestManageUpgrades(UpgradeTestCase):
         return self.assertEqual(
             first.replace(':80', ''), second.replace(':80', ''), msg)
 
-    @browsing
-    def test_registered_in_controlpanel(self, browser):
-        browser.login(SITE_OWNER_NAME).open(view='overview-controlpanel')
-        link = browser.css('#content').find('Upgrades').first
-        self.assertEqualURL(self.portal_url + '/@@manage-upgrades', link.attrib['href'])
+    def test_registered_in_controlpanel(self):
+        response = self.html_request('GET', 'overview-controlpanel')
+        link = self.find_content(response.content, '[href$="@@manage-upgrades"]')
+        self.assertEqualURL(self.portal_url + '/@@manage-upgrades', link.attrs['href'])
 
-    @browsing
-    def test_manage_view_renders(self, browser):
-        browser.login(SITE_OWNER_NAME).open(view='manage-upgrades')
-
-        up_link = browser.css('#content').find('Up to Site Setup').first
+    def test_manage_view_renders(self):
+        response = self.html_request('GET', 'manage-upgrades')
+        up_link = self.find_content(response.content, '.link-parent')
         self.assertEqualURL(self.portal_url + '/@@overview-controlpanel',
-                            up_link.attrib['href'])
+                            up_link.attrs['href'])
 
-        self.assertTrue(browser.css('input[value="plone.app.discussion:default"]').first)
+        self.assertTrue(
+            self.find_content(response.content, 'input[value="plone.app.event:default"]'))
 
-    @browsing
-    def test_manage_plain_view_renders(self, browser):
-        browser.login(SITE_OWNER_NAME).open(view='manage-upgrades-plain')
-        self.assertTrue(browser.css('input[value="plone.app.discussion:default"]').first)
+    def test_manage_plain_view_renders(self):
+        response = self.html_request('GET', 'manage-upgrades-plain')
+        self.assertTrue(
+            self.find_content(response.content,'input[value="plone.app.event:default"]'))
 
-    @browsing
-    def test_manage_view_pre_selects_deferrable_upgrades(self, browser):
+    def test_manage_view_pre_selects_deferrable_upgrades(self):
         self.package.with_profile(
             Builder('genericsetup profile')
             .with_upgrade(Builder('ftw upgrade step')
@@ -147,13 +141,12 @@ class TestManageUpgrades(UpgradeTestCase):
             transaction.commit()
 
             transaction.begin()  # sync transaction
-            browser.login(SITE_OWNER_NAME).open(view='manage-upgrades')
-            deferrable_upgrade_checkbox = browser.css(
-                'input[id|="the.package:default"]').first
-            self.assertTrue(deferrable_upgrade_checkbox.checked)
+            response = self.html_request('GET', 'manage-upgrades')
+            deferrable_upgrade_checkbox = self.find_content(
+                response.content, 'input[id|="the.package:default"]')
+            self.assertEqual('checked', deferrable_upgrade_checkbox.attrs['checked'])
 
-    @browsing
-    def test_install(self, browser):
+    def test_install(self):
         def upgrade_step(setup_context):
             portal = getToolByName(setup_context, 'portal_url').getPortalObject()
             portal.upgrade_installed = True
@@ -171,15 +164,20 @@ class TestManageUpgrades(UpgradeTestCase):
             transaction.begin()  # sync transaction
             self.assertFalse(self.portal.upgrade_installed)
 
-            browser.login(SITE_OWNER_NAME).open(view='manage-upgrades')
+            response = self.html_request('GET', 'manage-upgrades')
             # Install proposed upgrades
-            browser.find('Install').click()
+            action = self.find_content(response.content, '[value="Install"]').parent.attrs['action']
+            input_elements = self.find_content(response.content, 'input:checked', 'select')
+            data = {element.attrs['name']: 'on' for element in input_elements}
+            data['submitted'] = 'Install'
+            data['upgrade.profileid:records'] = 'the.package:default'
+            data['_authenticator'] = self.find_content(response.content, '[name="_authenticator"]').attrs['value']
+            self.html_request('POST', action, data=data)
 
             transaction.begin()  # sync transaction
             self.assertTrue(self.portal.upgrade_installed)
 
-    @browsing
-    def test_upgrades_view_shows_cyclic_dependencies_error(self, browser):
+    def test_upgrades_view_shows_cyclic_dependencies_error(self):
         self.package.with_profile(Builder('genericsetup profile')
                                   .named('foo')
                                   .with_dependencies('the.package:bar'))
@@ -192,13 +190,15 @@ class TestManageUpgrades(UpgradeTestCase):
             self.install_profile('the.package:bar')
             transaction.commit()
 
-            browser.login(SITE_OWNER_NAME).open(view='@@manage-upgrades')
-            statusmessages.assert_message('There are cyclic dependencies.'
-                                          ' The profiles could not be sorted'
-                                          ' by dependencies!')
+            response = self.html_request('GET', 'manage-upgrades')
+            self.assertEqual(
+                'Cyclic dependencies\nThere are cyclic dependencies. The profiles could not be sorted by dependencies!',
+                self.find_content(response.content, '.portalMessage').text.strip()
+            )
 
             possibilities = (
-                ['the.package:foo ; the.package:bar'],
-                ['the.package:bar ; the.package:foo'])
+                ['the.package:foo', 'the.package:bar'],
+                ['the.package:bar', 'the.package:foo'])
 
-            self.assertIn(browser.css('.cyclic-dependencies li').text, possibilities)
+            dep = self.find_content(response.content, '.cyclic-dependencies li').text
+            self.assertIn(re.findall(r'the\.package:\w+', dep), possibilities)

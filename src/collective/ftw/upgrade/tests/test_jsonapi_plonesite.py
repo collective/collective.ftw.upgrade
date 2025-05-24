@@ -1,6 +1,5 @@
 from datetime import datetime
 from ftw.builder import Builder
-from ftw.testbrowser import browsing
 from collective.ftw.upgrade.tests.base import JsonApiTestCase
 from collective.ftw.upgrade.utils import get_portal_migration
 from Products.CMFPlone.factory import _DEFAULT_PROFILE
@@ -11,9 +10,8 @@ import transaction
 
 class TestPloneSiteJsonApi(JsonApiTestCase):
 
-    @browsing
-    def test_api_discovery(self, browser):
-        self.api_request('GET', '')
+    def test_api_discovery(self):
+        response = self.api_request('GET', '')
 
         self.assert_json_equal(
             {'api_version': 'v1',
@@ -66,10 +64,9 @@ class TestPloneSiteJsonApi(JsonApiTestCase):
                    'description': 'Returns "true" when Plone needs to be upgraded.',
                    'request_method': 'GET'}]},
 
-            browser.json)
+            response.json())
 
-    @browsing
-    def test_get_profile(self, browser):
+    def test_get_profile(self):
         self.package.with_profile(
             Builder('genericsetup profile')
             .with_upgrade(Builder('plone upgrade step').upgrading('1', to='2'))
@@ -79,9 +76,9 @@ class TestPloneSiteJsonApi(JsonApiTestCase):
             self.install_profile('the.package:default', version='1')
             self.clear_recorded_upgrades('the.package:default')
 
-            self.api_request('GET', 'get_profile', dict(profileid='the.package:default'))
+            response = self.api_request('GET', 'get_profile', dict(profileid='the.package:default'))
             self.assertEqual('application/json; charset=utf-8',
-                             browser.headers.get('content-type'))
+                             response.headers.get('content-type'))
 
             self.assert_json_equal(
                 {'id': 'the.package:default',
@@ -113,34 +110,30 @@ class TestPloneSiteJsonApi(JsonApiTestCase):
                          'outdated_fs_version': False},
                         ]},
 
-                browser.json)
+                response.json())
 
-    @browsing
-    def test_get_profile_requires_profileid(self, browser):
+    def test_get_profile_requires_profileid(self):
         with self.expect_api_error(status=400,
                                    message='Param missing',
                                    details='The param "profileid" is required'
-                                   ' for this API action.'):
-            self.api_request('GET', 'get_profile')
+                                   ' for this API action.') as result:
+            result['response'] = self.api_request('GET', 'get_profile')
 
-    @browsing
-    def test_get_profile_requires_GET(self, browser):
+    def test_get_profile_requires_GET(self):
         with self.expect_api_error(status=405,
                                    message='Method Not Allowed',
-                                   details='Action requires GET'):
-            self.api_request('POST', 'get_profile', {'profileid': 'the.package:default'})
-        self.assertEqual('GET', browser.headers.get('allow'))
+                                   details='Action requires GET') as result:
+            result['response'] = self.api_request('POST', 'get_profile', {'profileid': 'the.package:default'})
+        self.assertEqual('GET', result['response'].headers.get('allow'))
 
-    @browsing
-    def test_get_unkown_profile_returns_error(self, browser):
+    def test_get_unkown_profile_returns_error(self):
         with self.expect_api_error(status=400,
                                    message='Profile not available',
                                    details='The profile "something:default" is wrong'
-                                   ' or not installed on this Plone site.'):
-            self.api_request('GET', 'get_profile', {'profileid': 'something:default'})
+                                   ' or not installed on this Plone site.') as result:
+            result['response'] = self.api_request('GET', 'get_profile', {'profileid': 'something:default'})
 
-    @browsing
-    def test_cyclic_dependency_errors_are_handled(self, browser):
+    def test_cyclic_dependency_errors_are_handled(self):
         self.package.with_profile(Builder('genericsetup profile')
                                   .named('foo')
                                   .with_upgrade(self.default_upgrade())
@@ -158,11 +151,10 @@ class TestPloneSiteJsonApi(JsonApiTestCase):
             with self.expect_api_error(status=500,
                                        message='Cyclic dependencies',
                                        details='There are cyclic Generic Setup profile'
-                                       ' dependencies.'):
-                self.api_request('GET', 'get_profile', {'profileid': 'the.package:foo'})
+                                       ' dependencies.') as result:
+                result['response'] = self.api_request('GET', 'get_profile', {'profileid': 'the.package:foo'})
 
-    @browsing
-    def test_list_profiles(self, browser):
+    def test_list_profiles(self):
         self.package.with_profile(
             Builder('genericsetup profile')
             .with_upgrade(Builder('ftw upgrade step').to(datetime(2011, 1, 1))))
@@ -175,9 +167,9 @@ class TestPloneSiteJsonApi(JsonApiTestCase):
             self.install_profile('the.package:default')
             self.install_profile('the.package:foo')
 
-            self.api_request('GET', 'list_profiles')
+            response = self.api_request('GET', 'list_profiles')
             self.assertEqual('application/json; charset=utf-8',
-                             browser.headers.get('content-type'))
+                             response.headers.get('content-type'))
 
             self.assert_json_contains_profile(
                 {'id': 'the.package:default',
@@ -197,7 +189,7 @@ class TestPloneSiteJsonApi(JsonApiTestCase):
                          'orphan': False,
                          'outdated_fs_version': False},
                         ]},
-                browser.json)
+                response.json())
 
             self.assert_json_contains_profile(
                 {'id': 'the.package:foo',
@@ -217,17 +209,15 @@ class TestPloneSiteJsonApi(JsonApiTestCase):
                          'orphan': False,
                          'outdated_fs_version': False},
                         ]},
-                browser.json)
+                response.json())
 
-    @browsing
-    def test_list_profiles_requires_authentication(self, browser):
+    def test_list_profiles_requires_authentication(self):
         with self.expect_api_error(status=401,
                                    message='Unauthorized',
-                                   details='Admin authorization required.'):
-            self.api_request('GET', 'list_profiles', authenticate=False)
+                                   details='Admin authorization required.') as result:
+            result['response'] = self.api_request('GET', 'list_profiles', authenticate=False)
 
-    @browsing
-    def test_list_profiles_proposing_upgrades(self, browser):
+    def test_list_profiles_proposing_upgrades(self):
         self.package.with_profile(
             Builder('genericsetup profile')
             .with_upgrade(Builder('plone upgrade step').upgrading('1', to='2'))
@@ -237,9 +227,9 @@ class TestPloneSiteJsonApi(JsonApiTestCase):
             self.install_profile('the.package:default', version='2')
             self.clear_recorded_upgrades('the.package:default')
 
-            self.api_request('GET', 'list_profiles_proposing_upgrades')
+            response = self.api_request('GET', 'list_profiles_proposing_upgrades')
             self.assertEqual('application/json; charset=utf-8',
-                             browser.headers.get('content-type'))
+                             response.headers.get('content-type'))
 
             self.assert_json_contains_profile(
                 {'id': 'the.package:default',
@@ -259,16 +249,14 @@ class TestPloneSiteJsonApi(JsonApiTestCase):
                          'orphan': False,
                          'outdated_fs_version': False},
                         ]},
-                browser.json)
+                response.json())
 
-    @browsing
-    def test_list_proposed_upgrades_when_empty(self, browser):
-        self.api_request('GET', 'list_proposed_upgrades')
+    def test_list_proposed_upgrades_when_empty(self):
+        response = self.api_request('GET', 'list_proposed_upgrades')
         self.assertEqual('application/json; charset=utf-8',
-                         browser.headers.get('content-type'))
+                         response.headers.get('content-type'))
 
-    @browsing
-    def test_list_proposed_upgrades(self, browser):
+    def test_list_proposed_upgrades(self):
         self.package.with_profile(
             Builder('genericsetup profile')
             .with_upgrade(Builder('plone upgrade step').upgrading('1', to='2')))
@@ -282,9 +270,9 @@ class TestPloneSiteJsonApi(JsonApiTestCase):
             self.install_profile('the.package:default', version='1')
             self.install_profile('the.package:foo', version='1')
 
-            self.api_request('GET', 'list_proposed_upgrades')
+            response = self.api_request('GET', 'list_proposed_upgrades')
             self.assertEqual('application/json; charset=utf-8',
-                             browser.headers.get('content-type'))
+                             response.headers.get('content-type'))
 
             self.assert_json_contains(
                 {'id': '2@the.package:default',
@@ -296,7 +284,7 @@ class TestPloneSiteJsonApi(JsonApiTestCase):
                  'done': False,
                  'orphan': False,
                  'outdated_fs_version': False},
-                browser.json)
+                response.json())
 
             self.assert_json_contains(
                 {'id': '3@the.package:foo',
@@ -308,10 +296,9 @@ class TestPloneSiteJsonApi(JsonApiTestCase):
                  'done': False,
                  'orphan': False,
                  'outdated_fs_version': False},
-                browser.json)
+                response.json())
 
-    @browsing
-    def test_execute_upgrades_installs_upgrades_in_gatherer_order(self, browser):
+    def test_execute_upgrades_installs_upgrades_in_gatherer_order(self):
         self.package.with_profile(
             Builder('genericsetup profile')
             .with_upgrade(Builder('ftw upgrade step').to(datetime(2011, 1, 1))
@@ -325,7 +312,7 @@ class TestPloneSiteJsonApi(JsonApiTestCase):
             self.assertFalse(self.is_installed('the.package:default', datetime(2011, 1, 1)))
             self.assertFalse(self.is_installed('the.package:default', datetime(2012, 2, 2)))
 
-            self.api_request('POST', 'execute_upgrades', (
+            response = self.api_request('POST', 'execute_upgrades', (
                     ('upgrades:list', '20120202000000@the.package:default'),
                     ('upgrades:list', '20110101000000@the.package:default')))
             self.assertTrue(self.is_installed('the.package:default', datetime(2011, 1, 1)))
@@ -333,35 +320,31 @@ class TestPloneSiteJsonApi(JsonApiTestCase):
             self.assertEqual(
                 ['UPGRADE STEP the.package:default: The first upgrade step.',
                  'UPGRADE STEP the.package:default: The second upgrade step.'],
-                re.findall(r'UPGRADE STEP.*', browser.contents))
+                re.findall(r'UPGRADE STEP.*', response.text))
 
-            self.assertIn('Result: SUCCESS', browser.contents)
+            self.assertIn('Result: SUCCESS', response.text)
 
-    @browsing
-    def test_execute_upgrades_requires_upgrades_param(self, browser):
+    def test_execute_upgrades_requires_upgrades_param(self):
         with self.expect_api_error(status=400,
                                    message='Param missing',
                                    details='The param "upgrades:list" is required for'
-                                   ' this API action.'):
-            self.api_request('POST', 'execute_upgrades')
+                                   ' this API action.') as result:
+            result['response'] = self.api_request('POST', 'execute_upgrades')
 
-    @browsing
-    def test_execute_upgrades_validates_upgrade_ids(self, browser):
+    def test_execute_upgrades_validates_upgrade_ids(self):
         with self.expect_api_error(status=400,
                                    message='Upgrade not found',
-                                   details='The upgrade "foo@bar:default" is unkown.'):
-            self.api_request('POST', 'execute_upgrades', {'upgrades:list': 'foo@bar:default'})
+                                   details='The upgrade "foo@bar:default" is unkown.') as result:
+            result['response'] = self.api_request('POST', 'execute_upgrades', {'upgrades:list': 'foo@bar:default'})
 
-    @browsing
-    def test_execute_upgrades_requires_POST(self, browser):
+    def test_execute_upgrades_requires_POST(self):
         with self.expect_api_error(status=405,
                                    message='Method Not Allowed',
-                                   details='Action requires POST'):
-            self.api_request('GET', 'execute_upgrades', {'upgrades:list': 'foo@bar:default'})
-        self.assertEqual('POST', browser.headers.get('allow'))
+                                   details='Action requires POST') as result:
+            result['response'] = self.api_request('GET', 'execute_upgrades', {'upgrades:list': 'foo@bar:default'})
+        self.assertEqual('POST', result['response'].headers.get('allow'))
 
-    @browsing
-    def test_execute_upgrades_not_allowed_when_plone_outdated(self, browser):
+    def test_execute_upgrades_not_allowed_when_plone_outdated(self):
         self.package.with_profile(
             Builder('genericsetup profile')
             .with_upgrade(Builder('ftw upgrade step').to(datetime(2011, 1, 1))
@@ -380,15 +363,14 @@ class TestPloneSiteJsonApi(JsonApiTestCase):
                     message='Plone site outdated',
                     details='The Plone site is outdated and needs to'
                     ' be upgraded first using the regular Plone'
-                    ' upgrading tools.'):
-                self.api_request(
+                    ' upgrading tools.') as result:
+                result['response'] = self.api_request(
                     'POST',
                     'execute_upgrades',
                     {'upgrades:list': '20110101000000@the.package:default'})
             self.assertFalse(self.is_installed('the.package:default', datetime(2011, 1, 1)))
 
-    @browsing
-    def test_execute_upgrades_explicitly_allowed_even_on_outdated_plone(self, browser):
+    def test_execute_upgrades_explicitly_allowed_even_on_outdated_plone(self):
         self.package.with_profile(
             Builder('genericsetup profile')
             .with_upgrade(Builder('ftw upgrade step').to(datetime(2011, 1, 1))
@@ -402,7 +384,7 @@ class TestPloneSiteJsonApi(JsonApiTestCase):
             transaction.commit()
             self.assertFalse(self.is_installed('the.package:default', datetime(2011, 1, 1)))
 
-            self.api_request(
+            response = self.api_request(
                 'POST',
                 'execute_upgrades',
                 {'upgrades:list': '20110101000000@the.package:default',
@@ -410,11 +392,10 @@ class TestPloneSiteJsonApi(JsonApiTestCase):
             self.assertTrue(self.is_installed('the.package:default', datetime(2011, 1, 1)))
             self.assertEqual(
                 ['UPGRADE STEP the.package:default: The first upgrade step.'],
-                re.findall(r'UPGRADE STEP.*', browser.contents))
-            self.assertIn('Result: SUCCESS', browser.contents)
+                re.findall(r'UPGRADE STEP.*', response.text))
+            self.assertIn('Result: SUCCESS', response.text)
 
-    @browsing
-    def test_execute_proposed_upgrades(self, browser):
+    def test_execute_proposed_upgrades(self):
         self.package.with_profile(
             Builder('genericsetup profile')
             .with_upgrade(Builder('ftw upgrade step').to(datetime(2011, 1, 1))
@@ -425,15 +406,14 @@ class TestPloneSiteJsonApi(JsonApiTestCase):
             self.clear_recorded_upgrades('the.package:default')
 
             self.assertFalse(self.is_installed('the.package:default', datetime(2011, 1, 1)))
-            self.api_request('POST', 'execute_proposed_upgrades')
+            response = self.api_request('POST', 'execute_proposed_upgrades')
             self.assertTrue(self.is_installed('the.package:default', datetime(2011, 1, 1)))
 
             self.assertIn('UPGRADE STEP the.package:default: The upgrade.',
-                          browser.contents)
-            self.assertIn('Result: SUCCESS', browser.contents)
+                          response.text)
+            self.assertIn('Result: SUCCESS', response.text)
 
-    @browsing
-    def test_execute_proposed_upgrades_for_profile(self, browser):
+    def test_execute_proposed_upgrades_for_profile(self):
         self.package.with_profile(
             Builder('genericsetup profile')
             .with_upgrade(Builder('ftw upgrade step').to(datetime(2011, 1, 1))
@@ -452,17 +432,16 @@ class TestPloneSiteJsonApi(JsonApiTestCase):
 
             self.assertFalse(self.is_installed('the.package:default', datetime(2011, 1, 1)))
             self.assertFalse(self.is_installed('the.package:foo', datetime(2011, 1, 1)))
-            self.api_request('POST', 'execute_proposed_upgrades',
-                             {'profiles:list': ['the.package:default']})
+            response = self.api_request('POST', 'execute_proposed_upgrades',
+                                        {'profiles:list': ['the.package:default']})
             self.assertTrue(self.is_installed('the.package:default', datetime(2011, 1, 1)))
             self.assertFalse(self.is_installed('the.package:foo', datetime(2011, 1, 1)))
 
             self.assertIn('UPGRADE STEP the.package:default: The upgrade.',
-                          browser.contents)
-            self.assertIn('Result: SUCCESS', browser.contents)
+                          response.text)
+            self.assertIn('Result: SUCCESS', response.text)
 
-    @browsing
-    def test_executing_upgrades_with_failure_results_in_error_result(self, browser):
+    def test_executing_upgrades_with_failure_results_in_error_result(self):
         def failing_upgrade(setup_context):
             raise KeyError('foo')
 
@@ -474,29 +453,27 @@ class TestPloneSiteJsonApi(JsonApiTestCase):
 
         with self.package_created():
             self.install_profile('the.package:default', version='1')
-            self.api_request('POST', 'execute_proposed_upgrades')
-            self.assertIn('Result: FAILURE', browser.contents)
+            response = self.api_request('POST', 'execute_proposed_upgrades')
+            self.assertIn('Result: FAILURE', response.text)
 
-    @browsing
-    def test_execute_profiles_standard(self, browser):
+    def test_execute_profiles_standard(self):
         self.package.with_profile(
             Builder('genericsetup profile')
             .with_upgrade(Builder('ftw upgrade step').to(datetime(2011, 1, 1))
                           .named('The upgrade')))
 
         with self.package_created():
-            self.api_request('POST', 'execute_profiles',
-                             {'profiles:list': ['the.package:default']})
+            response = self.api_request('POST', 'execute_profiles',
+                                        {'profiles:list': ['the.package:default']})
             self.assertEqual(self.portal_setup.getLastVersionForProfile(
                 'the.package:default'), ('20110101000000', ))
             self.assertTrue(self.is_installed(
                 'the.package:default', datetime(2011, 1, 1)))
             self.assertIn('Done installing profile the.package:default.',
-                          browser.contents)
-            self.assertIn('Result: SUCCESS', browser.contents)
+                          response.text)
+            self.assertIn('Result: SUCCESS', response.text)
 
-    @browsing
-    def test_execute_profiles_already_installed(self, browser):
+    def test_execute_profiles_already_installed(self):
         self.package.with_profile(
             Builder('genericsetup profile')
             .with_upgrade(Builder('ftw upgrade step').to(datetime(2011, 1, 1))
@@ -506,15 +483,14 @@ class TestPloneSiteJsonApi(JsonApiTestCase):
             self.portal_setup.runAllImportStepsFromProfile(
                 'profile-the.package:default')
             transaction.commit()
-            self.api_request('POST', 'execute_profiles',
-                             {'profiles:list': ['the.package:default']})
+            response = self.api_request('POST', 'execute_profiles',
+                                        {'profiles:list': ['the.package:default']})
             self.assertIn(
                 'Ignoring already installed profile the.package:default.',
-                browser.contents)
-            self.assertIn('Result: SUCCESS', browser.contents)
+                response.text)
+            self.assertIn('Result: SUCCESS', response.text)
 
-    @browsing
-    def test_execute_profiles_force_when_already_installed(self, browser):
+    def test_execute_profiles_force_when_already_installed(self):
         self.package.with_profile(
             Builder('genericsetup profile')
             .with_upgrade(Builder('ftw upgrade step').to(datetime(2011, 1, 1))
@@ -524,31 +500,29 @@ class TestPloneSiteJsonApi(JsonApiTestCase):
             self.portal_setup.runAllImportStepsFromProfile(
                 'profile-the.package:default')
             transaction.commit()
-            self.api_request('POST', 'execute_profiles',
-                             {'profiles:list': ['the.package:default'],
-                              'force_reinstall': True})
+            response = self.api_request('POST', 'execute_profiles',
+                                        {'profiles:list': ['the.package:default'],
+                                         'force_reinstall': True})
             self.assertNotIn(
                 'Ignoring already installed profile the.package:default.',
-                browser.contents)
+                response.text)
             self.assertIn('Done installing profile the.package:default.',
-                          browser.contents)
-            self.assertIn('Result: SUCCESS', browser.contents)
+                          response.text)
+            self.assertIn('Result: SUCCESS', response.text)
 
-    @browsing
-    def test_execute_profiles_not_found(self, browser):
+    def test_execute_profiles_not_found(self):
         with self.expect_api_error(
                 status=400,
                 message='Profile not found',
-                details='The profile "the.package:default" is unknown.'):
-            self.api_request('POST', 'execute_profiles',
-                             {'profiles:list': ['the.package:default']})
+                details='The profile "the.package:default" is unknown.') as result:
+            result['response'] = self.api_request(
+                'POST', 'execute_profiles', {'profiles:list': ['the.package:default']})
 
-    @browsing
-    def test_plone_upgrade_needed(self, browser):
-        self.api_request('GET', 'plone_upgrade_needed')
-        self.assertEqual(False, browser.json)
+    def test_plone_upgrade_needed(self):
+        response = self.api_request('GET', 'plone_upgrade_needed')
+        self.assertEqual(False, response.json())
 
         self.portal_setup.setLastVersionForProfile(_DEFAULT_PROFILE, '4')
         transaction.commit()
-        self.api_request('GET', 'plone_upgrade_needed')
-        self.assertEqual(True, browser.json)
+        response = self.api_request('GET', 'plone_upgrade_needed')
+        self.assertEqual(True, response.json())

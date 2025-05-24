@@ -35,17 +35,6 @@ def chdir(path):
 
 
 @contextmanager
-def verbose_logging():
-    original_level = logging.root.getEffectiveLevel()
-    logging.root.setLevel(logging.INFO)
-    try:
-        yield
-
-    finally:
-        logging.root.setLevel(original_level)
-
-
-@contextmanager
 def no_logging_threads():
     """In testing, when a request is executed (e.g. from requests) to the ZSERVER
     layer and errors are logged, the logging module might write to the logging

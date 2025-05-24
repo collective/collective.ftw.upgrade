@@ -40,7 +40,6 @@ test = [
     "plone.app.testing",
     "plone.classicui","plone.restapi[test]",
     "ftw.testing >= 2.0.0.dev0",
-    "ftw.testbrowser >= 2.1.0.dev0",
     "ftw.builder >= 2.0.0.dev0",
     "plone.testing",
     "plone.app.testing",

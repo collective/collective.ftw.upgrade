@@ -1,10 +1,6 @@
 from AccessControl import getSecurityManager
 from AccessControl.SecurityManagement import setSecurityManager
-from contextlib import contextmanager
-from DateTime import DateTime
-from ftw.builder import Builder
-from ftw.builder import create
-# from ftw.testbrowser import browser
+from bs4 import BeautifulSoup
 from collective.ftw.upgrade.directory import scaffold
 from collective.ftw.upgrade.indexing import processQueue
 from collective.ftw.upgrade.interfaces import IExecutioner
@@ -14,14 +10,19 @@ from collective.ftw.upgrade.testing import COMMAND_AND_UPGRADE_FUNCTIONAL_TESTIN
 from collective.ftw.upgrade.testing import COMMAND_LAYER
 from collective.ftw.upgrade.testing import UPGRADE_FUNCTIONAL_TESTING
 from collective.ftw.upgrade.tests.helpers import truncate_memory_and_duration
-from collective.ftw.upgrade.tests.helpers import verbose_logging
+from contextlib import contextmanager
+from DateTime import DateTime
+from ftw.builder import Builder
+from ftw.builder import create
 from operator import itemgetter
 from path import Path
 from plone.app.testing import login
 from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
+from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
 from plone.app.testing import TEST_USER_PASSWORD
+from plone.restapi.testing import RelativeSession
 from Products.CMFCore.utils import getToolByName
 from six import StringIO
 from six.moves import map
@@ -33,6 +34,7 @@ from zope.component import queryAdapter
 import json
 import logging
 import lxml.html
+import operator
 import os
 import re
 import six
@@ -304,6 +306,15 @@ class WorkflowTestCase(TestCase, AssertMixin):
 
 class JsonApiTestCase(UpgradeTestCase):
 
+    def setUp(self):
+        super().setUp()
+        self.portal_url = self.portal.absolute_url()
+        self.api_session = RelativeSession(self.portal_url, test=self)
+
+    def tearDown(self):
+        super().tearDown()
+        self.api_session.close()
+
     def assert_json_equal(self, expected, got, msg=None):
         expected = json.dumps(expected, sort_keys=True, indent=4)
         got = json.dumps(got, sort_keys=True, indent=4)
@@ -327,34 +338,59 @@ class JsonApiTestCase(UpgradeTestCase):
         recorder = getMultiAdapter((self.portal, profileid), IUpgradeStepRecorder)
         return recorder.is_installed(dest_time.strftime(scaffold.DATETIME_FORMAT))
 
-    def api_request(self, method, action, data=(), authenticate=True,
-                    context=None):
-        if context is None:
-            context = self.layer['portal']
+    def html_request(self, method, path, data=None, authenticate=True):
+        response = None
         if authenticate:
-            browser.login(SITE_OWNER_NAME)
+            self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
         else:
-            browser.logout()
+            self.api_session.auth = None
 
-        with verbose_logging():
-            if method.lower() == 'get':
-                browser.visit(context, view='upgrades-api/{0}?{1}'.format(
-                    action, six.moves.urllib.parse.urlencode(data)))
+        if method.lower() == 'get':
+            response = self.api_session.get(path)
+        elif method.lower() == 'post':
+            if not data:
+                data = {'enforce': 'post'}
+            response = self.api_session.post(path, data=data)
+        else:
+            raise Exception('Unsupported request method {0}'.format(method))
+        return response
 
-            elif method.lower() == 'post':
-                if not data:
-                    data = {'enforce': 'post'}
-                browser.visit(context, view='upgrades-api/{0}'.format(action),
-                              data=data)
+    def api_request(self, method, action, data=(), authenticate=True, context=None):
+        self.api_session.headers.update({"Accept": "application/json"})
 
-            else:
-                raise Exception('Unsupported request method {0}'.format(method))
+        url = ''
+        response = None
+        if context is not None:
+            url = context.absolute_url()
+
+        if authenticate:
+            self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
+        else:
+            self.api_session.auth = None
+
+        if method.lower() == 'get':
+            response = self.api_session.get('{0}/upgrades-api/{1}?{2}'.format(
+                url, action, six.moves.urllib.parse.urlencode(data)))
+
+        elif method.lower() == 'post':
+            if not data:
+                data = {'enforce': 'post'}
+            response = self.api_session.post(
+                '{0}/upgrades-api/{1}'.format(url, action),
+                data=data)
+        else:
+            raise Exception('Unsupported request method {0}'.format(method))
+        return response
 
     @contextmanager
     def expect_api_error(self, status=None, message=None, details=None):
-        api_error_info = {}
-        with browser.expect_http_error(code=status):
-            yield api_error_info
+        result = {}
+        yield result
+
+        if result['response'].status_code != status:
+            raise AssertionError(
+                'Expected HTTP error with status code {}, got {}.'.format(
+                        status, result['response'].status_code))
 
         expected = {'result': 'ERROR'}
         if message is not None:
@@ -362,7 +398,7 @@ class JsonApiTestCase(UpgradeTestCase):
         if details is not None:
             expected['details'] = details
 
-        got = dict(zip(['result', 'message', 'details'], browser.json))
+        got = dict(zip(['result', 'message', 'details'], result['response'].json()))
 
         self.assertDictContainsSubset(
             expected,
@@ -372,6 +408,11 @@ class JsonApiTestCase(UpgradeTestCase):
             json.dumps(expected, sort_keys=True, indent=4) +
             '\nto be included in:\n' +
             json.dumps(got, sort_keys=True, indent=4))
+
+    def find_content(self, data, query, method='select_one'):
+        soup = BeautifulSoup(data, 'html.parser')
+        find = operator.methodcaller(method, query)
+        return find(soup)
 
 
 class CommandAndInstanceTestCase(JsonApiTestCase, CommandTestCase):

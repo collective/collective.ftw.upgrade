@@ -1,7 +1,6 @@
 from ftw.builder.testing import BUILDER_LAYER
 from ftw.builder.testing import functional_session_factory
 from ftw.builder.testing import set_builder_session_factory
-# from ftw.testbrowser import browser
 from ftw.testing.layer import COMPONENT_REGISTRY_ISOLATION
 from ftw.testing.layer import ConsoleScriptLayer
 from ftw.testing.layer import TEMP_DIRECTORY
@@ -10,14 +9,11 @@ from plone.app.testing import applyProfile
 from plone.app.testing import FunctionalTesting
 from plone.app.testing import PLONE_ZSERVER
 from plone.app.testing import PloneSandboxLayer
-from plone.app.testing import SITE_OWNER_NAME
-from plone.registry.interfaces import IRegistry
 from plone.testing import z2
 from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone.utils import getFSVersionTuple
 from Products.SiteAccess.VirtualHostMonster import manage_addVirtualHostMonster
 from six.moves import map
-from zope.component import getUtility
 from zope.configuration import xmlconfig
 
 import collective.ftw.upgrade.tests.builders
@@ -120,7 +116,8 @@ class UpgradeLayer(PloneSandboxLayer):
 
 UPGRADE_LAYER = UpgradeLayer()
 UPGRADE_FUNCTIONAL_TESTING = FunctionalTesting(
-    bases=(UPGRADE_LAYER,
+    bases=(PLONE_ZSERVER,
+           UPGRADE_LAYER,
            set_builder_session_factory(functional_session_factory)),
     name="ftw.upgrade:functional")
 

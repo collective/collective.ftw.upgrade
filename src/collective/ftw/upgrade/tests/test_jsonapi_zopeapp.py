@@ -1,15 +1,14 @@
-from ftw.testbrowser import browsing
 from collective.ftw.upgrade.tests.base import JsonApiTestCase
 
 
 class TestZopeAppJsonApi(JsonApiTestCase):
 
     def setUp(self):
+        super().setUp()
         self.app = self.layer['app']
 
-    @browsing
-    def test_api_discovery(self, browser):
-        self.api_request('GET', '', context=self.app)
+    def test_api_discovery(self):
+        response = self.api_request('GET', '', context=self.app)
 
         self.assert_json_equal(
             {'api_version': 'v1',
@@ -25,48 +24,43 @@ class TestZopeAppJsonApi(JsonApiTestCase):
                    'description': 'Returns a list of Plone sites.',
                    'request_method': 'GET'}]},
 
-            browser.json)
+            response.json())
 
-        self.assertTrue(browser.body.endswith(b'\n'),
+        self.assertTrue(response.content.endswith(b'\n'),
                         'There should always be a trailing newline.')
 
-    @browsing
-    def test_list_plone_sites(self, browser):
-        self.api_request('GET', 'list_plone_sites', context=self.app)
+    def test_list_plone_sites(self):
+        response = self.api_request('GET', 'list_plone_sites', context=self.app)
 
         self.assert_json_equal(
             [{'id': 'plone',
               'path': '/plone',
               'title': 'Plone site'}],
-            browser.json)
+            response.json())
 
-    @browsing
-    def test_current_user(self, browser):
-        self.api_request('GET', 'current_user', context=self.app)
-        self.assertEqual('admin', browser.json)
+    def test_current_user(self):
+        response = self.api_request('GET', 'current_user', context=self.app)
+        self.assertEqual('admin', response.json())
 
-    @browsing
-    def test_requiring_available_api_version_by_url(self, browser):
-        self.api_request('GET', 'v1/list_plone_sites', context=self.app)
+    def test_requiring_available_api_version_by_url(self):
+        response = self.api_request('GET', 'v1/list_plone_sites', context=self.app)
         self.assert_json_equal(
             [{'id': 'plone',
               'path': '/plone',
               'title': 'Plone site'}],
-            browser.json)
+            response.json())
 
-    @browsing
-    def test_requiring_wrong_api_version_by_url(self, browser):
+    def test_requiring_wrong_api_version_by_url(self):
         with self.expect_api_error(status=404,
                                    message='Wrong API version',
-                                   details='The API version "v100" is not available.'):
-            self.api_request('GET', 'v100/list_plone_sites', context=self.app)
+                                   details='The API version "v100" is not available.') as result:
+            result['response'] = self.api_request('GET', 'v100/list_plone_sites', context=self.app)
 
-        self.assertTrue(browser.body.endswith(b'\n'),
+        self.assertTrue(result['response'].content.endswith(b'\n'),
                         'There should always be a trailing newline.')
 
-    @browsing
-    def test_requesting_unkown_action(self, browser):
+    def test_requesting_unkown_action(self):
         with self.expect_api_error(status=404,
                                    message='Unkown API action',
-                                   details='There is no API action "something".'):
-            self.api_request('GET', 'something', context=self.app)
+                                   details='There is no API action "something".') as result:
+            result['response'] = self.api_request('GET', 'something', context=self.app)
