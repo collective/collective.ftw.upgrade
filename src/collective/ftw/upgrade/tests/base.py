@@ -42,7 +42,13 @@ import six.moves.urllib.request
 import transaction
 
 
-class UpgradeTestCase(TestCase):
+class AssertMixin:
+    def assertDictContainsSubset(self, actual, expected, msg=None):
+        for key, value in actual.items():
+            self.assertEqual(expected.get(key), value, msg)
+
+
+class UpgradeTestCase(TestCase, AssertMixin):
     layer = UPGRADE_FUNCTIONAL_TESTING
 
     def setUp(self):
@@ -233,7 +239,7 @@ class CommandTestCase(TestCase):
         return exitcode, output
 
 
-class WorkflowTestCase(TestCase):
+class WorkflowTestCase(TestCase, AssertMixin):
 
     layer = UPGRADE_FUNCTIONAL_TESTING
 
