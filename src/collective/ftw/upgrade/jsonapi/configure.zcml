@@ -15,8 +15,7 @@
                             execute_profiles
                             execute_proposed_upgrades
                             plone_upgrade
-                            plone_upgrade_needed
-                            combine_bundles"
+                            plone_upgrade_needed"
         />
 
     <browser:page

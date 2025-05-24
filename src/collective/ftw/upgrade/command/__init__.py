@@ -1,4 +1,3 @@
-from collective.ftw.upgrade.command import combine_bundles
 from collective.ftw.upgrade.command import create
 from collective.ftw.upgrade.command import help
 from collective.ftw.upgrade.command import install
@@ -130,7 +129,6 @@ class UpgradeCommand(object):
         argcomplete.autocomplete(self.parser)
 
         commands = self.parser.add_subparsers(help='Command')
-        combine_bundles.setup_argparser(commands)
         create.setup_argparser(commands)
         install.setup_argparser(commands)
         list_cmd.setup_argparser(commands)

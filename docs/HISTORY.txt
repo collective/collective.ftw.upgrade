@@ -5,6 +5,7 @@ Changelog
 3.3.2 (unreleased)
 ------------------
 
+- Remove combine_bundle [mathias.leimgruber]
 - Remove recook feature [mathias.leimgruber]
 
 
