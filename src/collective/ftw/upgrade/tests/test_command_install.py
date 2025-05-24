@@ -7,7 +7,7 @@ from collective.ftw.upgrade.indexing import HAS_INDEXING
 from collective.ftw.upgrade.tests.base import CommandAndInstanceTestCase
 from collective.ftw.upgrade.tests.helpers import no_logging_threads
 from collective.ftw.upgrade.tests.helpers import truncate_memory_and_duration
-from imp import reload
+from importlib import reload
 from persistent.list import PersistentList
 from plone.app.testing import setRoles
 from plone.app.testing import TEST_USER_ID
