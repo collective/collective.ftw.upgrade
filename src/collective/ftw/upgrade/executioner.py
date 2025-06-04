@@ -30,7 +30,7 @@ except ImportError:
     get_installer = None
 
 
-logger = logging.getLogger('ftw.upgrade')
+logger = logging.getLogger('collective.ftw.upgrade')
 
 
 @implementer(IExecutioner)

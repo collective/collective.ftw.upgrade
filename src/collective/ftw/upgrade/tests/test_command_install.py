@@ -214,20 +214,20 @@ class TestInstallCommand(CommandAndInstanceTestCase):
             self.assertTrue(self.is_installed('the.package:default', datetime(2012, 12, 12)))
 
             self.assertEqual(
-                [u'ftw.upgrade: ______________________________________________________________________',
-                 u'ftw.upgrade: UPGRADE STEP the.package:default: TriggerReindex',
-                 u'ftw.upgrade: Ran upgrade step TriggerReindex for profile the.package:default',
-                 u'ftw.upgrade: 1 of 2 (50%): Processing indexing queue',
-                 u'ftw.upgrade: Transaction has been committed.',
-                 u'ftw.upgrade: Upgrade step duration: XXX',
-                 u'ftw.upgrade: Current memory usage in MB (RSS): XXX',
-                 u'ftw.upgrade: ______________________________________________________________________',
-                 u'ftw.upgrade: UPGRADE STEP the.package:default: Upgrade.',
-                 u'ftw.upgrade: Ran upgrade step Upgrade. for profile the.package:default',
-                 u'ftw.upgrade: Transaction has been committed.',
-                 u'ftw.upgrade: Upgrade step duration: XXX',
-                 u'ftw.upgrade: Current memory usage in MB (RSS): XXX',
-                 u'Result: SUCCESS'],
+                ['collective.ftw.upgrade: ______________________________________________________________________',
+                 'collective.ftw.upgrade: UPGRADE STEP the.package:default: TriggerReindex',
+                 'collective.ftw.upgrade: Ran upgrade step TriggerReindex for profile the.package:default',
+                 'collective.ftw.upgrade: 1 of 2 (50%): Processing indexing queue',
+                 'collective.ftw.upgrade: Transaction has been committed.',
+                 'collective.ftw.upgrade: Upgrade step duration: XXX',
+                 'collective.ftw.upgrade: Current memory usage in MB (RSS): XXX',
+                 'collective.ftw.upgrade: ______________________________________________________________________',
+                 'collective.ftw.upgrade: UPGRADE STEP the.package:default: Upgrade.',
+                 'collective.ftw.upgrade: Ran upgrade step Upgrade. for profile the.package:default',
+                 'collective.ftw.upgrade: Transaction has been committed.',
+                 'collective.ftw.upgrade: Upgrade step duration: XXX',
+                 'collective.ftw.upgrade: Current memory usage in MB (RSS): XXX',
+                 'Result: SUCCESS'],
                 truncate_memory_and_duration(output.splitlines()))
 
     def test_failing_install_proposed_upgrades_of_profile_with_intermediate_commit(self):
@@ -257,18 +257,18 @@ class TestInstallCommand(CommandAndInstanceTestCase):
             self.assertFalse(self.is_installed('the.package:default', datetime(2012, 12, 12)))
 
             self.assertEqual(
-                [u'ftw.upgrade: ______________________________________________________________________',
-                 u'ftw.upgrade: UPGRADE STEP the.package:default: Upgrade.',
-                 u'ftw.upgrade: Ran upgrade step Upgrade. for profile the.package:default',
-                 u'ftw.upgrade: Transaction has been committed.',
-                 u'ftw.upgrade: Upgrade step duration: XXX',
-                 u'ftw.upgrade: Current memory usage in MB (RSS): XXX',
-                 u'ftw.upgrade: ______________________________________________________________________',
-                 u'ftw.upgrade: UPGRADE STEP the.package:default: Upgrade',
-                 u'ftw.upgrade: FAILED'],
+                ['collective.ftw.upgrade: ______________________________________________________________________',
+                 'collective.ftw.upgrade: UPGRADE STEP the.package:default: Upgrade.',
+                 'collective.ftw.upgrade: Ran upgrade step Upgrade. for profile the.package:default',
+                 'collective.ftw.upgrade: Transaction has been committed.',
+                 'collective.ftw.upgrade: Upgrade step duration: XXX',
+                 'collective.ftw.upgrade: Current memory usage in MB (RSS): XXX',
+                 'collective.ftw.upgrade: ______________________________________________________________________',
+                 'collective.ftw.upgrade: UPGRADE STEP the.package:default: Upgrade',
+                 'collective.ftw.upgrade: FAILED'],
                 truncate_memory_and_duration(output.splitlines()[:9]))
             self.assertEqual(
-                [u'Result: FAILURE'],
+                ['Result: FAILURE'],
                 output.splitlines()[-1:])
 
     def test_install_proposed_upgrades_of_profile_fails_for_invalid_profiles(self):
@@ -311,31 +311,31 @@ class TestInstallCommand(CommandAndInstanceTestCase):
             exitcode, output = self.upgrade_script(
                 'install -s plone --profiles the.package:default')
             self.assertEqual(
-                [u'ftw.upgrade: Installing profile the.package:default.',
-                 u'ftw.upgrade: Done installing profile the.package:default.',
-                 u'Result: SUCCESS'],
+                ['collective.ftw.upgrade: Installing profile the.package:default.',
+                 'collective.ftw.upgrade: Done installing profile the.package:default.',
+                 'Result: SUCCESS'],
                 output.splitlines())
 
     def test_install_profiles_skipped_when_already_installed(self):
         self.setup_logging()
         self.purge_log()
         exitcode, output = self.upgrade_script(
-            'install -s plone --profiles ftw.upgrade:default')
+            'install -s plone --profiles collective.ftw.upgrade:default')
         self.assertEqual(
-            [u'ftw.upgrade: Ignoring already installed profile'
-             u' ftw.upgrade:default.',
-             u'Result: SUCCESS'],
+            ['collective.ftw.upgrade: Ignoring already installed profile'
+             ' collective.ftw.upgrade:default.',
+             'Result: SUCCESS'],
             output.splitlines())
 
     def test_force_install_already_installed_profiles(self):
         self.setup_logging()
         self.purge_log()
         exitcode, output = self.upgrade_script(
-            'install -s plone --force --profiles ftw.upgrade:default')
+            'install -s plone --force --profiles collective.ftw.upgrade:default')
         self.assertEqual(
-            [u'ftw.upgrade: Installing profile ftw.upgrade:default.',
-             u'ftw.upgrade: Done installing profile ftw.upgrade:default.',
-             u'Result: SUCCESS'],
+            ['collective.ftw.upgrade: Installing profile collective.ftw.upgrade:default.',
+             'collective.ftw.upgrade: Done installing profile collective.ftw.upgrade:default.',
+             'Result: SUCCESS'],
             output.splitlines())
 
     def test_intermediate_commit_not_supported_with_install_profiles(self):

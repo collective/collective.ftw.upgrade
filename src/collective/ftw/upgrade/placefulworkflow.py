@@ -4,7 +4,7 @@ from Products.CMFCore.utils import getToolByName
 import logging
 
 
-LOG = logging.getLogger('ftw.upgrade.PlacefulWorkflowPolicyActivator')
+LOG = logging.getLogger('collective.ftw.upgrade.PlacefulWorkflowPolicyActivator')
 
 
 class PlacefulWorkflowPolicyActivator(object):

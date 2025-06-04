@@ -219,7 +219,7 @@ def validate_tempfile_authentication_header_value(header_value):
     directory = get_tempfile_authentication_directory(os.getcwd())
     filepath = directory.joinpath(filename)
 
-    if not filepath.isfile():
+    if not filepath.is_file():
         raise ValueError('tempfile auth: tempfile does not exist.')
 
     # Verify that "others" do not have any permissions on this file.

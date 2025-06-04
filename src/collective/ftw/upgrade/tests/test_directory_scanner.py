@@ -131,7 +131,7 @@ class TestDirectoryScanner(UpgradeTestCase):
         )
 
     def test_does_not_fail_when_no_upgrades_present(self):
-        self.package.with_zcml_include('ftw.upgrade', file='meta.zcml')
+        self.package.with_zcml_include('collective.ftw.upgrade', file='meta.zcml')
         self.package.with_zcml_node('upgrade-step:directory',
                                     profile='the.package:default',
                                     directory='.')

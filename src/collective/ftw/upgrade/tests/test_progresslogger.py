@@ -11,7 +11,7 @@ class TestProgressLogger(TestCase):
 
     def setUp(self):
         self.log = StringIO()
-        self.logger = logging.getLogger('ftw.upgrade')
+        self.logger = logging.getLogger('collective.ftw.upgrade')
         self.logger.setLevel(logging.DEBUG)
 
         handler = logging.StreamHandler(self.log)

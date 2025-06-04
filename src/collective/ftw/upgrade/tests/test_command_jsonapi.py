@@ -8,7 +8,7 @@ from collective.ftw.upgrade.command.jsonapi import NoRunningInstanceFound
 from collective.ftw.upgrade.command.jsonapi import TempfileAuth
 from collective.ftw.upgrade.tests.base import CommandAndInstanceTestCase
 from plone.app.testing import SITE_OWNER_NAME
-from plone.app.testing import TEST_USER_PASSWORD
+from plone.app.testing import SITE_OWNER_PASSWORD
 from Products.CMFPlone.utils import safe_unicode
 from requests.auth import HTTPBasicAuth
 from requests.exceptions import HTTPError
@@ -25,7 +25,7 @@ class ZopeConfPathStub(object):
     def __init__(self, *lines):
         self._text = '\n'.join(map(safe_unicode, lines))
 
-    def text(self):
+    def read_text(self):
         return self._text
 
 
@@ -36,7 +36,7 @@ class TestAPIRequestor(CommandAndInstanceTestCase):
         self.write_zconf_with_test_instance()
 
     def test_GET(self):
-        requestor = APIRequestor(HTTPBasicAuth(SITE_OWNER_NAME, TEST_USER_PASSWORD))
+        requestor = APIRequestor(HTTPBasicAuth(SITE_OWNER_NAME, SITE_OWNER_PASSWORD))
         jsondata = requestor.GET('list_plone_sites').json()
         self.assertEqual([{u'id': u'plone',
                            u'path': u'/plone',
@@ -44,7 +44,7 @@ class TestAPIRequestor(CommandAndInstanceTestCase):
                          jsondata)
 
     def test_GET_raises_error(self):
-        requestor = APIRequestor(HTTPBasicAuth(SITE_OWNER_NAME, TEST_USER_PASSWORD))
+        requestor = APIRequestor(HTTPBasicAuth(SITE_OWNER_NAME, SITE_OWNER_PASSWORD))
         with self.assertRaises(HTTPError) as cm:
             requestor.GET('wrong_action')
 
@@ -54,15 +54,15 @@ class TestAPIRequestor(CommandAndInstanceTestCase):
             cm.exception.response.json())
 
     def test_GET_with_params(self):
-        requestor = APIRequestor(HTTPBasicAuth(SITE_OWNER_NAME, TEST_USER_PASSWORD),
+        requestor = APIRequestor(HTTPBasicAuth(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
                                  site='plone')
 
         requestor.GET('get_profile', site='plone',
-                      params={'profileid': 'plone.app.discussion:default'})
+                      params={'profileid': 'plone.app.event:default'})
 
     def test_GET_with_specific_instance(self):
         jsonapi.TIMEOUT = 5
-        requestor = APIRequestor(HTTPBasicAuth(SITE_OWNER_NAME, TEST_USER_PASSWORD),
+        requestor = APIRequestor(HTTPBasicAuth(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
                                  instance_name='instance')
 
         self.assertEqual(200, requestor.GET('list_plone_sites').status_code)
@@ -73,12 +73,12 @@ class TestAPIRequestor(CommandAndInstanceTestCase):
     def test_error_when_no_running_instance_found(self):
         jsonapi.TIMEOUT = 5
         self.layer['root_path'].joinpath('parts/instance').rmtree()
-        requestor = APIRequestor(HTTPBasicAuth(SITE_OWNER_NAME, TEST_USER_PASSWORD))
+        requestor = APIRequestor(HTTPBasicAuth(SITE_OWNER_NAME, SITE_OWNER_PASSWORD))
         with self.assertRaises(NoRunningInstanceFound):
             requestor.GET('list_plone_sites')
 
     def test_basic_authentication(self):
-        requestor = APIRequestor(HTTPBasicAuth(SITE_OWNER_NAME, TEST_USER_PASSWORD))
+        requestor = APIRequestor(HTTPBasicAuth(SITE_OWNER_NAME, SITE_OWNER_PASSWORD))
         jsondata = requestor.GET('current_user').json()
         self.assertEqual('admin', jsondata)
 

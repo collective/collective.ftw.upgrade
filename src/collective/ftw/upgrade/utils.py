@@ -156,7 +156,7 @@ class SavepointIterator(object):
         self.logger = logger
 
         if self.logger is None:
-            self.logger = logging.getLogger('ftw.upgrade')
+            self.logger = logging.getLogger('collective.ftw.upgrade')
 
         if not threshold:
             raise ValueError("Threshold must be a non-zero value")
@@ -356,7 +356,7 @@ def get_tempfile_authentication_directory(directory=None):
     relative directory var/ftw.upgrade-authentication/.
     If the directory does not exist it is created.
     """
-    directory = Path(directory) or Path.getcwd()
+    directory = Path(directory) or Path.cwd()
     if not directory.joinpath('bin', 'buildout').is_file():
         return get_tempfile_authentication_directory(directory.parent)
 

@@ -10,16 +10,17 @@ from collective.ftw.upgrade.command import user
 from collective.ftw.upgrade.command.formatter import FlexiFormatter
 from collective.ftw.upgrade.command.terminal import TERMINAL
 from collective.ftw.upgrade.command.utils import capture
-from pkg_resources import get_distribution
+
 
 import argcomplete
 import argparse
+import importlib
 import json
 import logging
 import sys
 
 
-VERSION = get_distribution('collective.ftw.upgrade').version
+VERSION = importlib.metadata.distribution('collective.ftw.upgrade').version
 logger = logging.getLogger('collective.ftw.upgrade')
 
 
@@ -189,7 +190,7 @@ def configure_logging(args):
         format = '%(levelname)s: %(message)s'
         logging.basicConfig(level=start_level, format=format)
         for handler in logging.root.handlers:
-            handler.addFilter(logging.Filter('ftw.upgrade'))
+            handler.addFilter(logging.Filter('collective.ftw.upgrade'))
 
 
 def main():

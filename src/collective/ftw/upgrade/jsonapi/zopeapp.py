@@ -1,7 +1,10 @@
 from AccessControl import getSecurityManager
+from AccessControl import Permissions
 from collective.ftw.upgrade.jsonapi.base import APIView
 from collective.ftw.upgrade.jsonapi.utils import action
 from collective.ftw.upgrade.jsonapi.utils import jsonify
+from plone.base.interfaces import IPloneSiteRoot
+from ZODB.broken import Broken
 
 
 class ZopeAppAPI(APIView):
@@ -11,7 +14,6 @@ class ZopeAppAPI(APIView):
     def list_plone_sites(self):
         """Returns a list of Plone sites.
         """
-
         return list(self._get_plone_sites())
 
     @jsonify
@@ -22,9 +24,23 @@ class ZopeAppAPI(APIView):
         """
         return getSecurityManager().getUser().getId()
 
+    @property
+    def sites(self):
+        """Return all Plone sites in the Zope app.
+        """
+        try:
+            from plone.distribution.api.site import get_sites
+        except ImportError:
+            get_sites = None
+
+        if get_sites:
+            return get_sites(self.context)
+
+        # Fallback for Plone installations that do not have plone.distribution
+        return self.context.restrictedTraverse('plone-overview').sites()
+
     def _get_plone_sites(self):
-        overview_view = self.context.restrictedTraverse('plone-overview')
-        for site in overview_view.sites():
+        for site in self.sites:
             yield {'id': site.getId(),
                    'path': '/'.join(site.getPhysicalPath()),
                    'title': site.Title()}

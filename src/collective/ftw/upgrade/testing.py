@@ -23,7 +23,8 @@ import pkg_resources
 collective.ftw.upgrade.tests.builders  # pyflakes
 
 
-COMMAND_LAYER = ConsoleScriptLayer('ftw.upgrade',
+COMMAND_LAYER = ConsoleScriptLayer('collective.ftw.upgrade',
+                                   extras=('test',),
                                    bases=(BUILDER_LAYER, ),
                                    name='ftw.upgrade:command')
 

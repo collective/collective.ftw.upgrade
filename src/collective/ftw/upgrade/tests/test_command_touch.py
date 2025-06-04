@@ -159,13 +159,13 @@ class TestTouchCommand(CommandTestCase):
 
     def upgrades(self):
         upgrades_dir = self.package.package_path.joinpath('upgrades')
-        self.assertTrue(upgrades_dir.isdir(),
+        self.assertTrue(upgrades_dir.is_dir(),
                         '"upgrades" directory is missing at {0}'.format(upgrades_dir))
         return dict([(path.name.split('_', 1)[1], path) for path in upgrades_dir.dirs()])
 
     def assert_upgrades(self, *expected):
         upgrades_dir = self.package.package_path.joinpath('upgrades')
-        self.assertTrue(upgrades_dir.isdir(),
+        self.assertTrue(upgrades_dir.is_dir(),
                         '"upgrades" directory is missing at {0}'.format(upgrades_dir))
         expected = set(expected)
         got = set([str(path.name) for path in upgrades_dir.dirs()])

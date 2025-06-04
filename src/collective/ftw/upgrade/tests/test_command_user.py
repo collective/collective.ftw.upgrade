@@ -1,6 +1,6 @@
 from collective.ftw.upgrade.tests.base import CommandAndInstanceTestCase
 from plone.app.testing import SITE_OWNER_NAME
-from plone.app.testing import TEST_USER_PASSWORD
+from plone.app.testing import SITE_OWNER_PASSWORD
 
 import os
 
@@ -22,7 +22,7 @@ class TestUserCommand(CommandAndInstanceTestCase):
     def test_authentication_by_param(self):
         del os.environ['UPGRADE_AUTHENTICATION']
         exitcode, output = self.upgrade_script('user --auth {0}:{1}'.format(
-                SITE_OWNER_NAME, TEST_USER_PASSWORD))
+                SITE_OWNER_NAME, SITE_OWNER_PASSWORD))
         self.assertEqual(0, exitcode)
         self.assertEqual('Authenticated as "admin".\n', output)
 

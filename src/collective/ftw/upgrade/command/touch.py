@@ -94,9 +94,9 @@ def touch_command(args):
 
 
 def upgrade_step_path(path):
-    path = Path(path).abspath()
+    path = Path(path).absolute()
 
-    if not path.isdir():
+    if not path.is_dir():
         raise argparse.ArgumentTypeError(
             '"{0}" does not exist or is not a directory'.format(path))
 

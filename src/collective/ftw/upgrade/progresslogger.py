@@ -14,7 +14,7 @@ class ProgressLogger(object):
 
     def __init__(self, message, iterable, logger=None,
                  timeout=5):
-        self.logger = logger or logging.getLogger('ftw.upgrade')
+        self.logger = logger or logging.getLogger('collective.ftw.upgrade')
         self.message = message
         self.iterable = iterable
 

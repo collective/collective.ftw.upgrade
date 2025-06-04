@@ -78,7 +78,7 @@ SKIP_MODIFIED_EVENT = 32
 
 UNMAPPED_FIELDS_BACKUP_ANN_KEY = 'ftw.upgrade.migration:fields_backup'
 
-LOG = logging.getLogger('ftw.upgrade.migration')
+LOG = logging.getLogger('collective.ftw.upgrade.migration')
 
 
 DEFAULT_ATTRIBUTES_TO_COPY = (

@@ -41,7 +41,7 @@ except ImportError:
     get_installer = None
 
 
-LOG = logging.getLogger('ftw.upgrade')
+LOG = logging.getLogger('collective.ftw.upgrade')
 
 
 @implementer(IUpgradeStep)

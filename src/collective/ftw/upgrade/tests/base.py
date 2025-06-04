@@ -191,7 +191,7 @@ class UpgradeTestCase(TestCase, AssertMixin):
     def setup_logging(self):
         self.log = StringIO()
         self.loghandler = logging.StreamHandler(self.log)
-        self.logger = logging.getLogger('ftw.upgrade')
+        self.logger = logging.getLogger('collective.ftw.upgrade')
         self.logger.setLevel(logging.DEBUG)
         self.logger.addHandler(self.loghandler)
 
@@ -422,7 +422,7 @@ class CommandAndInstanceTestCase(JsonApiTestCase, CommandTestCase):
         super(CommandAndInstanceTestCase, self).setUp()
         self.directory.joinpath('var').mkdir_p()
         os.environ['UPGRADE_AUTHENTICATION'] = ':'.join((SITE_OWNER_NAME,
-                                                         TEST_USER_PASSWORD))
+                                                         SITE_OWNER_PASSWORD))
 
     def tearDown(self):
         if 'UPGRADE_AUTHENTICATION' in os.environ:
