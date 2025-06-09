@@ -10,10 +10,10 @@ from collective.ftw.upgrade.utils import LOAD_LIMITS
 from collective.ftw.upgrade.utils import SizedGenerator
 from collective.ftw.upgrade.utils import subject_from_docstring
 from collective.ftw.upgrade.utils import topological_sort
-from ftw.testing import MockTestCase
 from six.moves import map
 from six.moves import range
 from unittest import TestCase
+from unittest.mock import Mock
 
 import six
 import stat
@@ -111,10 +111,21 @@ class TestSizedGenerator(TestCase):
         self.assertEqual([0, 1, 2], list(generator))
 
 
-class TestSortedProfileIds(MockTestCase):
+class Dummy(object):
+    """Dummy object with arbitrary attributes
+    """
+
+    def __init__(self, **kw):
+        self.__dict__.update(kw)
+
+
+class TestSortedProfileIds(TestCase):
+
+    def create_dummy(self, **kw):
+        return Dummy(**kw)
 
     def test_dependencies_resolved(self):
-        listProfileInfo = self.mock()
+        listProfileInfo = Mock()
         listProfileInfo.return_value = [
             {'id': 'baz',
 
@@ -140,7 +151,7 @@ class TestSortedProfileIds(MockTestCase):
         However, we want a cosistent ordern and therefore
         order those root nodes by name.
         """
-        listProfileInfo = self.mock()
+        listProfileInfo = Mock()
         listProfileInfo.return_value = [
             {'id': 'baz',
              'dependencies': ['profile-foo']},
@@ -155,7 +166,7 @@ class TestSortedProfileIds(MockTestCase):
             get_sorted_profile_ids(portal_setup))
 
     def test_cyclic_dependencies(self):
-        listProfileInfo = self.mock()
+        listProfileInfo = Mock()
         listProfileInfo.return_value = [
             {'id': 'foo',
              'dependencies': ['profile-bar']},
