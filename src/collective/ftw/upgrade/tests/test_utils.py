@@ -1,6 +1,5 @@
-from ftw.testing import MockTestCase
-from ftw.testing.layer import TEMP_DIRECTORY
 from collective.ftw.upgrade.exceptions import CyclicDependencies
+from collective.ftw.upgrade.tests.layers import TEMP_DIRECTORY
 from collective.ftw.upgrade.utils import _is_memory_full
 from collective.ftw.upgrade.utils import find_cyclic_dependencies
 from collective.ftw.upgrade.utils import format_duration
@@ -11,6 +10,7 @@ from collective.ftw.upgrade.utils import LOAD_LIMITS
 from collective.ftw.upgrade.utils import SizedGenerator
 from collective.ftw.upgrade.utils import subject_from_docstring
 from collective.ftw.upgrade.utils import topological_sort
+from ftw.testing import MockTestCase
 from six.moves import map
 from six.moves import range
 from unittest import TestCase

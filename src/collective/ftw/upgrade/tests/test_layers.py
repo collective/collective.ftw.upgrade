@@ -1,4 +1,5 @@
 from collective.ftw.upgrade.tests.layers import COMPONENT_REGISTRY_ISOLATION
+from collective.ftw.upgrade.tests.layers import TEMP_DIRECTORY
 from collective.ftw.upgrade.tests.layers import ConsoleScriptLayer
 from plone.app.testing import IntegrationTesting
 from Products.CMFCore.utils import getToolByName
@@ -86,3 +87,30 @@ class TestConsoleScriptLayer(TestCase):
         code = "from collective.ftw.upgrade.tests import layers; print(layers.__name__)"
         exitcode, output = self.layer['execute_script']('py -c "{0}"'.format(code))
         self.assertEqual('collective.ftw.upgrade.tests.layers', output.splitlines()[0])
+
+
+class TestTempDirectoryLayer(TestCase):
+    layer = TEMP_DIRECTORY
+
+    def test_temp_directory_is_writeable(self):
+        file_path = self.layer['temp_directory'].joinpath('file.txt')
+        file_path.write_text('something')
+        self.assertEqual('something', file_path.read_text())
+
+        dir_path = self.layer['temp_directory'].joinpath('directory')
+        dir_path.mkdir()
+        self.assertTrue(dir_path.is_dir(), 'Directory was not created.')
+
+    def test_directory_is_cleaned_up_after_every_test(self):
+        dir_path = self.layer['temp_directory'].joinpath('the-directory')
+        file_path = dir_path.joinpath('the-file.txt')
+        self.assertFalse(dir_path.exists(), 'Directory was not cleaned up after test.')
+        self.assertFalse(file_path.exists(), 'File was not cleaned up after test.')
+
+        dir_path.mkdir()
+        file_path.write_text('something')
+
+    # This makes sure that the test is run twice, so that it would fail when
+    # the directory wouldn't be cleaned up properly.
+    test_directory_is_cleaned_up_after_every_test2 = \
+        test_directory_is_cleaned_up_after_every_test

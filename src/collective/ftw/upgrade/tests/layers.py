@@ -7,6 +7,7 @@ from zope.configuration import xmlconfig
 import importlib
 import logging
 import os
+import tempfile
 import zc.buildout.easy_install
 import zc.buildout.testing
 
@@ -156,3 +157,15 @@ class ConsoleScriptLayer(Layer):
     @property
     def globs(self):
         return self.__dict__
+
+
+class TempDirectoryLayer(Layer):
+
+    def testSetUp(self):
+        self['temp_directory'] = Path(tempfile.mkdtemp('collective.ftw.upgrade'))
+
+    def testTearDown(self):
+        self['temp_directory'].rmtree_p()
+
+
+TEMP_DIRECTORY = TempDirectoryLayer()
