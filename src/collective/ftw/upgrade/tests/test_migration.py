@@ -1,9 +1,3 @@
-from datetime import datetime
-from DateTime import DateTime
-from ftw.builder import Builder
-from ftw.builder import create
-from ftw.builder.content import dx_content_builders_registered
-from ftw.testing import freeze
 from collective.ftw.upgrade.migration import BACKUP_AND_IGNORE_UNMAPPED_FIELDS
 from collective.ftw.upgrade.migration import DISABLE_FIELD_AUTOMAPPING
 from collective.ftw.upgrade.migration import FieldsNotMappedError
@@ -14,6 +8,12 @@ from collective.ftw.upgrade.migration import IGNORE_UNMAPPED_FIELDS
 from collective.ftw.upgrade.migration import InplaceMigrator
 from collective.ftw.upgrade.migration import UNMAPPED_FIELDS_BACKUP_ANN_KEY
 from collective.ftw.upgrade.tests.base import UpgradeTestCase
+from datetime import datetime
+from DateTime import DateTime
+from freezegun import freeze_time
+from ftw.builder import Builder
+from ftw.builder import create
+from ftw.builder.content import dx_content_builders_registered
 from operator import attrgetter
 from plone.app.relationfield.behavior import IRelatedItems
 from plone.app.testing import login
@@ -60,7 +60,7 @@ class TestInplaceMigrator(UpgradeTestCase):
         effective_date = datetime(2016, 2, 2, 2, 30)
         expires_date = datetime(2016, 3, 3, 3, 30)
 
-        with freeze(creation_date):
+        with freeze_time(creation_date):
             folder = create(Builder('folder')
                             .titled(u'The Folder')
                             .having(description='The Description',
@@ -78,7 +78,7 @@ class TestInplaceMigrator(UpgradeTestCase):
 
         folder._setProperty('search_label', 'HB', 'string')
 
-        with freeze(modification_date):
+        with freeze_time(modification_date):
             folder.reindexObject()  # update modification date
 
         self.assertTrue(IBaseObject.providedBy(folder))
@@ -140,7 +140,7 @@ class TestInplaceMigrator(UpgradeTestCase):
         expires_date = datetime(2016, 3, 3, 3, 30)
 
         with dx_content_builders_registered():
-            with freeze(creation_date):
+            with freeze_time(creation_date):
                 folder = create(Builder('folder')
                                 .titled(u'The Folder')
                                 .having(description=u'The Description',
@@ -150,7 +150,7 @@ class TestInplaceMigrator(UpgradeTestCase):
                                         expires=expires_date)
                                 .in_state('pending'))
 
-        with freeze(modification_date):
+        with freeze_time(modification_date):
             folder.reindexObject()  # update modification date
 
         self.assertFalse(IBaseObject.providedBy(folder))

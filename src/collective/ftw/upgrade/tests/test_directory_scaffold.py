@@ -1,6 +1,6 @@
-from datetime import datetime
-from ftw.testing import freeze
 from collective.ftw.upgrade.directory.scaffold import UpgradeStepCreator
+from datetime import datetime
+from freezegun import freeze_time
 from unittest import TestCase
 
 import os.path
@@ -18,7 +18,7 @@ class TestUpgradeStepCreator(TestCase):
         shutil.rmtree(self.upgrades_directory)
 
     def test_generates_directory_and_upgrade_code(self):
-        with freeze(datetime(2014, 11, 14, 22, 44, 55)):
+        with freeze_time(datetime(2014, 11, 14, 22, 44, 55)):
             UpgradeStepCreator(self.upgrades_directory).create('AddControlpanelAction')
 
         upgrade_directory = os.path.join(self.upgrades_directory,
@@ -46,7 +46,7 @@ class TestUpgradeStepCreator(TestCase):
             code)
 
     def test_generate_upgrade_step_by_camelcase_name(self):
-        with freeze(datetime(2014, 11, 14, 22, 44, 55)):
+        with freeze_time(datetime(2014, 11, 14, 22, 44, 55)):
             UpgradeStepCreator(self.upgrades_directory).create('AddControlpanelAction')
 
         self.assert_upgrade({'name': '20141114224455_add_controlpanel_action',
@@ -54,7 +54,7 @@ class TestUpgradeStepCreator(TestCase):
                              'docstring': 'Add controlpanel action.'})
 
     def test_generate_upgrade_step_by_underscore_name(self):
-        with freeze(datetime(2014, 11, 14, 22, 44, 55)):
+        with freeze_time(datetime(2014, 11, 14, 22, 44, 55)):
             UpgradeStepCreator(self.upgrades_directory).create('add_controlpanel_action')
 
         self.assert_upgrade({'name': '20141114224455_add_controlpanel_action',
@@ -62,7 +62,7 @@ class TestUpgradeStepCreator(TestCase):
                              'docstring': 'Add controlpanel action.'})
 
     def test_generate_upgrade_step_by_humanized_name(self):
-        with freeze(datetime(2014, 11, 14, 22, 44, 55)):
+        with freeze_time(datetime(2014, 11, 14, 22, 44, 55)):
             UpgradeStepCreator(self.upgrades_directory).create('Add controlpanel action')
 
         self.assert_upgrade({'name': '20141114224455_add_controlpanel_action',
@@ -70,7 +70,7 @@ class TestUpgradeStepCreator(TestCase):
                              'docstring': 'Add controlpanel action.'})
 
     def test_sentence_as_input_is_used_as_docstring_without_modification(self):
-        with freeze(datetime(2014, 3, 4, 5, 6, 7)):
+        with freeze_time(datetime(2014, 3, 4, 5, 6, 7)):
             UpgradeStepCreator(self.upgrades_directory).create(
                 'Update ftw.subsite to newest Version.')
 

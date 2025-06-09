@@ -39,12 +39,12 @@ dependencies = [
 test = [
     "plone.app.testing",
     "plone.classicui","plone.restapi[test]",
-    "ftw.testing >= 2.0.0.dev0",
     "ftw.builder >= 2.0.0.dev0",
     "plone.testing",
     "plone.app.testing",
     "zc.buildout",
     "zc.recipe.egg",
+    "freezegun",
 ]
 
 [project.urls]
