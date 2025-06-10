@@ -4,7 +4,7 @@ import transaction
 TRANSACTION_NOTE_MAX_LENGTH = 65533
 
 
-class TransactionNote(object):
+class TransactionNote:
     """The zope transaction note is limited to a length of 60000 characters.
     When installing a lot of upgrades at once, this limitation may be
     exceeded.

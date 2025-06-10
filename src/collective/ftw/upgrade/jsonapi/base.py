@@ -16,7 +16,7 @@ class APIView(BrowserView):
     api_version = 'v1'
 
     def __init__(self, *args, **kwargs):
-        super(APIView, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.requested_api_version = None
 
     def publishTraverse(self, request, name):

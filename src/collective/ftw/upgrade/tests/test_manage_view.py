@@ -3,7 +3,7 @@ from ftw.builder import Builder
 from collective.ftw.upgrade.browser.manage import ResponseLogger
 from collective.ftw.upgrade.tests.base import JsonApiTestCase
 from Products.CMFCore.utils import getToolByName
-from six import BytesIO
+from io import BytesIO
 from unittest import TestCase
 
 import logging
@@ -99,7 +99,7 @@ class TestResponseLogger(TestCase):
 class TestManageUpgrades(JsonApiTestCase):
 
     def setUp(self):
-        super(TestManageUpgrades, self).setUp()
+        super().setUp()
         self.portal_url = self.layer['portal'].portal_url()
         self.portal = self.layer['portal']
 

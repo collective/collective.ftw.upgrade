@@ -20,23 +20,23 @@ class {classname}(UpgradeStep):
 DATETIME_FORMAT = '%Y%m%d%H%M%S'
 
 
-class UpgradeStepCreator(object):
+class UpgradeStepCreator:
 
     def __init__(self, upgrades_directory):
         self.upgrades_directory = upgrades_directory
 
     def create(self, name):
         docstring = name.rstrip('.')
-        name = re.sub('\W', '_', name.rstrip('.'))
+        name = re.sub(r'\W', '_', name.rstrip('.'))
 
-        if re.match('^\w*$', docstring):
+        if re.match(r'^\w*$', docstring):
             # docstring seems to not be a sentence but a camelcase classname
             # or a underscored upgrade directory name.
             # Lets make it human readable for use as docstring.
             docstring = inflection.humanize(
                 inflection.underscore(name))
 
-        step_name = '{0}_{1}'.format(
+        step_name = '{}_{}'.format(
             datetime.now().strftime(DATETIME_FORMAT),
             inflection.underscore(name))
         step_directory = os.path.join(self.upgrades_directory, step_name)

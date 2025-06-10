@@ -76,8 +76,8 @@ class TestUpgradeInformationGatherer(UpgradeTestCase):
             self.install_profile('the.package:outdated', '2222')
             self.install_profile('the.package:correct', '2222')
             self.assert_outdated_profiles(['the.package:outdated'],
-                                          ignore=[u'plone.app.jquerytools:default',
-                                                  u'plone.app.jquery:default'])
+                                          ignore=['plone.app.jquerytools:default',
+                                                  'plone.app.jquery:default'])
             self.assert_gathered_upgrades({
                     'the.package:outdated': {'proposed': ['3333'],
                                             'done': ['2222'],
@@ -221,12 +221,12 @@ class TestUpgradeInformationGatherer(UpgradeTestCase):
 
             self.assertDictContainsSubset(
                 {'product': 'the.package',
-                 'id': u'the.package:default',
-                 'db_version': u'1000',
-                 'version': u'1001',
+                 'id': 'the.package:default',
+                 'db_version': '1000',
+                 'version': '1001',
                  'outdated_fs_version': False,
-                 'title': u'the.package',
-                 'description': u'',
+                 'title': 'the.package',
+                 'description': '',
                  'type': 2,
                  },
 
@@ -262,7 +262,7 @@ class TestUpgradeInformationGatherer(UpgradeTestCase):
             Builder('genericsetup profile')
             .with_upgrade(Builder('plone upgrade step')
                           .upgrading('1000', to='1001')
-                          .titled(u'Add action')
+                          .titled('Add action')
                           .with_description('Some details...')))
 
         with self.package_created():
@@ -271,8 +271,8 @@ class TestUpgradeInformationGatherer(UpgradeTestCase):
             upgrade_info = profile_info['upgrades'][0]
 
             self.assertDictContainsSubset(
-                {'title': u'Add action',
-                 'description': u'Some details...',
+                {'title': 'Add action',
+                 'description': 'Some details...',
                  'profile': 'the.package:default',
                  'api_id': '1001@the.package:default',
                  'ssource': '1000',
@@ -399,11 +399,11 @@ class TestUpgradeInformationGatherer(UpgradeTestCase):
             self.install_profile('the.package:default')
 
             self.assertDictContainsSubset(
-                {'id': u'the.package:default',
-                 'db_version': u'20111230174559',
-                 'formatted_db_version': u'2011/12/30 17:45',
-                 'version': u'20111230174559',
-                 'formatted_version': u'2011/12/30 17:45'},
+                {'id': 'the.package:default',
+                 'db_version': '20111230174559',
+                 'formatted_db_version': '2011/12/30 17:45',
+                 'version': '20111230174559',
+                 'formatted_version': '2011/12/30 17:45'},
                 self.get_profiles_by_ids()['the.package:default'])
 
     def test_human_readable_timestamp_versions_are_added_to_upgrades(self):
@@ -436,8 +436,8 @@ class TestUpgradeInformationGatherer(UpgradeTestCase):
             upgrade_info, = gatherer.get_upgrades_by_api_ids(
                 '20110101000000@the.package:default')
             self.assertDictContainsSubset(
-                {'api_id': u'20110101000000@the.package:default',
-                 'sdest': u'20110101000000'},
+                {'api_id': '20110101000000@the.package:default',
+                 'sdest': '20110101000000'},
                 upgrade_info)
 
     def test_get_upgrades_by_api_ids_orders_upgrades(self):
@@ -478,7 +478,7 @@ class TestUpgradeInformationGatherer(UpgradeTestCase):
     def get_profiles_by_ids(self, **kwargs):
         gatherer = queryAdapter(self.portal_setup, IUpgradeInformationGatherer)
         result = gatherer.get_profiles(**kwargs)
-        return dict([(profile['id'], profile) for profile in result])
+        return {profile['id']: profile for profile in result}
 
     def assert_outdated_profiles(self, expected_profiles, ignore=()):
         gatherer = queryAdapter(self.portal_setup, IUpgradeInformationGatherer)

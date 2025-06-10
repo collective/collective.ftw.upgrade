@@ -5,7 +5,7 @@ import logging
 import six
 
 
-class ProgressLogger(object):
+class ProgressLogger:
     """Loggs the proggress of a process to the passed
     logger.
     """
@@ -18,7 +18,7 @@ class ProgressLogger(object):
         self.message = message
         self.iterable = iterable
 
-        if isinstance(iterable, (six.integer_types + (float,))):
+        if isinstance(iterable, ((int,) + (float,))):
             self.length = iterable
         else:
             self.length = len(iterable)
@@ -44,7 +44,7 @@ class ProgressLogger(object):
             else:
                 current_step = 'item nr. %d' % self._counter
 
-            self.logger.error('FAILED %s (%s: %s) at %s' % (
+            self.logger.error('FAILED {} ({}: {}) at {}'.format(
                     self.message,
                     str(exc_type.__name__),
                     str(exc_value),
@@ -57,7 +57,7 @@ class ProgressLogger(object):
             return
 
         percent = int(self._counter * 100.0 / self.length)
-        self.logger.info('%s of %s (%s%%): %s' % (
+        self.logger.info('{} of {} ({}%): {}'.format(
                 self._counter,
                 self.length,
                 percent,

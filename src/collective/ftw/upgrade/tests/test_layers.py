@@ -85,7 +85,7 @@ class TestConsoleScriptLayer(TestCase):
 
     def test_python_script_with_environment_is_generated(self):
         code = "from collective.ftw.upgrade.tests import layers; print(layers.__name__)"
-        exitcode, output = self.layer['execute_script']('py -c "{0}"'.format(code))
+        exitcode, output = self.layer['execute_script'](f'py -c "{code}"')
         self.assertEqual('collective.ftw.upgrade.tests.layers', output.splitlines()[0])
 
 

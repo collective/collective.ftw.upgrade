@@ -66,7 +66,7 @@ class FlexiFormatter(argparse.RawTextHelpFormatter):
     """
 
     def _fill_text(self, text, width, indent):
-        text = (re.compile('\[quote\].*?\[\/quote\]', re.DOTALL)
+        text = (re.compile(r'\[quote\].*?\[\/quote\]', re.DOTALL)
                 .sub(lambda match: (
                     match.group(0)
                     .replace('\n', '[QUOTE:NEWLINE]')),
@@ -75,7 +75,7 @@ class FlexiFormatter(argparse.RawTextHelpFormatter):
         text = '\n'.join([indent + line for line
                           in self._split_lines(text, width)])
 
-        text = (re.compile('\[quote\](.*?)\[\/quote\]', re.DOTALL)
+        text = (re.compile(r'\[quote\](.*?)\[\/quote\]', re.DOTALL)
                 .sub(lambda match: TERMINAL.green(
                     match.group(1)
                     .replace('\n', ' ')

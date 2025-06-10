@@ -7,7 +7,7 @@ from collective.ftw.upgrade.tests.base import WorkflowTestCase
 class TestPlacefulWorkflowPolicyActivator(WorkflowTestCase):
 
     def setUp(self):
-        super(TestPlacefulWorkflowPolicyActivator, self).setUp()
+        super().setUp()
 
         self.set_workflow_chain(for_type='Folder',
                                 to_workflow='intranet_workflow')
@@ -16,17 +16,17 @@ class TestPlacefulWorkflowPolicyActivator(WorkflowTestCase):
 
     def test_activate_placeful_workflow_policy_with_mapping(self):
         container = create(Builder('folder')
-                           .titled(u'Container')
+                           .titled('Container')
                            .in_state('external'))
 
         subfolder = create(Builder('folder')
                            .within(container)
-                           .titled(u'Subfolder')
+                           .titled('Subfolder')
                            .in_state('pending'))
 
         document = create(Builder('document')
                           .within(subfolder)
-                          .titled(u'The Document')
+                          .titled('The Document')
                           .in_state('internally_published'))
 
         self.create_placeful_workflow_policy(
@@ -49,7 +49,7 @@ class TestPlacefulWorkflowPolicyActivator(WorkflowTestCase):
 
     def test_object_security_is_updated(self):
         container = create(Builder('folder')
-                           .titled(u'Container')
+                           .titled('Container')
                            .in_state('external'))
 
         self.create_placeful_workflow_policy(
@@ -68,7 +68,7 @@ class TestPlacefulWorkflowPolicyActivator(WorkflowTestCase):
 
     def test_object_security_is_reindexed(self):
         container = create(Builder('folder')
-                           .titled(u'Container')
+                           .titled('Container')
                            .in_state('internal'))
 
         self.assertIn('Member',

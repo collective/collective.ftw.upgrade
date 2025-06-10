@@ -1,8 +1,4 @@
-from __future__ import print_function
 from operator import itemgetter
-from six.moves import filter
-from six.moves import map
-from six.moves import zip
 
 
 class FakeTerminal(str):
@@ -80,10 +76,10 @@ def colorized_profile_flags(profile):
 
     proposed = len(list(filter(itemgetter('proposed'), profile['upgrades'])))
     if proposed:
-        flags.append(TERMINAL.blue('{0} proposed'.format(proposed)))
+        flags.append(TERMINAL.blue(f'{proposed} proposed'))
 
     orphans = len(list(filter(itemgetter('orphan'), profile['upgrades'])))
     if orphans:
-        flags.append(TERMINAL.standout_red('{0} orphan'.format(orphans)))
+        flags.append(TERMINAL.standout_red(f'{orphans} orphan'))
 
     return ' '.join(flags)

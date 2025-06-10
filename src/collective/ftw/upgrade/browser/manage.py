@@ -17,7 +17,7 @@ import traceback
 LOG = logging.getLogger('collective.ftw.upgrade')
 
 
-class ResponseLogger(object):
+class ResponseLogger:
 
     security = ClassSecurityInformation()
 
@@ -55,7 +55,7 @@ class ResponseLogger(object):
 
     security.declarePrivate('write')
     def write(self, line):
-        if isinstance(line, six.text_type):
+        if isinstance(line, str):
             line = line.encode('utf8')
 
         line = line.replace(b'<', b'&lt;').replace(b'>', b'&gt;')
@@ -74,7 +74,7 @@ class ManageUpgrades(BrowserView):
     security = ClassSecurityInformation()
 
     def __init__(self, *args, **kwargs):
-        super(ManageUpgrades, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.cyclic_dependencies = False
 
     def __call__(self):
@@ -83,7 +83,7 @@ class ManageUpgrades(BrowserView):
                 'Plone is outdated. Upgrading add-ons is disabled.'
 
             self.install()
-        return super(ManageUpgrades, self).__call__(self)
+        return super().__call__(self)
 
     security.declarePrivate('install')
     def install(self):
@@ -159,4 +159,4 @@ class ManageUpgradesPlain(ManageUpgrades):
 
     def __call__(self):
         self.request.response.setHeader('X-Theme-Disabled', 'true')
-        return super(ManageUpgradesPlain, self).__call__()
+        return super().__call__()

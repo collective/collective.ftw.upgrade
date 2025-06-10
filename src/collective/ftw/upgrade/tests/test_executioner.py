@@ -67,21 +67,21 @@ class TestExecutioner(UpgradeTestCase):
             Builder('genericsetup profile')
             .with_upgrade(Builder('plone upgrade step')
                           .upgrading('1000', to='1001')
-                          .titled(u'Register "foo" utility'))
+                          .titled('Register "foo" utility'))
             .with_upgrade(Builder('plone upgrade step')
                           .upgrading('1001', to='1002')
-                          .titled(u'Update email address'))
+                          .titled('Update email address'))
             .with_upgrade(Builder('plone upgrade step')
                           .upgrading('1002', to='1003')
-                          .titled(u'Update email from name')))
+                          .titled('Update email from name')))
 
         with self.package_created():
             self.install_profile('the.package:default', version='1000')
             self.install_profile_upgrades('the.package:default')
             self.assertMultiLineEqual(
-                u'the.package:default -> 1001 (Register "foo" utility)\n'
-                u'the.package:default -> 1002 (Update email address)\n'
-                u'the.package:default -> 1003 (Update email from name)',
+                'the.package:default -> 1001 (Register "foo" utility)\n'
+                'the.package:default -> 1002 (Update email address)\n'
+                'the.package:default -> 1003 (Update email from name)',
                 transaction.get().description)
 
     def test_after_commit_hook(self):
@@ -89,7 +89,7 @@ class TestExecutioner(UpgradeTestCase):
             Builder('genericsetup profile')
             .with_upgrade(Builder('plone upgrade step')
                           .upgrading('1000', to='1001')
-                          .titled(u'Register "foo" utility')))
+                          .titled('Register "foo" utility')))
 
         with self.package_created():
             self.install_profile('the.package:default', version='1000')
@@ -172,14 +172,14 @@ class TestExecutioner(UpgradeTestCase):
                     'proposed': ['20111111111100'],
                     'orphan': ['20111111111100']}})
             self.assertEqual(
-                (u'20121212121200',),
+                ('20121212121200',),
                 self.portal_setup.getLastVersionForProfile('the.package:default'))
 
             executioner = queryAdapter(self.portal_setup, IExecutioner)
             executioner.install_upgrades_by_api_ids(
                 '20111111111100@the.package:default')
             self.assertEqual(
-                (u'20121212121200',),
+                ('20121212121200',),
                 self.portal_setup.getLastVersionForProfile('the.package:default'))
             self.assert_gathered_upgrades({
                 'the.package:default': {
@@ -236,14 +236,14 @@ class TestExecutioner(UpgradeTestCase):
                     'proposed': ['20111111111100'],
                     'orphan': []}})
             self.assertEqual(
-                (u'4002',),
+                ('4002',),
                 self.portal_setup.getLastVersionForProfile('the.package:default'))
 
             executioner = queryAdapter(self.portal_setup, IExecutioner)
             executioner.install_upgrades_by_api_ids(
                 '20111111111100@the.package:default')
             self.assertEqual(
-                (u'20111111111100',),
+                ('20111111111100',),
                 self.portal_setup.getLastVersionForProfile('the.package:default'))
             self.assert_gathered_upgrades({
                 'the.package:default': {
@@ -266,7 +266,7 @@ class TestExecutioner(UpgradeTestCase):
             )
 
         self.assertEqual(
-            (u'20121212121200',),
+            ('20121212121200',),
             self.portal_setup.getLastVersionForProfile('the.package:default')
         )
 
@@ -299,19 +299,19 @@ class TestExecutioner(UpgradeTestCase):
                 'the.package:default', intermediate_commit=True
             )
             self.assertEqual(
-                [u'______________________________________________________________________',
-                 u'UPGRADE STEP the.package:default: TriggerReindex',
-                 u'Ran upgrade step TriggerReindex for profile the.package:default',
-                 u'1 of 2 (50%): Processing indexing queue',
-                 u'Transaction has been committed.',
-                 u'Upgrade step duration: XXX',
-                 u'Current memory usage in MB (RSS): XXX',
-                 u'______________________________________________________________________',
-                 u'UPGRADE STEP the.package:default: Upgrade.',
-                 u'Ran upgrade step Upgrade. for profile the.package:default',
-                 u'Transaction has been committed.',
-                 u'Upgrade step duration: XXX',
-                 u'Current memory usage in MB (RSS): XXX'],
+                ['______________________________________________________________________',
+                 'UPGRADE STEP the.package:default: TriggerReindex',
+                 'Ran upgrade step TriggerReindex for profile the.package:default',
+                 '1 of 2 (50%): Processing indexing queue',
+                 'Transaction has been committed.',
+                 'Upgrade step duration: XXX',
+                 'Current memory usage in MB (RSS): XXX',
+                 '______________________________________________________________________',
+                 'UPGRADE STEP the.package:default: Upgrade.',
+                 'Ran upgrade step Upgrade. for profile the.package:default',
+                 'Transaction has been committed.',
+                 'Upgrade step duration: XXX',
+                 'Current memory usage in MB (RSS): XXX'],
                 self.get_log())
 
     def test_installed_version_if_upgrade_fails_with_intermediate_commit(self):
@@ -335,6 +335,6 @@ class TestExecutioner(UpgradeTestCase):
                 )
 
         self.assertEqual(
-            (u'20111111111100',),
+            ('20111111111100',),
             self.portal_setup.getLastVersionForProfile('the.package:default')
         )

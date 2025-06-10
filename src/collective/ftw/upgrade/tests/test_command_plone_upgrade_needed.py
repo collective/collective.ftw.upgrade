@@ -8,7 +8,7 @@ import transaction
 class TestPloneUpgradeNeededCommand(CommandAndInstanceTestCase):
 
     def setUp(self):
-        super(TestPloneUpgradeNeededCommand, self).setUp()
+        super().setUp()
         self.write_zconf_with_test_instance()
 
     def test_help(self):
@@ -18,7 +18,7 @@ class TestPloneUpgradeNeededCommand(CommandAndInstanceTestCase):
         exitcode, output = self.upgrade_script(
             'plone_upgrade_needed -s plone')
         self.assertEqual(0, exitcode)
-        self.assertIn(u'false', output)
+        self.assertIn('false', output)
 
     def test_plone_upgrade_needed(self):
         setup = getToolByName(self.portal, 'portal_setup')
@@ -28,4 +28,4 @@ class TestPloneUpgradeNeededCommand(CommandAndInstanceTestCase):
         exitcode, output = self.upgrade_script(
             'plone_upgrade_needed -s plone')
         self.assertEqual(0, exitcode)
-        self.assertIn(u'true', output)
+        self.assertIn('true', output)

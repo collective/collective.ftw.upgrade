@@ -1,11 +1,9 @@
-
-
 class CyclicDependencies(Exception):
     """Cyclic dependencies detected.
     """
 
     def __init__(self, dependencies, cyclic_dependencies=()):
-        super(CyclicDependencies, self).__init__(
+        super().__init__(
             'Cyclic dependencies detected.')
         self.dependencies = dependencies
         self.cyclic_dependencies = cyclic_dependencies
@@ -17,8 +15,8 @@ class UpgradeNotFound(Exception):
 
     def __init__(self, api_id):
         self.api_id = api_id
-        super(UpgradeNotFound, self).__init__(
-            'The upgrade "{0}" could not be found.'.format(api_id))
+        super().__init__(
+            f'The upgrade "{api_id}" could not be found.')
 
 
 class UpgradeStepDefinitionError(Exception):
@@ -36,5 +34,5 @@ class NoAssociatedProfileError(ValueError):
     """
 
     def __init__(self):
-        super(NoAssociatedProfileError, self).__init__(
+        super().__init__(
             self, NoAssociatedProfileError.__doc__.strip())

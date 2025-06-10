@@ -13,13 +13,12 @@ from collective.ftw.upgrade.utils import get_portal_migration
 from functools import reduce
 from operator import itemgetter
 from Products.CMFCore.utils import getToolByName
-from six.moves import map
 
 
 class PloneSiteAPI(APIView):
 
     def __init__(self, *args, **kwargs):
-        super(PloneSiteAPI, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.portal_setup = getToolByName(self.context, 'portal_setup')
         self.gatherer = IUpgradeInformationGatherer(self.portal_setup)
 
@@ -133,8 +132,8 @@ class PloneSiteAPI(APIView):
     def _refine_upgrade_info(self, upgrade):
         keys = ('title', 'proposed', 'deferrable', 'done', 'orphan',
                 'outdated_fs_version')
-        values = dict((key, value) for (key, value) in upgrade.items()
-                      if key in keys)
+        values = {key: value for (key, value) in upgrade.items()
+                      if key in keys}
         values.update({'id': upgrade['api_id'],
                        'title': upgrade['title'],
                        'source': upgrade['ssource'],

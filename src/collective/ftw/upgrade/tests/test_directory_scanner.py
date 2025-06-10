@@ -5,7 +5,6 @@ from ftw.builder import create
 from collective.ftw.upgrade.directory.scanner import Scanner
 from collective.ftw.upgrade.exceptions import UpgradeStepDefinitionError
 from collective.ftw.upgrade.tests.base import UpgradeTestCase
-from six.moves import map
 
 import six
 import unittest
@@ -14,7 +13,7 @@ import unittest
 class TestDirectoryScanner(UpgradeTestCase):
 
     def setUp(self):
-        super(TestDirectoryScanner, self).setUp()
+        super().setUp()
         self.profile = Builder('genericsetup profile')
         self.package.with_profile(self.profile)
 

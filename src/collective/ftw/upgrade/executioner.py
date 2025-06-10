@@ -34,7 +34,7 @@ logger = logging.getLogger('collective.ftw.upgrade')
 
 
 @implementer(IExecutioner)
-class Executioner(object):
+class Executioner:
 
     adapts(ISetupTool)
     security = ClassSecurityInformation()
@@ -173,13 +173,13 @@ class Executioner(object):
     def _do_upgrade(self, profileid, upgradeid):
         step = _upgrade_registry.getUpgradeStep(profileid, upgradeid)
         logger.log(logging.INFO, '_' * 70)
-        logger.log(logging.INFO, 'UPGRADE STEP %s: %s' % (
+        logger.log(logging.INFO, 'UPGRADE STEP {}: {}'.format(
                 profileid, step.title))
 
         step.doStep(self.portal_setup)
         TransactionNote().add_upgrade(profileid, step.dest, step.title)
 
-        msg = "Ran upgrade step %s for profile %s" % (
+        msg = "Ran upgrade step {} for profile {}".format(
             step.title, profileid)
         logger.log(logging.INFO, msg)
 

@@ -4,7 +4,6 @@ from collective.ftw.upgrade.interfaces import IUpgradeStepRecorder
 from functools import partial
 from operator import itemgetter
 from Products.CMFCore.utils import getToolByName
-from six.moves import map
 from zope.component import getMultiAdapter
 
 import os

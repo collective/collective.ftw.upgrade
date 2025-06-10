@@ -11,7 +11,6 @@ from Products.CMFCore.utils import getToolByName
 from Products.GenericSetup.interfaces import ISetupTool
 from Products.GenericSetup.upgrade import normalize_version
 from Products.GenericSetup.upgrade import UpgradeStep
-from six.moves import map
 from zope.component import adapts
 from zope.component import getMultiAdapter
 from zope.deprecation import deprecated
@@ -30,8 +29,7 @@ def flatten_upgrades(upgrades):
 
     for item in upgrades:
         if isinstance(item, (list, tuple)):
-            for subitem in flatten_upgrades(item):
-                yield subitem
+            yield from flatten_upgrades(item)
 
         else:
             yield item
@@ -99,7 +97,7 @@ def extend_auto_upgrades_with_human_formatted_date_version(profiles):
 
 
 @implementer(IUpgradeInformationGatherer)
-class UpgradeInformationGatherer(object):
+class UpgradeInformationGatherer:
     adapts(ISetupTool)
 
     security = ClassSecurityInformation()

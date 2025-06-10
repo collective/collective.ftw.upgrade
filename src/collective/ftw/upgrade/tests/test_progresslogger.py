@@ -1,6 +1,5 @@
 from collective.ftw.upgrade.progresslogger import ProgressLogger
-from six import StringIO
-from six.moves import range
+from io import StringIO
 from time import sleep
 from unittest import TestCase
 

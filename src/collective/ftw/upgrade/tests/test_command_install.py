@@ -24,7 +24,7 @@ class TestInstallCommand(CommandAndInstanceTestCase):
     maxDiff = None
 
     def setUp(self):
-        super(TestInstallCommand, self).setUp()
+        super().setUp()
         self.write_zconf_with_test_instance()
 
     def test_help(self):
@@ -283,7 +283,7 @@ class TestInstallCommand(CommandAndInstanceTestCase):
         self.layer['portal'].upgrade_info = PersistentList()
 
         setRoles(self.layer['portal'], TEST_USER_ID, ['Manager'])
-        create(Builder('folder').titled(u'The Folder'))
+        create(Builder('folder').titled('The Folder'))
 
         def upgrade_step(setup_context):
             portal = setup_context.portal_url.getPortalObject()
@@ -349,7 +349,7 @@ class TestInstallCommand(CommandAndInstanceTestCase):
                 assert_exitcode=False)
             self.assertEqual(3, exitcode)
             self.assertEqual(
-                [u'ERROR: --intermediate-commit is not implemented for --profiles.'],
+                ['ERROR: --intermediate-commit is not implemented for --profiles.'],
                 output.splitlines())
 
     def test_force_option_is_meant_to_be_combined_with_profiles(self):
@@ -358,7 +358,7 @@ class TestInstallCommand(CommandAndInstanceTestCase):
             assert_exitcode=False)
         self.assertEqual(3, exitcode)
         self.assertEqual(
-            [u'ERROR: --force can only be used with --profiles.'],
+            ['ERROR: --force can only be used with --profiles.'],
             output.splitlines())
 
     def test_instance_argument(self):
@@ -375,8 +375,8 @@ class TestInstallCommand(CommandAndInstanceTestCase):
             assert_exitcode=False)
 
         self.assertEqual(1, exitcode)
-        self.assertEqual(u'ERROR: No running Plone instance detected.\n', output)
+        self.assertEqual('ERROR: No running Plone instance detected.\n', output)
 
         exitcode, output = self.upgrade_script(
             'install -s plone --proposed --instance=instance')
-        self.assertEqual(u'Result: SUCCESS\n', output)
+        self.assertEqual('Result: SUCCESS\n', output)

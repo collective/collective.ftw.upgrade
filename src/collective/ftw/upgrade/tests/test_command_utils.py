@@ -7,7 +7,7 @@ from ftw.builder import Builder
 from ftw.builder import create
 from ftw.builder.testing import BUILDER_LAYER
 from path import Path
-from six import StringIO
+from io import StringIO
 from unittest import TestCase
 
 

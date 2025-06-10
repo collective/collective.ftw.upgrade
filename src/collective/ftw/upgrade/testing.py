@@ -13,7 +13,6 @@ from plone.testing import z2
 from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone.utils import getFSVersionTuple
 from Products.SiteAccess.VirtualHostMonster import manage_addVirtualHostMonster
-from six.moves import map
 from zope.configuration import xmlconfig
 
 import collective.ftw.upgrade.tests.builders

@@ -12,7 +12,7 @@ from zope.component import getMultiAdapter
 class TestDirectoryUpgradeSteps(UpgradeTestCase):
 
     def setUp(self):
-        super(TestDirectoryUpgradeSteps, self).setUp()
+        super().setUp()
         self.portal_actions = getToolByName(self.portal, 'portal_actions')
 
     def test_installing_profile_sets_version_to_latest_upgrade(self):
@@ -129,7 +129,7 @@ class TestDirectoryUpgradeSteps(UpgradeTestCase):
             recorder = getMultiAdapter((self.portal, 'the.package:default'),
                                        IUpgradeStepRecorder)
 
-            self.portal_setup.setLastVersionForProfile('the.package:default', u'0')
+            self.portal_setup.setLastVersionForProfile('the.package:default', '0')
             self.assertFalse(
                 recorder.is_installed('20110101000000'),
                 'Expected upgrade steps to not be marked as installed'
@@ -165,7 +165,7 @@ class TestDirectoryUpgradeSteps(UpgradeTestCase):
             self.assertEqual({}, self.portal.upgrade_infos)
             self.install_profile_upgrades('the.package:default')
             self.assertEqual(
-                {'base_profile': u'profile-the.package:default',
+                {'base_profile': 'profile-the.package:default',
                  'target_version': '20110101000000'},
                 self.portal.upgrade_infos)
 

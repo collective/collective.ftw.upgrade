@@ -5,8 +5,6 @@ from collective.ftw.upgrade.utils import SafeObjectGetter
 from collective.ftw.upgrade.utils import SavepointIterator
 from collective.ftw.upgrade.utils import SizedGenerator
 from Products.CMFCore.utils import getToolByName
-from six.moves import map
-from six.moves import zip
 from zope.component.hooks import getSite
 
 import logging
@@ -15,7 +13,7 @@ import logging
 LOG = logging.getLogger('ftw.upgrade.WorkflowChainUpdater')
 
 
-class WorkflowChainUpdater(object):
+class WorkflowChainUpdater:
 
     def __init__(self, objects, review_state_mapping, update_security=True,
                  migrate_workflow_history=True, transition_mapping=None, indexes=None):
@@ -156,7 +154,7 @@ class WorkflowChainUpdater(object):
         wfhistory[new_wf] = list(map(_migrate_entry, wfhistory[old_wf]))
 
 
-class WorkflowSecurityUpdater(object):
+class WorkflowSecurityUpdater:
 
     def __init__(self):
         self._safe_object_getter = None

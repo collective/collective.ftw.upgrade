@@ -1,6 +1,5 @@
-from __future__ import print_function
 from path import Path
-from six import StringIO
+from io import StringIO
 
 import contextlib
 import os

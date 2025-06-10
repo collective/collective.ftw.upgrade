@@ -6,7 +6,7 @@ import json
 class TestSitesCommand(CommandAndInstanceTestCase):
 
     def setUp(self):
-        super(TestSitesCommand, self).setUp()
+        super().setUp()
         self.write_zconf_with_test_instance()
 
     def test_sites_help(self):

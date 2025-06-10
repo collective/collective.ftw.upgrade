@@ -1,12 +1,9 @@
-from __future__ import print_function
 from datetime import datetime
 from datetime import timedelta
 from collective.ftw.upgrade.command.terminal import TERMINAL
 from collective.ftw.upgrade.directory.scaffold import DATETIME_FORMAT
 from collective.ftw.upgrade.directory.scanner import UPGRADESTEP_DATETIME_REGEX
 from path import Path
-from six.moves import filter
-from six.moves import map
 
 import argparse
 import re
@@ -86,7 +83,7 @@ def touch_command(args):
 
     new_date = find_new_date(args)
     new_name = NAME_RE.sub(
-        r'{0}_\1'.format(new_date.strftime(DATETIME_FORMAT)),
+        fr'{new_date.strftime(DATETIME_FORMAT)}_\1',
         args.path.name)
     new_path = args.path.dirname().joinpath(new_name)
     args.path.rename(new_path)
@@ -98,11 +95,11 @@ def upgrade_step_path(path):
 
     if not path.is_dir():
         raise argparse.ArgumentTypeError(
-            '"{0}" does not exist or is not a directory'.format(path))
+            f'"{path}" does not exist or is not a directory')
 
     if not path_to_datetime(path):
         raise argparse.ArgumentTypeError(
-            '"{0}" has not a valid upgrade step name or does'
+            '"{}" has not a valid upgrade step name or does'
             ' not contain an upgrade.py.'.format(path.name))
 
     return path

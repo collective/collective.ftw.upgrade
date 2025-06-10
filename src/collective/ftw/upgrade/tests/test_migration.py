@@ -27,7 +27,6 @@ from Products.CMFPlone.interfaces.constrains import ENABLED
 from Products.CMFPlone.interfaces.constrains import IConstrainTypes
 from Products.CMFPlone.interfaces.constrains import ISelectableConstrainTypes
 from Products.CMFPlone.utils import getFSVersionTuple
-from six.moves import map
 from unittest import skipIf
 from zope.annotation import IAnnotations
 from zope.component import getMultiAdapter
@@ -46,7 +45,7 @@ def todt(date):
 class TestInplaceMigrator(UpgradeTestCase):
 
     def setUp(self):
-        super(TestInplaceMigrator, self).setUp()
+        super().setUp()
         self.wftool = getToolByName(self.portal, 'portal_workflow')
         self.wftool.setChainForPortalTypes(
             ['Document', 'Folder'],
@@ -62,7 +61,7 @@ class TestInplaceMigrator(UpgradeTestCase):
 
         with freeze_time(creation_date):
             folder = create(Builder('folder')
-                            .titled(u'The Folder')
+                            .titled('The Folder')
                             .having(description='The Description',
                                     excludeFromNav=True,
                                     subject='One\nTwo',
@@ -142,10 +141,10 @@ class TestInplaceMigrator(UpgradeTestCase):
         with dx_content_builders_registered():
             with freeze_time(creation_date):
                 folder = create(Builder('folder')
-                                .titled(u'The Folder')
-                                .having(description=u'The Description',
+                                .titled('The Folder')
+                                .having(description='The Description',
                                         exclude_from_nav=True,
-                                        subjects=(u'One', u'Two'),
+                                        subjects=('One', 'Two'),
                                         effective=effective_date,
                                         expires=expires_date)
                                 .in_state('pending'))
@@ -192,7 +191,7 @@ class TestInplaceMigrator(UpgradeTestCase):
         self.grant('Manager')
 
         page = create(Builder('page')
-                      .titled(u'The Page')
+                      .titled('The Page')
                       .having(text='<p>Some Text</p>')
                       .in_state('published'))
 
@@ -218,13 +217,13 @@ class TestInplaceMigrator(UpgradeTestCase):
         self.grant('Manager')
 
         no_text_page = create(Builder('page')
-                              .titled(u'No Text Page')
-                              .having(text=u'')
+                              .titled('No Text Page')
+                              .having(text='')
                               .in_state('published'))
 
         self.assertFalse(IDexterityContent.providedBy(no_text_page))
         self.assertTrue(IBaseObject.providedBy(no_text_page))
-        self.assertEqual(u'', no_text_page.getText())
+        self.assertEqual('', no_text_page.getText())
 
         self.install_profile('plone.app.contenttypes:default')
         InplaceMigrator('Document').migrate_object(no_text_page)
@@ -239,7 +238,7 @@ class TestInplaceMigrator(UpgradeTestCase):
 
         thefile = create(
             Builder('file')
-            .titled(u'The File')
+            .titled('The File')
             .attach_file_containing('<doc>Content</doc>', name='data.xml'))
 
         self.assertTrue(IBaseObject.providedBy(thefile))
@@ -259,13 +258,13 @@ class TestInplaceMigrator(UpgradeTestCase):
 
     def test_field_mapping_overrides_auto_mapping(self):
         self.grant('Manager')
-        folder = create(Builder('folder').titled(u'The Title'))
+        folder = create(Builder('folder').titled('The Title'))
         self.install_profile('plone.app.contenttypes:default')
 
         InplaceMigrator('Folder', {'title': 'description'},
                         ignore_fields=['description']).migrate_object(folder)
         folder = self.portal.get(folder.getId())
-        self.assertEqual(u'The Title', folder.Description())
+        self.assertEqual('The Title', folder.Description())
 
     def test_DISABLE_FIELD_AUTOMAPPING_flag(self):
         """When disabling field automapping we expect unmaped fields.
@@ -294,7 +293,7 @@ class TestInplaceMigrator(UpgradeTestCase):
     def test_BACKUP_AND_IGNORE_UNMAPPED_FIELDS_flag(self):
         self.grant('Manager')
         folder = create(Builder('folder')
-                        .titled(u'The Folder')
+                        .titled('The Folder')
                         .having(description='A very fancy folder.'))
         self.install_profile('plone.app.contenttypes:default')
 
@@ -306,13 +305,13 @@ class TestInplaceMigrator(UpgradeTestCase):
 
         self.assertEqual(
             {'nextPreviousEnabled': False,
-             'description': u'A very fancy folder.',
+             'description': 'A very fancy folder.',
              'contributors': (),
-             'title': u'The Folder',
-             'rights': u'',
-             'language': u'en',
+             'title': 'The Folder',
+             'rights': '',
+             'language': 'en',
              'relatedItems': [],
-             'creators': (u'test_user_1_',)},
+             'creators': ('test_user_1_',)},
             IAnnotations(new_folder).get(
                 UNMAPPED_FIELDS_BACKUP_ANN_KEY, None))
 
@@ -344,7 +343,7 @@ class TestInplaceMigrator(UpgradeTestCase):
         self.grant('Manager')
         self.maxDiff = None
 
-        folder = create(Builder('folder').titled(u'The Folder'))
+        folder = create(Builder('folder').titled('The Folder'))
         self.set_constraintypes_config(
             folder,
             {'mode': ENABLED,
@@ -376,7 +375,7 @@ class TestInplaceMigrator(UpgradeTestCase):
         peter = create(Builder('user').named('Peter', 'Pan').with_roles('Manager'))
 
         login(self.portal, john.getId())
-        folder = create(Builder('folder').titled(u'The Folder'))
+        folder = create(Builder('folder').titled('The Folder'))
         folder.changeOwnership(peter.getUser())
 
         self.assertTrue(IBaseObject.providedBy(folder))
@@ -398,7 +397,7 @@ class TestInplaceMigrator(UpgradeTestCase):
         peter = create(Builder('user').named('Peter', 'Pan').with_roles('Manager'))
 
         login(self.portal, john.getId())
-        folder = create(Builder('folder').titled(u'The Folder'))
+        folder = create(Builder('folder').titled('The Folder'))
         folder.changeOwnership(peter.getUser())
 
         self.assertTrue(IBaseObject.providedBy(folder))
@@ -424,10 +423,10 @@ class TestInplaceMigrator(UpgradeTestCase):
 
     def test_migrate_object_position(self):
         self.grant('Manager')
-        container = create(Builder('folder').titled(u'Container'))
-        one = create(Builder('folder').titled(u'One').within(container))
-        two = create(Builder('folder').titled(u'Two').within(container))
-        three = create(Builder('folder').titled(u'Three').within(container))
+        container = create(Builder('folder').titled('Container'))
+        one = create(Builder('folder').titled('One').within(container))
+        two = create(Builder('folder').titled('Two').within(container))
+        three = create(Builder('folder').titled('Three').within(container))
 
         self.assertEqual(
             [0, 1, 2],
@@ -451,7 +450,7 @@ class TestInplaceMigrator(UpgradeTestCase):
     def test_migrate_portlets(self):
         self.grant('Manager')
 
-        folder = create(Builder('folder').titled(u'The Folder'))
+        folder = create(Builder('folder').titled('The Folder'))
         portlet = create(Builder('static portlet')
                          .within(folder)
                          .in_manager('plone.rightcolumn'))
@@ -471,8 +470,8 @@ class TestInplaceMigrator(UpgradeTestCase):
     def test_migrate_relations(self):
         self.grant('Manager')
 
-        foo = create(Builder('folder').titled(u'Foo'))
-        bar = create(Builder('folder').titled(u'Bar')
+        foo = create(Builder('folder').titled('Foo'))
+        bar = create(Builder('folder').titled('Bar')
                      .having(relatedItems=[foo]))
 
         self.assertEqual([foo], bar.getRelatedItems())

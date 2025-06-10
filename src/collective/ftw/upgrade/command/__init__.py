@@ -114,10 +114,10 @@ $ UPGRADE_PUBLIC_URL="http://my.site.com/foo/bar" bin/upgrade
 class UpgradeArgumentParser(argparse.ArgumentParser):
     def __init__(self, *args, **kwargs):
         kwargs['formatter_class'] = FlexiFormatter
-        super(UpgradeArgumentParser, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
 
-class UpgradeCommand(object):
+class UpgradeCommand:
 
     def __init__(self):
         self.parser = UpgradeArgumentParser(
@@ -125,7 +125,7 @@ class UpgradeCommand(object):
             epilog=DOCS)
 
         self.parser.add_argument('--version', action='version',
-                                 version='%(prog)s {0}'.format(VERSION))
+                                 version=f'%(prog)s {VERSION}')
 
         argcomplete.autocomplete(self.parser)
 
@@ -158,14 +158,14 @@ class UpgradeCommand(object):
                         output = json.loads(output)
                         info[args.picked_site] = output
                     else:
-                        logger.info('Acting on site {0}'.format(
+                        logger.info('Acting on site {}'.format(
                             args.picked_site))
                         print(output)
                 except StopIteration:
                     break
             if getattr(args, 'json', False):
                 # Pretty print the output of all sites.
-                print((json.dumps(info, indent=4)))
+                print(json.dumps(info, indent=4))
         else:
             args.func(args)
 
