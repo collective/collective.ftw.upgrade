@@ -24,7 +24,7 @@ class IFoo(Interface):
 class TestDirectoryMetaDirective(UpgradeTestCase):
 
     def setUp(self):
-        super(TestDirectoryMetaDirective, self).setUp()
+        super().setUp()
         self.profile = Builder('genericsetup profile')
         self.package.with_profile(self.profile)
 
@@ -40,16 +40,16 @@ class TestDirectoryMetaDirective(UpgradeTestCase):
             self.assert_upgrades([
                     {'source': ('10000000000000',),
                      'dest': ('20110101080000',),
-                     'title': u'Add action.'},
+                     'title': 'Add action.'},
 
                     {'source': ('20110101080000',),
                      'dest': ('20110202080000',),
-                     'title': u'Remove action.'}])
+                     'title': 'Remove action.'}])
 
     def test_first_source_version_is_last_regulare_upgrade_step(self):
         self.profile.with_upgrade(Builder('plone upgrade step')
                                   .upgrading('1000', to='1001')
-                                  .titled(u'Register foo utility.'))
+                                  .titled('Register foo utility.'))
         self.profile.with_upgrade(Builder('ftw upgrade step')
                                   .to(datetime(2011, 1, 1, 8))
                                   .named('add_action'))
@@ -58,11 +58,11 @@ class TestDirectoryMetaDirective(UpgradeTestCase):
             self.assert_upgrades([
                     {'source': ('1000',),
                      'dest': ('1001',),
-                     'title': u'Register foo utility.'},
+                     'title': 'Register foo utility.'},
 
                     {'source': ('1001',),
                      'dest': ('20110101080000',),
-                     'title': u'Add action.'}])
+                     'title': 'Add action.'}])
 
     def test_registers_migration_generic_setup_profile_foreach_step(self):
         self.profile.with_upgrade(Builder('ftw upgrade step')
@@ -136,9 +136,9 @@ class TestDirectoryMetaDirective(UpgradeTestCase):
         with self.package_created() as package:
             profile_path = str(package.package_path.joinpath('profiles', 'default'))
             self.assert_profile(
-                {'id': u'the.package:default',
-                 'title': u'the.package',
-                 'description': u'',
+                {'id': 'the.package:default',
+                 'title': 'the.package',
+                 'description': '',
                  'collective.ftw.upgrade:dependencies': None,
                  'path': profile_path,
                  'version': '20110202080000',
@@ -149,7 +149,7 @@ class TestDirectoryMetaDirective(UpgradeTestCase):
     def test_profile_version_is_set_to_latest_old_school_profile_version(self):
         self.profile.with_upgrade(Builder('plone upgrade step')
                                   .upgrading('1000', to='1001')
-                                  .titled(u'Register foo utility.'))
+                                  .titled('Register foo utility.'))
         self.profile.with_upgrade(Builder('ftw upgrade step')
                                   .to(datetime(2011, 2, 2, 8)))
 
@@ -166,11 +166,11 @@ class TestDirectoryMetaDirective(UpgradeTestCase):
 
         with package.zcml_loaded(self.layer['configurationContext']):
             from collective.ftw.upgrade.directory.zcml import find_start_version
-            find_start_version(u'the.package:default')
+            find_start_version('the.package:default')
             self.assert_profile(
-                {'id': u'the.package:default',
-                 'title': u'the.package',
-                 'description': u'',
+                {'id': 'the.package:default',
+                 'title': 'the.package',
+                 'description': '',
                  'collective.ftw.upgrade:dependencies': None,
                  'path': str(profile_path),
                  'version': '1001',
@@ -188,12 +188,12 @@ class TestDirectoryMetaDirective(UpgradeTestCase):
         with self.package_created() as package:
             profile_path = str(package.package_path.joinpath('profiles', 'default'))
             self.assert_profile(
-                {'id': u'the.package:default',
-                 'title': u'the.package',
-                 'description': u'',
+                {'id': 'the.package:default',
+                 'title': 'the.package',
+                 'description': '',
                  'collective.ftw.upgrade:dependencies': None,
                  'path': profile_path,
-                 'version': u'10000000000000',
+                 'version': '10000000000000',
                  'product': 'the.package',
                  'type': EXTENSION,
                  'for': None})
@@ -242,23 +242,23 @@ class TestDirectoryMetaDirective(UpgradeTestCase):
 
         with self.package_created() as package:
             self.assert_profile(
-                {'id': u'the.package:foo',
-                 'title': u'the.package',
-                 'description': u'',
-                 'collective.ftw.upgrade:dependencies': [u'the.package:bar',
-                                              u'the.package:baz'],
+                {'id': 'the.package:foo',
+                 'title': 'the.package',
+                 'description': '',
+                 'collective.ftw.upgrade:dependencies': ['the.package:bar',
+                                              'the.package:baz'],
                  'path': str(package.package_path.joinpath('profiles', 'foo')),
-                 'version': u'20100101010100',
+                 'version': '20100101010100',
                  'product': 'the.package',
                  'type': EXTENSION,
                  'for': None})
 
             portal_setup = getToolByName(self.portal, 'portal_setup')
             self.assertEqual(
-                [u'the.package:default',
-                 u'the.package:baz',
-                 u'the.package:bar',
-                 u'the.package:foo'],
+                ['the.package:default',
+                 'the.package:baz',
+                 'the.package:bar',
+                 'the.package:foo'],
                 [
                     profile_id for profile_id
                     in get_sorted_profile_ids(portal_setup)
@@ -283,8 +283,7 @@ class TestDirectoryMetaDirective(UpgradeTestCase):
             portal_setup = getToolByName(self.portal, 'portal_setup')
             steps = listUpgradeSteps(portal_setup, 'the.package:default', '10000000000000')
             self.assertEqual(1, len(steps))
-            six.assertCountEqual(
-                self,
+            self.assertCountEqual(
                 (IRecordableHandler,
                  IUpgradeStep,
                  IFoo),
@@ -293,16 +292,16 @@ class TestDirectoryMetaDirective(UpgradeTestCase):
 
     def assert_upgrades(self, expected):
         upgrades = self.portal_setup.listUpgrades('the.package:default')
-        got = [dict((key, value) for (key, value) in step.items()
-                    if key in ('source', 'dest', 'title'))
+        got = [{key: value for (key, value) in step.items()
+                    if key in ('source', 'dest', 'title')}
                for step in upgrades]
         self.maxDiff = None
-        six.assertCountEqual(self, expected, got)
+        self.assertCountEqual(expected, got)
 
     def assert_profile(self, expected):
         self.assertTrue(
             self.portal_setup.profileExists(expected['id']),
-            'Profile "{0}" does not exist. Profiles: {1}'.format(
+            'Profile "{}" does not exist. Profiles: {}'.format(
                 expected['id'],
                 [profile['id'] for profile in self.portal_setup.listProfileInfo()]))
 

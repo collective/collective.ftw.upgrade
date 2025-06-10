@@ -13,7 +13,7 @@ ANNOTATION_KEY = 'ftw.upgrade:recorder'
 
 
 @implementer(IUpgradeStepRecorder)
-class UpgradeStepRecorder(object):
+class UpgradeStepRecorder:
     adapts(IPloneSiteRoot, Interface)
 
     def __init__(self, portal, profilename):
@@ -48,7 +48,7 @@ class UpgradeStepRecorder(object):
         if profilename.startswith('profile-'):
             profilename = profilename[len('profile-'):]
 
-        if not isinstance(profilename, six.text_type):
+        if not isinstance(profilename, str):
             profilename = profilename.decode('utf-8')
 
         return profilename

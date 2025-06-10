@@ -16,7 +16,7 @@ class DeferrableUpgrade(UpgradeStep):
         pass
 
 
-class UpgradeStepBuilder(object):
+class UpgradeStepBuilder:
 
     def __init__(self, session):
         self.session = session
@@ -118,8 +118,8 @@ class UpgradeStepBuilder(object):
         zcml._upgrade_step_declarations[self.profile_builder.name] = True
 
     def _create_upgrade(self):
-        name = self.name.replace(' ', '_').replace('\.$', '')
-        step_name = '{0}_{1}'.format(self.destination_version,
+        name = self.name.replace(' ', '_').replace(r'\.$', '')
+        step_name = '{}_{}'.format(self.destination_version,
                                      inflection.underscore(name))
         if self.code is None:
             self.code = scaffold.PYTHON_TEMPLATE.format(

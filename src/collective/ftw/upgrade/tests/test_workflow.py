@@ -22,10 +22,10 @@ class TestWorkflowChainUpdater(WorkflowTestCase):
                                 to_workflow='intranet_folder_workflow')
 
         private_folder = create(Builder('folder')
-                                .titled(u'Private Folder')
+                                .titled('Private Folder')
                                 .in_state('private'))
         published_folder = create(Builder('folder')
-                                  .titled(u'Published Folder')
+                                  .titled('Published Folder')
                                   .in_state('internal'))
 
         objects = [private_folder, published_folder]
@@ -47,7 +47,7 @@ class TestWorkflowChainUpdater(WorkflowTestCase):
                                 to_workflow='intranet_workflow')
 
         container = create(Builder('folder')
-                           .titled(u'Container')
+                           .titled('Container')
                            .in_state('external'))
 
         mapping = {
@@ -65,7 +65,7 @@ class TestWorkflowChainUpdater(WorkflowTestCase):
                                 to_workflow='intranet_workflow')
 
         container = create(Builder('folder')
-                           .titled(u'Container')
+                           .titled('Container')
                            .in_state('internal'))
 
         self.assertIn('Member',
@@ -188,14 +188,14 @@ class TestWorkflowChainUpdater(WorkflowTestCase):
         history = wftool.getInfoFor(context, 'review_history')
         self.assertDictContainsSubset(
             expected, history[index],
-            'Workflow history entry is wrong.\n{0}'.format(history))
+            f'Workflow history entry is wrong.\n{history}')
 
     def assert_workflow_history_length(self, context, length):
         wftool = getToolByName(self.layer['portal'], 'portal_workflow')
         history = wftool.getInfoFor(context, 'review_history')
         self.assertEqual(
             length, len(history),
-            'Workflow history length is wrong.\n{0}'.format(history))
+            f'Workflow history length is wrong.\n{history}')
 
 
 class TestWorkflowSecurityUpdater(WorkflowTestCase):

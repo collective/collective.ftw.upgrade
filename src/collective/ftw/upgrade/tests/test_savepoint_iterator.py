@@ -10,7 +10,7 @@ class TestSavepointIterator(TestCase):
     layer = UPGRADE_FUNCTIONAL_TESTING
 
     def setUp(self):
-        super(TestSavepointIterator, self).setUp()
+        super().setUp()
         self.iterable = [1, 2, 3, 4, 5]
         self.txn = transaction.get()
 

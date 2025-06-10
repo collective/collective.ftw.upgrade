@@ -60,7 +60,7 @@ def truncate_value(message, lines):
     truncated = []
     for line in lines:
         if message in line:
-            line = u'{} XXX'.format(
+            line = '{} XXX'.format(
                 line[:line.index(message) + len(message)]
             )
         truncated.append(line)
@@ -68,11 +68,11 @@ def truncate_value(message, lines):
 
 
 def truncate_duration(lines):
-    return truncate_value(u'Upgrade step duration:', lines)
+    return truncate_value('Upgrade step duration:', lines)
 
 
 def truncate_memory(lines):
-    return truncate_value(u'Current memory usage in MB (RSS):', lines)
+    return truncate_value('Current memory usage in MB (RSS):', lines)
 
 
 def truncate_memory_and_duration(lines):

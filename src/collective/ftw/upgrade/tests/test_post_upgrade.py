@@ -1,7 +1,6 @@
 from ftw.builder import Builder
 from collective.ftw.upgrade.interfaces import IPostUpgrade
 from collective.ftw.upgrade.tests.base import UpgradeTestCase
-from six.moves import map
 from zope.interface import Interface
 
 
@@ -52,7 +51,7 @@ class TestPostUpgrade(UpgradeTestCase):
             execution_order = []
 
             def register_post_component_adapter(profile_id):
-                class PostComponentAdapter(object):
+                class PostComponentAdapter:
                     def __init__(self, portal, request):
                         pass
                     def __call__(self):

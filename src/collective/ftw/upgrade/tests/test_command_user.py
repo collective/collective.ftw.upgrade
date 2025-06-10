@@ -8,7 +8,7 @@ import os
 class TestUserCommand(CommandAndInstanceTestCase):
 
     def setUp(self):
-        super(TestUserCommand, self).setUp()
+        super().setUp()
         self.write_zconf_with_test_instance()
 
     def test_sites_help(self):
@@ -21,7 +21,7 @@ class TestUserCommand(CommandAndInstanceTestCase):
 
     def test_authentication_by_param(self):
         del os.environ['UPGRADE_AUTHENTICATION']
-        exitcode, output = self.upgrade_script('user --auth {0}:{1}'.format(
+        exitcode, output = self.upgrade_script('user --auth {}:{}'.format(
                 SITE_OWNER_NAME, SITE_OWNER_PASSWORD))
         self.assertEqual(0, exitcode)
         self.assertEqual('Authenticated as "admin".\n', output)

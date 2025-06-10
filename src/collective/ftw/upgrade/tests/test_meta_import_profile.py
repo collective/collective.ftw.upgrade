@@ -8,7 +8,7 @@ from Products.CMFCore.utils import getToolByName
 class TestImportProfileUpgradeStepDirective(UpgradeTestCase):
 
     def setUp(self):
-        super(TestImportProfileUpgradeStepDirective, self).setUp()
+        super().setUp()
         self.portal_actions = getToolByName(self.portal, 'portal_actions')
 
     def test_upgrade_step_directive_without_handler(self):

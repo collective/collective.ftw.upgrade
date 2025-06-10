@@ -64,7 +64,7 @@ class ConsoleScriptLayer(Layer):
                  name=None,
                  module=None):
 
-        super(ConsoleScriptLayer, self).__init__(bases=bases,
+        super().__init__(bases=bases,
                                                  name=name,
                                                  module=module)
         self.package_name = package_name
@@ -102,19 +102,20 @@ class ConsoleScriptLayer(Layer):
 
     def execute_script(self, command, assert_exitcode=True):
         command = self['root_path'] + '/bin/' + command
+        print(command)
         output, exitcode = self.system(
             command, with_exit_code=True).split('EXIT CODE: ')
         exitcode = int(exitcode)
 
         if assert_exitcode:
             assert exitcode == 0, ('Expected exit code 0, got'
-                                   ' {0} for "{1}".\nOutput:\n{2}'.format(
+                                   ' {} for "{}".\nOutput:\n{}'.format(
                                        exitcode, command, output))
 
         return exitcode, output
 
     def get_buildout_cfg(self, dependencies):
-        extras = self.extras and '[{0}]'.format(', '.join(self.extras)) or ''
+        extras = self.extras and '[{}]'.format(', '.join(self.extras)) or ''
         versions = '\n'.join('='.join((name, version))
                              for (name, version) in dependencies.items())
 

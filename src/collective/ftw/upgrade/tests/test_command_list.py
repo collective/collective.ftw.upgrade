@@ -2,7 +2,6 @@ from datetime import datetime
 from ftw.builder import Builder
 from collective.ftw.upgrade.command import jsonapi
 from collective.ftw.upgrade.tests.base import CommandAndInstanceTestCase
-from six.moves import map
 
 import json
 import re
@@ -12,7 +11,7 @@ import six
 class TestListCommand(CommandAndInstanceTestCase):
 
     def setUp(self):
-        super(TestListCommand, self).setUp()
+        super().setUp()
         self.write_zconf_with_test_instance()
 
     def test_help(self):
@@ -31,7 +30,7 @@ class TestListCommand(CommandAndInstanceTestCase):
             exitcode, output = self.upgrade_script('list --profiles -s plone')
             self.assertEqual(0, exitcode)
 
-            normalized_output = list(map(six.text_type.strip,
+            normalized_output = list(map(str.strip,
                                          re.sub(r' +', ' ', output).splitlines()))
             self.assertIn('Installed profiles:', normalized_output)
             self.assertIn('the.package:default'
@@ -152,7 +151,7 @@ class TestListCommand(CommandAndInstanceTestCase):
             self.assertEqual(0, exitcode)
 
             self.assertMultiLineEqual(
-                u'Proposed upgrades:\n'
+                'Proposed upgrades:\n'
                 'ID:                                            Title:             \n'
                 '20110101000000@the.package:default DEFERRABLE  DeferrableUpgrade  \n',
                 output)
@@ -279,7 +278,7 @@ class TestListCommand(CommandAndInstanceTestCase):
             'list --upgrades -s plone --json --instance=instance1',
             assert_exitcode=False)
         self.assertEqual(1, exitcode)
-        self.assertEqual(u'ERROR: No running Plone instance detected.\n', output)
+        self.assertEqual('ERROR: No running Plone instance detected.\n', output)
 
         exitcode, output = self.upgrade_script(
             'list --upgrades -s plone --json --instance=instance')

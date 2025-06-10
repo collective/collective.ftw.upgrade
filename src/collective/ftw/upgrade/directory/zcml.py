@@ -21,16 +21,16 @@ import zope.schema
 class IUpgradeStepDirectoryDirective(Interface):
 
     profile = zope.schema.TextLine(
-        title=u"GenericSetup profile id",
+        title="GenericSetup profile id",
         required=True)
 
     directory = Path(
-        title=u'Path to the upgrade steps directory',
+        title='Path to the upgrade steps directory',
         required=True)
 
     soft_dependencies = Tokens(
-        title=u'List of Generic Setup profile dependencies.',
-        description=u'Format: "my.package:default"',
+        title='List of Generic Setup profile dependencies.',
+        description='Format: "my.package:default"',
         required=False,
         value_type=zope.schema.TextLine())
 
@@ -58,13 +58,13 @@ def upgrade_step_directory_action(profile, dottedname, path,
 
     if profile not in _profile_registry.listProfiles():
         raise UpgradeStepConfigurationError(
-            'The profile "{0}" needs to be registered before registering its'
+            'The profile "{}" needs to be registered before registering its'
             ' upgrade step directory.'.format(profile))
 
     profileinfo = _profile_registry.getProfileInfo(profile)
     if profileinfo.get('version', None) is not None:
         raise UpgradeStepConfigurationError(
-            'Registering an upgrades directory for "{0}" requires this profile'
+            'Registering an upgrades directory for "{}" requires this profile'
             ' to not define a version in its metadata.xml.'
             ' The version is automatically set to the latest upgrade.'.format(
                 profile))
@@ -72,12 +72,12 @@ def upgrade_step_directory_action(profile, dottedname, path,
     _package, profilename = profile.split(':', 1)
     last_version = ''.join(find_start_version(profile))
     for upgrade_info in scanner.scan():
-        upgrade_profile_name = '{0}-upgrade-{1}'.format(
+        upgrade_profile_name = '{}-upgrade-{}'.format(
             profilename, upgrade_info['target-version'])
 
         upgrade_handler = wrap_upgrade_step(
             handler=upgrade_info['callable'],
-            upgrade_profile='profile-{0}:{1}'.format(dottedname,
+            upgrade_profile='profile-{}:{}'.format(dottedname,
                                                      upgrade_profile_name),
             base_profile=profile,
             target_version=upgrade_info['target-version'])
@@ -92,7 +92,7 @@ def upgrade_step_directory_action(profile, dottedname, path,
 
         _profile_registry.registerProfile(
             name=upgrade_profile_name,
-            title='Upgrade {0} to {1}: {2}'.format(
+            title='Upgrade {} to {}: {}'.format(
                 profile,
                 upgrade_info['target-version'],
                 upgrade_info['title']),

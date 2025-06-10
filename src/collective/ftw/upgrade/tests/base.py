@@ -24,9 +24,7 @@ from plone.app.testing import TEST_USER_ID
 from plone.app.testing import TEST_USER_PASSWORD
 from plone.restapi.testing import RelativeSession
 from Products.CMFCore.utils import getToolByName
-from six import StringIO
-from six.moves import map
-from six.moves import zip
+from io import StringIO
 from unittest import TestCase
 from zope.component import getMultiAdapter
 from zope.component import queryAdapter
@@ -115,10 +113,10 @@ class UpgradeTestCase(TestCase, AssertMixin):
         return Builder('plone upgrade step').upgrading('1000', to='1001')
 
     def install_profile(self, profileid, version=None):
-        self.portal_setup.runAllImportStepsFromProfile('profile-{0}'.format(profileid))
+        self.portal_setup.runAllImportStepsFromProfile(f'profile-{profileid}')
         if version is not None:
             self.portal_setup.setLastVersionForProfile(
-                profileid, (six.text_type(version),))
+                profileid, (str(version),))
         transaction.commit()
 
     def install_profile_upgrades(self, *profileids, **kwargs):
@@ -156,7 +154,7 @@ class UpgradeTestCase(TestCase, AssertMixin):
             if profile['id'] not in expected:
                 continue
 
-            got_profile = dict((key, []) for key in expected[profile['id']].keys())
+            got_profile = {key: [] for key in expected[profile['id']].keys()}
             got[profile['id']] = got_profile
 
             for upgrade in profile['upgrades']:
@@ -167,7 +165,7 @@ class UpgradeTestCase(TestCase, AssertMixin):
         self.maxDiff = None
         self.assertDictEqual(
             expected, got,
-            'Unexpected gatherer result.\n\nPackages in result {0}:'.format(
+            'Unexpected gatherer result.\n\nPackages in result {}:'.format(
                 [profile['id'] for profile in result]))
 
     def asset(self, filename):
@@ -284,7 +282,7 @@ class WorkflowTestCase(TestCase, AssertMixin):
 
         self.assertNotIn(
             permission, not_acquired_permissions,
-            'Expected permission "%s" to be acquired on %s%s' % (
+            'Expected permission "{}" to be acquired on {}{}'.format(
                 permission, str(obj),
                 msg and (' (%s)' % msg) or ''))
 
@@ -293,7 +291,7 @@ class WorkflowTestCase(TestCase, AssertMixin):
 
         self.assertIn(
             permission, not_acquired_permissions,
-            'Expected permission "%s" to NOT be acquired on %s%s' % (
+            'Expected permission "{}" to NOT be acquired on {}{}'.format(
                 permission, str(obj),
                 msg and (' (%s)' % msg) or ''))
 
@@ -323,7 +321,7 @@ class JsonApiTestCase(UpgradeTestCase):
 
     def assert_json_contains_profile(self, expected_profileinfo, got, msg=None):
         profileid = expected_profileinfo['id']
-        got_profiles = dict([(profile['id'], profile) for profile in got])
+        got_profiles = {profile['id']: profile for profile in got}
         self.assertIn(profileid, got_profiles,
                       'assert_json_contains_profile: expected profile not in JSON')
         self.assert_json_equal(expected_profileinfo, got_profiles[profileid], msg)
@@ -352,7 +350,7 @@ class JsonApiTestCase(UpgradeTestCase):
                 data = {'enforce': 'post'}
             response = self.api_session.post(path, data=data)
         else:
-            raise Exception('Unsupported request method {0}'.format(method))
+            raise Exception(f'Unsupported request method {method}')
         return response
 
     def api_request(self, method, action, data=(), authenticate=True, context=None):
@@ -369,17 +367,17 @@ class JsonApiTestCase(UpgradeTestCase):
             self.api_session.auth = None
 
         if method.lower() == 'get':
-            response = self.api_session.get('{0}/upgrades-api/{1}?{2}'.format(
+            response = self.api_session.get('{}/upgrades-api/{}?{}'.format(
                 url, action, six.moves.urllib.parse.urlencode(data)))
 
         elif method.lower() == 'post':
             if not data:
                 data = {'enforce': 'post'}
             response = self.api_session.post(
-                '{0}/upgrades-api/{1}'.format(url, action),
+                f'{url}/upgrades-api/{action}',
                 data=data)
         else:
-            raise Exception('Unsupported request method {0}'.format(method))
+            raise Exception(f'Unsupported request method {method}')
         return response
 
     @contextmanager
@@ -419,7 +417,7 @@ class CommandAndInstanceTestCase(JsonApiTestCase, CommandTestCase):
     layer = COMMAND_AND_UPGRADE_FUNCTIONAL_TESTING
 
     def setUp(self):
-        super(CommandAndInstanceTestCase, self).setUp()
+        super().setUp()
         self.directory.joinpath('var').mkdir_p()
         os.environ['UPGRADE_AUTHENTICATION'] = ':'.join((SITE_OWNER_NAME,
                                                          SITE_OWNER_PASSWORD))
@@ -439,7 +437,7 @@ class CommandAndInstanceTestCase(JsonApiTestCase, CommandTestCase):
         etc1.makedirs()
         etc1.joinpath('zope.conf').write_text(
             '\n'.join(('<http-server>',
-                       '  address {0}'.format(port),
+                       f'  address {port}',
                        '</http-server>')))
         return etc1.dirname()
 

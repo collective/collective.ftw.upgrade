@@ -41,7 +41,7 @@ class IMyProductLayer(Interface):
 class TestUpgradeStep(UpgradeTestCase):
 
     def setUp(self):
-        super(TestUpgradeStep, self).setUp()
+        super().setUp()
         self.portal = self.layer['portal']
         self.portal_setup = getToolByName(self.portal, 'portal_setup')
         self.setup_logging()
@@ -87,9 +87,9 @@ class TestUpgradeStep(UpgradeTestCase):
 
     def test_objects_method_yields_objects_with_logging(self):
         testcase = self
-        create(Builder('folder').titled(u'Foo'))
-        create(Builder('folder').titled(u'Bar'))
-        create(Builder('folder').titled(u'Baz'))
+        create(Builder('folder').titled('Foo'))
+        create(Builder('folder').titled('Bar'))
+        create(Builder('folder').titled('Baz'))
 
         object_titles = []
 
@@ -103,7 +103,7 @@ class TestUpgradeStep(UpgradeTestCase):
 
         Step(self.portal_setup)
 
-        self.assertEqual(set(['Foo', 'Bar', 'Baz']), set(object_titles))
+        self.assertEqual({'Foo', 'Bar', 'Baz'}, set(object_titles))
 
         self.assertEqual(['STARTING Log message',
                           '1 of 3 (33%): Log message',
@@ -134,9 +134,9 @@ class TestUpgradeStep(UpgradeTestCase):
 
     def test_brains_method_yields_brains_with_logging(self):
         testcase = self
-        create(Builder('folder').titled(u'Foo'))
-        create(Builder('folder').titled(u'Bar'))
-        create(Builder('folder').titled(u'Baz'))
+        create(Builder('folder').titled('Foo'))
+        create(Builder('folder').titled('Bar'))
+        create(Builder('folder').titled('Baz'))
 
         brain_titles = []
         brain_classes = set()
@@ -152,7 +152,7 @@ class TestUpgradeStep(UpgradeTestCase):
 
         Step(self.portal_setup)
 
-        self.assertEqual(set(['Foo', 'Bar', 'Baz']), set(brain_titles))
+        self.assertEqual({'Foo', 'Bar', 'Baz'}, set(brain_titles))
         self.assertEqual({"mybrains"}, brain_classes)
 
         self.assertEqual(['STARTING Log message',
@@ -198,7 +198,7 @@ class TestUpgradeStep(UpgradeTestCase):
                 testcase.assertEqual(1, ctool._catalog.getIndex(name).indexSize())
 
         create(Builder('folder')
-               .titled(u'Rebuild Index Test Obj'))
+               .titled('Rebuild Index Test Obj'))
 
         Step(self.portal_setup)
 
@@ -347,8 +347,8 @@ class TestUpgradeStep(UpgradeTestCase):
         testcase = self
 
         folder = create(Builder('folder'))
-        create(Builder('document').titled(u'Page One').within(folder))
-        create(Builder('document').titled(u'Page Two').within(folder))
+        create(Builder('document').titled('Page One').within(folder))
+        create(Builder('document').titled('Page Two').within(folder))
 
         folder_path = '/'.join(folder.getPhysicalPath())
 
@@ -627,12 +627,12 @@ class TestUpgradeStep(UpgradeTestCase):
             def __call__(self):
                 testcase.assertEqual('unknown', self.get_version())
                 self.ensure_profile_installed('profile-the.package:default')
-                testcase.assertEqual((u'1111',), self.get_version())
-                self.set_version((u'1000',))
-                testcase.assertEqual((u'1000',), self.get_version())
+                testcase.assertEqual(('1111',), self.get_version())
+                self.set_version(('1000',))
+                testcase.assertEqual(('1000',), self.get_version())
                 self.ensure_profile_installed('profile-the.package:default')
                 testcase.assertEqual(
-                    (u'1000',), self.get_version(),
+                    ('1000',), self.get_version(),
                     'Profile should not have been installed again because it'
                     ' was already installed.')
 
@@ -1010,7 +1010,7 @@ class TestUpgradeStep(UpgradeTestCase):
 
         self.assertNotIn(
             permission, not_acquired_permissions,
-            'Expected permission "%s" to be acquired on %s' % (
+            'Expected permission "{}" to be acquired on {}'.format(
                 permission, str(obj)))
 
     def assert_permission_not_acquired(self, permission, obj):
@@ -1018,7 +1018,7 @@ class TestUpgradeStep(UpgradeTestCase):
 
         self.assertIn(
             permission, not_acquired_permissions,
-            'Expected permission "%s" to NOT be acquired on %s' % (
+            'Expected permission "{}" to NOT be acquired on {}'.format(
                 permission, str(obj)))
 
     def get_not_acquired_permissions_of(self, obj):

@@ -91,6 +91,6 @@ class TestUpgradeStepCreator(TestCase):
             code = python_file.read()
 
         got = {'name': expected['name'],
-               'classname': re.search('class ([^\(]*)\(UpgradeStep\):', code).group(1),
+               'classname': re.search(r'class ([^\(]*)\(UpgradeStep\):', code).group(1),
                'docstring': re.compile('"""(.*?)"""', re.DOTALL).search(code).group(1).strip()}
         self.assertDictEqual(expected, got)

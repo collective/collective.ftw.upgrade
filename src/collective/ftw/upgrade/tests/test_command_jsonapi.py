@@ -12,13 +12,12 @@ from plone.app.testing import SITE_OWNER_PASSWORD
 from Products.CMFPlone.utils import safe_unicode
 from requests.auth import HTTPBasicAuth
 from requests.exceptions import HTTPError
-from six.moves import map
 
 import os
 import time
 
 
-class ZopeConfPathStub(object):
+class ZopeConfPathStub:
     """Stubs a path.py Path object for a zope.conf file.
     """
 
@@ -32,15 +31,15 @@ class ZopeConfPathStub(object):
 class TestAPIRequestor(CommandAndInstanceTestCase):
 
     def setUp(self):
-        super(TestAPIRequestor, self).setUp()
+        super().setUp()
         self.write_zconf_with_test_instance()
 
     def test_GET(self):
         requestor = APIRequestor(HTTPBasicAuth(SITE_OWNER_NAME, SITE_OWNER_PASSWORD))
         jsondata = requestor.GET('list_plone_sites').json()
-        self.assertEqual([{u'id': u'plone',
-                           u'path': u'/plone',
-                           u'title': u'Plone site'}],
+        self.assertEqual([{'id': 'plone',
+                           'path': '/plone',
+                           'title': 'Plone site'}],
                          jsondata)
 
     def test_GET_raises_error(self):
@@ -48,9 +47,9 @@ class TestAPIRequestor(CommandAndInstanceTestCase):
         with self.assertRaises(HTTPError) as cm:
             requestor.GET('wrong_action')
 
-        self.assertEqual([u'ERROR',
-                          u'Unkown API action',
-                          u'There is no API action "wrong_action".'],
+        self.assertEqual(['ERROR',
+                          'Unkown API action',
+                          'There is no API action "wrong_action".'],
             cm.exception.response.json())
 
     def test_GET_with_params(self):
@@ -95,15 +94,15 @@ class TestJsonAPIUtils(CommandAndInstanceTestCase):
         test_instance_port = self.layer['port']
 
         self.assertEqual(
-            'http://localhost:{0}/upgrades-api/foo'.format(test_instance_port),
+            f'http://localhost:{test_instance_port}/upgrades-api/foo',
             get_api_url('foo'))
 
         self.assertEqual(
-            'http://localhost:{0}/Plone/upgrades-api/bar'.format(test_instance_port),
+            f'http://localhost:{test_instance_port}/Plone/upgrades-api/bar',
             get_api_url('bar', site='Plone'))
 
         self.assertEqual(
-            'http://localhost:{0}/Plone/upgrades-api/baz'.format(test_instance_port),
+            f'http://localhost:{test_instance_port}/Plone/upgrades-api/baz',
             get_api_url('baz', site='/Plone/'))
 
     def test_get_api_url_with_public_url(self):
@@ -112,28 +111,28 @@ class TestJsonAPIUtils(CommandAndInstanceTestCase):
 
         os.environ['UPGRADE_PUBLIC_URL'] = 'http://domain.com'
         self.assertEqual(
-            'http://localhost:{0}/'
+            'http://localhost:{}/'
             'VirtualHostBase/http/domain.com:80/mount-point/platform/'
             'VirtualHostRoot/upgrades-api/action'.format(test_instance_port),
             get_api_url('action', site='mount-point/platform'))
 
         os.environ['UPGRADE_PUBLIC_URL'] = 'https://domain.com'
         self.assertEqual(
-            'http://localhost:{0}/'
+            'http://localhost:{}/'
             'VirtualHostBase/https/domain.com:443/mount-point/platform/'
             'VirtualHostRoot/upgrades-api/action'.format(test_instance_port),
             get_api_url('action', site='mount-point/platform'))
 
         os.environ['UPGRADE_PUBLIC_URL'] = 'https://domain.com/'
         self.assertEqual(
-            'http://localhost:{0}/'
+            'http://localhost:{}/'
             'VirtualHostBase/https/domain.com:443/mount-point/platform/'
             'VirtualHostRoot/upgrades-api/action'.format(test_instance_port),
             get_api_url('action', site='mount-point/platform'))
 
         os.environ['UPGRADE_PUBLIC_URL'] = 'https://domain.com/foo'
         self.assertEqual(
-            'http://localhost:{0}/'
+            'http://localhost:{}/'
             'VirtualHostBase/https/domain.com:443/mount-point/platform/'
             'VirtualHostRoot/_vh_foo/upgrades-api/action'.format(test_instance_port),
             get_api_url('action', site='mount-point/platform'))
@@ -147,7 +146,7 @@ class TestJsonAPIUtils(CommandAndInstanceTestCase):
         with self.assertRaises(NoRunningInstanceFound):
             get_api_url('foo', instance_name='instance1')
         self.assertEqual(
-            'http://localhost:{0}/upgrades-api/foo'.format(test_instance_port),
+            f'http://localhost:{test_instance_port}/upgrades-api/foo',
             get_api_url('foo', instance_name='instance2'))
 
     def test_get_zope_url_without_zconf(self):
@@ -192,7 +191,7 @@ class TestJsonAPIUtils(CommandAndInstanceTestCase):
         test_instance_port = self.layer['port']
         self.write_zconf('instance1', '1000')
         part2 = self.write_zconf('instance2',
-                                 '0.0.0.0:{0}'.format(test_instance_port))
+                                 f'0.0.0.0:{test_instance_port}')
         self.assertEqual(
             {'port': test_instance_port,
              'path': str(part2)},

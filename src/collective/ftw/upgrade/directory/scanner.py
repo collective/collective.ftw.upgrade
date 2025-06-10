@@ -4,24 +4,19 @@ from collective.ftw.upgrade.utils import subject_from_docstring
 from functools import reduce
 from glob import glob
 from Products.GenericSetup.upgrade import normalize_version
-from six.moves import filter
-from six.moves import map
 
 import inspect
 import os.path
 import re
 import six
 
-if six.PY2:
-    import imp
-else:
-    import importlib
+import importlib
 
 
 UPGRADESTEP_DATETIME_REGEX = re.compile(r'^.*/?(\d{14})[^/]*/upgrade.py$')
 
 
-class Scanner(object):
+class Scanner:
 
     def __init__(self, dottedname, directory):
         self.dottedname = dottedname
@@ -39,13 +34,10 @@ class Scanner(object):
 
     def _find_upgrade_directories(self):
         return list(filter(UPGRADESTEP_DATETIME_REGEX.match,
-                           glob('{0}/*/upgrade.py'.format(self.directory))))
+                           glob(f'{self.directory}/*/upgrade.py')))
 
     def _build_upgrade_step_info(self, path):
-        if six.PY2:
-            title, callable = self._load_upgrade_step_code_py27(path)
-        else:
-            title, callable = self._load_upgrade_step_code(path)
+        title, callable = self._load_upgrade_step_code(path)
         return {'source-version': None,
                 'target-version':
                     UPGRADESTEP_DATETIME_REGEX.match(path).group(1),
@@ -79,12 +71,12 @@ class Scanner(object):
 
         if len(upgrade_steps) == 0:
             raise UpgradeStepDefinitionError(
-                'The upgrade step {0} has no upgrade class in the'
+                'The upgrade step {} has no upgrade class in the'
                 ' upgrade.py module.'.format(os.path.basename(path)))
 
         if len(upgrade_steps) > 1:
             raise UpgradeStepDefinitionError(
-                'The upgrade step {0} has more than one upgrade class in the'
+                'The upgrade step {} has more than one upgrade class in the'
                 ' upgrade.py module.'.format(os.path.basename(path)))
 
         return upgrade_steps[0]
@@ -111,14 +103,14 @@ class Scanner(object):
 
         if len(upgrade_steps) == 0:
             raise UpgradeStepDefinitionError(
-                'The upgrade step file {0} has no upgrade class.'.format(
+                'The upgrade step file {} has no upgrade class.'.format(
                     upgrade_path
                 )
             )
 
         if len(upgrade_steps) > 1:
             raise UpgradeStepDefinitionError(
-                'The upgrade step file {0} has more than one upgrade class.'.format(  # noqa: E501
+                'The upgrade step file {} has more than one upgrade class.'.format(  # noqa: E501
                     upgrade_path
                 )
             )

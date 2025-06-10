@@ -1,5 +1,4 @@
 from collective.ftw.upgrade.transactionnote import TransactionNote
-from six.moves import range
 from unittest import TestCase
 
 import transaction
@@ -22,8 +21,8 @@ class TestTransactionNote(TestCase):
         note.set_transaction_note()
 
         self.assertEqual(
-            u'my.package:default -> 1.1 (Migrate objects)\n'
-            u'my.package:default -> 1702 (Remove utility)',
+            'my.package:default -> 1.1 (Migrate objects)\n'
+            'my.package:default -> 1702 (Remove utility)',
             transaction.get().description)
 
     def test_description_is_removed_when_note_gets_too_long(self):
@@ -42,8 +41,8 @@ class TestTransactionNote(TestCase):
             ' transaction note.'
 
         self.assertEqual(
-            u'my.package:default -> 1000\n'
-            u'my.package:default -> 1001',
+            'my.package:default -> 1000\n'
+            'my.package:default -> 1001',
             transaction.get().description)
 
     def test_cropped_when_too_long_even_without_description(self):

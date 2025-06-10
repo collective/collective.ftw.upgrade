@@ -28,7 +28,7 @@ if HAS_INDEXING:
     from collective.ftw.upgrade.progresslogger import ProgressLogger
     from zope.globalrequest import getRequest
 
-    class LoggingQueueProcessor(object):
+    class LoggingQueueProcessor:
         """Queue processor to log collective.indexing progress.
 
         A queue processor is used whenever a collective.indexing queue is

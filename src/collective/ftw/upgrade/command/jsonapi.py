@@ -1,11 +1,10 @@
-from __future__ import print_function
 from binascii import hexlify
 from collective.ftw.upgrade.utils import get_tempfile_authentication_directory
 from path import Path
 from requests.auth import AuthBase
 from requests.auth import HTTPBasicAuth
 from requests.exceptions import HTTPError
-from six.moves.urllib.parse import urlparse
+from urllib.parse import urlparse
 
 import cgi
 import hashlib
@@ -31,7 +30,7 @@ class NoRunningInstanceFound(Exception):
     pass
 
 
-class APIRequestor(object):
+class APIRequestor:
 
     def __init__(self, auth, site=None, instance_name=None):
         self.session = requests.Session()
@@ -133,7 +132,7 @@ def with_api_requestor(func):
         if auth_value:
             if len(auth_value.split(':')) != 2:
                 print('ERROR: Invalid authentication information '
-                      '"{0}".'.format(auth_value))
+                      '"{}".'.format(auth_value))
                 print('A string of form "<username>:<password>" is required.')
                 sys.exit(1)
             auth = HTTPBasicAuth(*auth_value.split(':'))
@@ -195,7 +194,7 @@ def extend_url_with_virtualhost_config(zope_url, public_url, site):
     # a port is required for the virtual host monster to work nicely.
     if not urlinfo.port:
         ports = {'http': 80, 'https': 443}
-        urlinfo = urlinfo._replace(netloc='{0}:{1}'.format(
+        urlinfo = urlinfo._replace(netloc='{}:{}'.format(
             urlinfo.hostname,
             ports[urlinfo.scheme]))
 
@@ -218,7 +217,7 @@ def get_zope_url(instance_name=None):
     instance = get_running_instance(Path.cwd(), instance_name)
     if not instance:
         raise NoRunningInstanceFound()
-    return 'http://localhost:{0}/'.format(instance['port'])
+    return 'http://localhost:{}/'.format(instance['port'])
 
 
 def _get_running_instance(buildout_path, instance_name=None):

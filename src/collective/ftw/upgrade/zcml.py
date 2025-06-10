@@ -16,31 +16,31 @@ class IImportProfileUpgradeStep(Interface):
     """
 
     title = zope.schema.TextLine(
-        title=u"Title",
+        title="Title",
         required=True)
 
     description = zope.schema.TextLine(
-        title=u"Upgrade step description",
+        title="Upgrade step description",
         required=False)
 
     profile = zope.schema.TextLine(
-        title=u"GenericSetup profile id",
+        title="GenericSetup profile id",
         required=True)
 
     source = zope.schema.ASCII(
-        title=u"Source version",
+        title="Source version",
         required=True)
 
     destination = zope.schema.ASCII(
-        title=u"Destination version",
+        title="Destination version",
         required=True)
 
     directory = Path(
-        title=u'Path',
+        title='Path',
         required=True)
 
     handler = GlobalObject(
-        title=u'Handler',
+        title='Handler',
         required=False)
 
 
@@ -59,7 +59,7 @@ def importProfileUpgradeStep(_context, title, profile, source, destination,
     if handler is None:
         handler = DefaultUpgradeStep
 
-    profileid = 'profile-%s:%s' % (_context.package.__name__, profile_id)
+    profileid = f'profile-{_context.package.__name__}:{profile_id}'
     def handler_wrapper(portal_setup):
         return handler(portal_setup, profileid)
 

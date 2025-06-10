@@ -45,7 +45,7 @@ LOG = logging.getLogger('collective.ftw.upgrade')
 
 
 @implementer(IUpgradeStep)
-class UpgradeStep(object):
+class UpgradeStep:
     security = ClassSecurityInformation()
 
     deferrable = False
@@ -454,7 +454,7 @@ class UpgradeStep(object):
                     [Interface, IBrowserRequest, IBrowserView],
                     IPortletManagerRenderer,
                     name)
-            LOG.info("Removed portlet manager renderer {0}".format(name))
+            LOG.info(f"Removed portlet manager renderer {name}")
 
         with log_silencer("ZODB.Connection", "Couldn't load state for"):
             manager = sm.queryUtility(IPortletManager, name=name)
@@ -462,7 +462,7 @@ class UpgradeStep(object):
                 sm.unregisterUtility(component=manager,
                                      name=name,
                                      provided=IPortletManager)
-                LOG.info("Removed portlet manager {0}".format(name))
+                LOG.info(f"Removed portlet manager {name}")
 
     security.declarePrivate('update_security')
     def update_security(self, obj, reindex_security=True):
@@ -481,7 +481,7 @@ class UpgradeStep(object):
         """
 
         if getattr(workflow_names, '__iter__', None) is None or \
-                isinstance(workflow_names, (str, six.text_type)):
+                isinstance(workflow_names, str):
             raise ValueError(
                 '"workflows" must be a list of workflow names.')
 

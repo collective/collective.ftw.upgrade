@@ -20,8 +20,6 @@ from plone.uuid.interfaces import IMutableUUID
 from plone.uuid.interfaces import IUUID
 from Products.CMFPlone.interfaces import constrains
 from Products.CMFPlone.utils import getFSVersionTuple
-from six.moves import filter
-from six.moves import map
 from z3c.relationfield.event import _setRelation
 from z3c.relationfield.interfaces import IRelation
 from z3c.relationfield.relation import create_relation
@@ -166,7 +164,7 @@ class FieldsNotMappedError(ValueError):
             raise NotImplementedError(
                 'The inplace migrator migrates from Archetypes.'
                 ' Plone 5 has no Archetypes objects.')
-        super(FieldsNotMappedError, self).__init__(
+        super().__init__(
             self.message_template.format(
                 not_mapped='\n- '.join(sorted(not_mapped)),
                 old_type=old_type,
@@ -178,7 +176,7 @@ class FieldsNotMappedError(ValueError):
         self.target_fields = target_fields
 
 
-class InplaceMigrator(object):
+class InplaceMigrator:
     """The inplace migrator allows to easily migrate object inplace
     to dexterity objects.
 
@@ -407,7 +405,7 @@ class InplaceMigrator(object):
         recurse = partial(self.normalize_at_field_value,
                           old_field, old_fieldname)
 
-        if isinstance(value, six.binary_type):
+        if isinstance(value, bytes):
             return recurse(value.decode('utf-8'))
 
         if isinstance(value, list):
@@ -448,7 +446,7 @@ class InplaceMigrator(object):
     def prepare_field_value(self, new_object, field, value):
         recurse = partial(self.prepare_field_value, new_object, field)
 
-        if isinstance(value, six.binary_type):
+        if isinstance(value, bytes):
             return recurse(value.decode('utf-8'))
 
         if isinstance(value, list):
@@ -459,7 +457,7 @@ class InplaceMigrator(object):
 
         relation_fields = list(filter(
             IRelation.providedBy, (field, getattr(field, 'value_type', None))))
-        if relation_fields and isinstance(value, six.text_type):
+        if relation_fields and isinstance(value, str):
             target = uuidToObject(value)
             return create_relation('/'.join(target.getPhysicalPath()))
 
@@ -485,7 +483,7 @@ class InplaceMigrator(object):
 
             if source_is_blobby and target_is_blobby:
                 filename = value.filename
-                if isinstance(filename, six.binary_type):
+                if isinstance(filename, bytes):
                     filename = filename.decode('utf-8')
 
                 new_value = field._type(
@@ -507,7 +505,7 @@ class InplaceMigrator(object):
 
             else:
                 filename = value.filename
-                if isinstance(filename, six.binary_type):
+                if isinstance(filename, bytes):
                     filename = filename.decode('utf-8')
 
                 data = value.data
@@ -536,7 +534,7 @@ class InplaceMigrator(object):
     def add_relations_to_relation_catalog(self, old_object, new_object):
         for behavior_interface, name, relation in extract_relations(
                 new_object):
-            if isinstance(relation, (str, six.text_type)):
+            if isinstance(relation, str):
                 # We probably got a UID, but we are working with intids
                 # and can not do anything with it, so we skip it.
                 LOG.warning('Got a invalid relation ({!r}), which is not '

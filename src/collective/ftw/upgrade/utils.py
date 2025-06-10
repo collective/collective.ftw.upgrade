@@ -5,7 +5,6 @@ from contextlib import contextmanager
 from copy import deepcopy
 from collective.ftw.upgrade.exceptions import CyclicDependencies
 from path import Path
-from six.moves import map
 from zExceptions import NotFound
 from zope.component.hooks import getSite
 from zope.component.hooks import setSite
@@ -20,7 +19,7 @@ import tarjan.tc
 import transaction
 
 
-class SafeObjectGetter(object):
+class SafeObjectGetter:
 
     security = ClassSecurityInformation()
 
@@ -130,7 +129,7 @@ def find_cyclic_dependencies(dependencies):
     return cyclic_dependencies
 
 
-class SizedGenerator(object):
+class SizedGenerator:
 
     def __init__(self, generator, length):
         self._length = length
@@ -143,7 +142,7 @@ class SizedGenerator(object):
         return self._length
 
 
-class SavepointIterator(object):
+class SavepointIterator:
     """An iterator that creates a savepoint every n items.
 
     The goal of this iterator is to move data from the current transaction to
@@ -203,12 +202,12 @@ class SavepointIterator(object):
         try:
             value = int(value)
         except ValueError:
-            raise ValueError('Invalid savepoint threshold {!r}'.format(value))
+            raise ValueError(f'Invalid savepoint threshold {value!r}')
 
         if value > 0:
             return value
         else:
-            raise ValueError('Invalid savepoint threshold {!r}'.format(value))
+            raise ValueError(f'Invalid savepoint threshold {value!r}')
 
 
 def get_memory_usage():
@@ -220,7 +219,7 @@ def log_memory_usage(logger):
     rss = get_memory_usage()
     logger.log(
         logging.INFO,
-        'Current memory usage in MB (RSS): {:0.1f}'.format(rss))
+        f'Current memory usage in MB (RSS): {rss:0.1f}')
 
 
 LOAD_LIMITS = {'memory_available': 100 * 1024 * 1024,
@@ -366,7 +365,7 @@ def get_tempfile_authentication_directory(directory=None):
 
     # Verify that "others" do not have any permissions on this directory.
     if auth_directory.stat().st_mode & stat.S_IRWXO:
-        raise ValueError('{0} has invalid mode: "others" should not have '
+        raise ValueError('{} has invalid mode: "others" should not have '
                          'any permissions'.format(auth_directory))
 
     return auth_directory

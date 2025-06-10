@@ -8,7 +8,7 @@ from Products.CMFCore.utils import getToolByName
 class TestUpgradeStepBuilder(UpgradeTestCase):
 
     def setUp(self):
-        super(TestUpgradeStepBuilder, self).setUp()
+        super().setUp()
         self.profile = Builder('genericsetup profile')
         self.package.with_profile(self.profile)
 
@@ -21,7 +21,7 @@ class TestUpgradeStepBuilder(UpgradeTestCase):
             upgrade_path = package.package_path.joinpath(
                 'upgrades', '20110101000000_migrate_file_content_type')
             self.assertTrue(upgrade_path.is_dir(),
-                            'Upgrade directory was not created {0}'.format(upgrade_path))
+                            f'Upgrade directory was not created {upgrade_path}')
             self.assertMultiLineEqual(
                 '\n'.join(('from collective.ftw.upgrade import UpgradeStep',
                            '',
@@ -65,7 +65,7 @@ class TestUpgradeStepBuilder(UpgradeTestCase):
             upgrade_path = package.package_path.joinpath('upgrades',
                                                          '20110101000000_upgrade')
             self.assertTrue(upgrade_path.is_dir(),
-                            'Upgrade directory was not created {0}'.format(upgrade_path))
+                            f'Upgrade directory was not created {upgrade_path}')
 
             self.assertEqual('FOO', upgrade_path.joinpath('foo.txt').read_text())
             self.assertTrue(upgrade_path.joinpath('bar').is_dir(),

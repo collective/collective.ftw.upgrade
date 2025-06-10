@@ -50,7 +50,7 @@ def plone_upgrade_command(args, requestor):
     with closing(requestor.POST(action, params=params,
                                 stream=True)) as response:
         for line in response.iter_lines(chunk_size=30):
-            if six.PY2 and isinstance(line, six.text_type):
+            if six.PY2 and isinstance(line, str):
                 line = line.encode('utf-8')
             elif not six.PY2 and isinstance(line, bytes):
                 line = line.decode('utf-8')

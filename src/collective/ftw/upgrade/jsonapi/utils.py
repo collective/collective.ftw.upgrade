@@ -40,7 +40,7 @@ except ImportError:
     from inspect import getargspec as getfullargspec
 
 
-class ErrorHandling(object):
+class ErrorHandling:
     """Context manager for handling API errors and responding as JSON.
     """
 
@@ -150,7 +150,7 @@ def extract_action_params(func, request, rename_params=None):
         if not form.get(arg_name, None):
             raise MissingParam(rename_params.get(arg_name, arg_name))
 
-    return dict([(name, form[name]) for name in form if name in argspec.args])
+    return {name: form[name] for name in form if name in argspec.args}
 
 
 def get_action_discovery_information(view):
@@ -229,7 +229,7 @@ def validate_tempfile_authentication_header_value(header_value):
     if filepath.getsize() != 64:
         raise ValueError('tempfile auth: tempfile size is invalid.')
 
-    with open(filepath, 'r') as authfile:
+    with open(filepath) as authfile:
         if authfile.read() != authhash:
             raise ValueError('tempfile auth: authentication failed.')
 

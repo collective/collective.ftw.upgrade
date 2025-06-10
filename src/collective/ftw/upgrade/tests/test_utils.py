@@ -10,8 +10,6 @@ from collective.ftw.upgrade.utils import LOAD_LIMITS
 from collective.ftw.upgrade.utils import SizedGenerator
 from collective.ftw.upgrade.utils import subject_from_docstring
 from collective.ftw.upgrade.utils import topological_sort
-from six.moves import map
-from six.moves import range
 from unittest import TestCase
 from unittest.mock import Mock
 
@@ -85,7 +83,7 @@ class TestFindCyclicDependencies(TestCase):
             )
 
         self.assertEqual(
-            [set(('foo', 'bar'))],
+            [{'foo', 'bar'}],
             list(map(set, find_cyclic_dependencies(dependencies))))
 
     def test_indirect_cyclic_dependencies(self):
@@ -96,7 +94,7 @@ class TestFindCyclicDependencies(TestCase):
             )
 
         self.assertEqual(
-            [set(('foo', 'bar', 'baz'))],
+            [{'foo', 'bar', 'baz'}],
             list(map(set, find_cyclic_dependencies(dependencies))))
 
 
@@ -111,7 +109,7 @@ class TestSizedGenerator(TestCase):
         self.assertEqual([0, 1, 2], list(generator))
 
 
-class Dummy(object):
+class Dummy:
     """Dummy object with arbitrary attributes
     """
 
@@ -181,8 +179,7 @@ class TestSortedProfileIds(TestCase):
         with self.assertRaises(CyclicDependencies) as cm:
             get_sorted_profile_ids(portal_setup)
 
-        six.assertCountEqual(
-            self, ('foo', 'bar'), cm.exception.cyclic_dependencies[0])
+        self.assertCountEqual(('foo', 'bar'), cm.exception.cyclic_dependencies[0])
 
         self.assertEqual([('foo', 'bar'), ('bar', 'foo')],
                          cm.exception.dependencies)
@@ -221,7 +218,7 @@ class TestFormatDuration(TestCase):
                           '1 hour, 2 minutes, 1 second',
                           '1 hour, 2 minutes, 2 seconds'],
 
-                         [format_duration((60 * 60)),
+                         [format_duration(60 * 60),
                           format_duration((60 * 60) + 60),
                           format_duration((60 * 60) + (2 * 60) + 1),
                           format_duration((60 * 60) + (2 * 60) + 2)])
@@ -232,7 +229,7 @@ class TestFormatDuration(TestCase):
                           '2 hours, 2 minutes, 1 second',
                           '2 hours, 2 minutes, 2 seconds'],
 
-                         [format_duration((2 * 60 * 60)),
+                         [format_duration(2 * 60 * 60),
                           format_duration((2 * 60 * 60) + 60),
                           format_duration((2 * 60 * 60) + (2 * 60) + 1),
                           format_duration((2 * 60 * 60) + (2 * 60) + 2)])

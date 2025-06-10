@@ -18,11 +18,11 @@ class TestCreateCommand(CommandTestCase):
         upgrades_dir = package.package_path.joinpath('upgrades')
         self.assertEqual(
             1, len(upgrades_dir.dirs()),
-            'Expected exactly one directory to be generated, got {0}'.format(
+            'Expected exactly one directory to be generated, got {}'.format(
                 upgrades_dir.dirs()))
 
         step_path, = upgrades_dir.dirs()
-        six.assertRegex(self, step_path.name, r'^\d{14}_add_controlpanel_action$')
+        self.assertRegex(step_path.name, r'^\d{14}_add_controlpanel_action$')
 
         code_path = step_path.joinpath('upgrade.py')
         self.assertTrue(code_path.exists(), 'upgrade.py is missing')
@@ -41,17 +41,17 @@ class TestCreateCommand(CommandTestCase):
 
         upgrades_dir = package.package_path.joinpath('upgrades')
         subpackage_upgrades_dir = package.package_path.joinpath('subpackage', 'upgrades')
-        self.upgrade_script('create AddControlpanelAction --path {0}'.format(
+        self.upgrade_script('create AddControlpanelAction --path {}'.format(
                 subpackage_upgrades_dir))
 
         self.assertEqual(
             0, len(upgrades_dir.dirs()),
-            'Expected default upgrades directory to be empty; {0}'.format(
+            'Expected default upgrades directory to be empty; {}'.format(
                 upgrades_dir.dirs()))
 
         self.assertEqual(
             1, len(subpackage_upgrades_dir.dirs()),
-            'Expected subpackage upgrades directory to have one upgrade; {0}'.format(
+            'Expected subpackage upgrades directory to have one upgrade; {}'.format(
                 subpackage_upgrades_dir.dirs()))
 
     def test_creating_an_upgrade_step_with_text_containing_dots(self):
@@ -64,8 +64,7 @@ class TestCreateCommand(CommandTestCase):
 
         upgrades_dir = package.package_path.joinpath('upgrades')
         step_path, = upgrades_dir.dirs()
-        six.assertRegex(
-            self, step_path.name, r'^\d{14}_update_ftw_upgrade_to_version_3$')
+        self.assertRegex(step_path.name, r'^\d{14}_update_ftw_upgrade_to_version_3$')
 
         code_path = step_path.joinpath('upgrade.py')
         self.assertTrue(code_path.exists(), 'upgrade.py is missing')

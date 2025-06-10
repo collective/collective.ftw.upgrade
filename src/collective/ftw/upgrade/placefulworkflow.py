@@ -7,7 +7,7 @@ import logging
 LOG = logging.getLogger('collective.ftw.upgrade.PlacefulWorkflowPolicyActivator')
 
 
-class PlacefulWorkflowPolicyActivator(object):
+class PlacefulWorkflowPolicyActivator:
 
     def __init__(self, context):
         self.context = context

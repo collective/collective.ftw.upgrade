@@ -25,15 +25,14 @@ class TestTouchCommand(CommandTestCase):
         path = self.package.package_path.joinpath('upgrades', '20110101000000_add_action')
         self.assertTrue(
             path.exists(),
-            'Expected path to exist: {0}'.format(path))
-        self.upgrade_script('touch {0}'.format(path))
+            f'Expected path to exist: {path}')
+        self.upgrade_script(f'touch {path}')
         self.assertFalse(path.exists(),
-                         'Expected path to no longer exist: {0}'.format(path))
+                         f'Expected path to no longer exist: {path}')
 
         new_step_path, = path.dirname().dirs()
-        six.assertRegex(
-            self, new_step_path.name,
-            r'^{0}\d{{10}}_add_action'.format(datetime.now().year))
+        self.assertRegex(new_step_path.name,
+            fr'^{datetime.now().year}\d{{10}}_add_action')
 
     def test_moving_after_another(self):
         self.package = create(
@@ -160,13 +159,13 @@ class TestTouchCommand(CommandTestCase):
     def upgrades(self):
         upgrades_dir = self.package.package_path.joinpath('upgrades')
         self.assertTrue(upgrades_dir.is_dir(),
-                        '"upgrades" directory is missing at {0}'.format(upgrades_dir))
-        return dict([(path.name.split('_', 1)[1], path) for path in upgrades_dir.dirs()])
+                        f'"upgrades" directory is missing at {upgrades_dir}')
+        return {path.name.split('_', 1)[1]: path for path in upgrades_dir.dirs()}
 
     def assert_upgrades(self, *expected):
         upgrades_dir = self.package.package_path.joinpath('upgrades')
         self.assertTrue(upgrades_dir.is_dir(),
-                        '"upgrades" directory is missing at {0}'.format(upgrades_dir))
+                        f'"upgrades" directory is missing at {upgrades_dir}')
         expected = set(expected)
-        got = set([str(path.name) for path in upgrades_dir.dirs()])
+        got = {str(path.name) for path in upgrades_dir.dirs()}
         self.assertEqual(expected, got, 'Unexpected upgrades.')

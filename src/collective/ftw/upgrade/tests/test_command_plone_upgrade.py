@@ -13,7 +13,7 @@ import transaction
 class TestPloneUpgradeCommand(CommandAndInstanceTestCase):
 
     def setUp(self):
-        super(TestPloneUpgradeCommand, self).setUp()
+        super().setUp()
         self.write_zconf_with_test_instance()
 
     def test_help(self):
@@ -24,7 +24,7 @@ class TestPloneUpgradeCommand(CommandAndInstanceTestCase):
             'plone_upgrade -s plone')
         self.assertEqual(0, exitcode)
         transaction.begin()  # sync transaction
-        self.assertIn(u'Plone Site was already up to date.', output)
+        self.assertIn('Plone Site was already up to date.', output)
 
     @skipIf(getFSVersionTuple() > (5, ), 'The test does not work on Plone 5.')
     def test_upgrade_plone(self):
@@ -37,7 +37,7 @@ class TestPloneUpgradeCommand(CommandAndInstanceTestCase):
             'plone_upgrade -s plone')
         self.assertEqual(0, exitcode)
         transaction.begin()  # sync transaction
-        self.assertIn(u'Plone Site has been updated.', output)
+        self.assertIn('Plone Site has been updated.', output)
 
     def test_portal_migration_tool_is_wrapped_in_request_container(self):
         portal = self.layer['portal']
