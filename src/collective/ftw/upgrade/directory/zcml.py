@@ -1,7 +1,6 @@
 from collective.ftw.upgrade.directory.scanner import Scanner
 from collective.ftw.upgrade.directory.wrapper import wrap_upgrade_step
 from collective.ftw.upgrade.exceptions import UpgradeStepConfigurationError
-from operator import attrgetter
 from Products.CMFPlone.interfaces import IMigratingPloneSiteRoot
 from Products.GenericSetup.interfaces import EXTENSION
 from Products.GenericSetup.interfaces import IProfile

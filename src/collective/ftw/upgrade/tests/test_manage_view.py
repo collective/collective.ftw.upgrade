@@ -54,7 +54,7 @@ class TestResponseLogger(TestCase):
                 b"Traceback (most recent call last):",
                 b'  File "/.../ftw/upgrade/tests/'
                 b'test_manage_view.py", line XX, in test_logging_exceptions',
-                b"    raise KeyError('foo')",
+                b'    raise KeyError("foo")',
                 b"KeyError: 'foo'",
             ],
             output.split(b"\n"),
@@ -84,14 +84,13 @@ class TestResponseLogger(TestCase):
         # Dynamically replace paths so that it works on all machines
         output = re.sub(rb'(File ").*(ftw/upgrade/.*")', rb"\1/.../\2", output)
         output = re.sub(rb"(line )\d*", rb"line XX", output)
-
         self.assertEqual(
             [
                 b"FAILED",
                 b"Traceback (most recent call last):",
                 b'  File "/.../ftw/upgrade/tests/'
                 b'test_manage_view.py", line XX, in test_annotate_result_on_error',
-                b"    raise KeyError('foo')",
+                b'    raise KeyError("foo")',
                 b"KeyError: 'foo'",
                 b"Result: FAILURE",
             ],

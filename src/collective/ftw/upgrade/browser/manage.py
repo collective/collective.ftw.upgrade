@@ -9,7 +9,6 @@ from zope.component import getAdapter
 from zope.publisher.browser import BrowserView
 
 import logging
-import six
 import time
 import traceback
 

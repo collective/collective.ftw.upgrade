@@ -4,8 +4,7 @@ from collective.ftw.upgrade.command.jsonapi import add_requestor_instance_argume
 from collective.ftw.upgrade.command.jsonapi import error_handling
 from collective.ftw.upgrade.command.jsonapi import with_api_requestor
 from collective.ftw.upgrade.command.terminal import TERMINAL
-
-import six
+from plone.base.utils import safe_text
 
 
 DOCS = """
@@ -42,4 +41,4 @@ def sites_command(args, requestor):
         print(response.text)
     else:
         for site in response.json():
-            print(site["path"].ljust(20), six.ensure_str(site["title"]))
+            print(site["path"].ljust(20), safe_text(site["title"]))

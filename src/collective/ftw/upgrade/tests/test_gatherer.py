@@ -9,7 +9,6 @@ from collective.ftw.upgrade.interfaces import IUpgradeInformationGatherer
 from collective.ftw.upgrade.tests.base import UpgradeTestCase
 from datetime import datetime
 from ftw.builder import Builder
-from Products.CMFPlone.utils import getFSVersionTuple
 from unittest import TestCase
 from zope.component import getMultiAdapter
 from zope.component import queryAdapter

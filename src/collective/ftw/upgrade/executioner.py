@@ -1,5 +1,4 @@
 from AccessControl.SecurityInfo import ClassSecurityInformation
-from collective.ftw.upgrade.indexing import processQueue
 from collective.ftw.upgrade.interfaces import IDuringUpgrade
 from collective.ftw.upgrade.interfaces import IExecutioner
 from collective.ftw.upgrade.interfaces import IPostUpgrade
@@ -11,6 +10,7 @@ from collective.ftw.upgrade.utils import get_sorted_profile_ids
 from collective.ftw.upgrade.utils import log_memory_usage
 from collective.ftw.upgrade.utils import optimize_memory_usage
 from distutils.version import LooseVersion
+from Products.CMFCore.indexing import processQueue
 from Products.CMFCore.utils import getToolByName
 from Products.GenericSetup.interfaces import ISetupTool
 from Products.GenericSetup.upgrade import _upgrade_registry
@@ -169,7 +169,9 @@ class Executioner:
 
     def _set_portal_setup_version(self, profileid, last_dest_version):
         old_version = self.portal_setup.getLastVersionForProfile(profileid)
-        compareable = lambda v: LooseVersion(".".join(v))
+
+        def compareable(v):
+            return LooseVersion(".".join(v))
 
         if old_version == "unknown" or compareable(last_dest_version) > compareable(
             old_version

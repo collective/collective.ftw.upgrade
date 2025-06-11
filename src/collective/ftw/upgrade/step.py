@@ -27,7 +27,6 @@ from zope.publisher.interfaces.browser import IBrowserRequest
 
 import logging
 import re
-import six
 
 
 try:

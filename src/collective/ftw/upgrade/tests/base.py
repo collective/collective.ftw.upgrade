@@ -2,7 +2,6 @@ from AccessControl import getSecurityManager
 from AccessControl.SecurityManagement import setSecurityManager
 from bs4 import BeautifulSoup
 from collective.ftw.upgrade.directory import scaffold
-from collective.ftw.upgrade.indexing import processQueue
 from collective.ftw.upgrade.interfaces import IExecutioner
 from collective.ftw.upgrade.interfaces import IUpgradeInformationGatherer
 from collective.ftw.upgrade.interfaces import IUpgradeStepRecorder
@@ -22,23 +21,19 @@ from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
-from plone.app.testing import TEST_USER_PASSWORD
 from plone.restapi.testing import RelativeSession
+from Products.CMFCore.indexing import processQueue
 from Products.CMFCore.utils import getToolByName
 from unittest import TestCase
+from urllib.parse import urlencode
 from zope.component import getMultiAdapter
 from zope.component import queryAdapter
 
 import json
 import logging
-import lxml.html
 import operator
 import os
 import re
-import six
-import six.moves.urllib.error
-import six.moves.urllib.parse
-import six.moves.urllib.request
 import transaction
 
 
@@ -341,7 +336,7 @@ class JsonApiTestCase(UpgradeTestCase):
         self.assert_json_equal(expected_profileinfo, got_profiles[profileid], msg)
 
     def assert_json_contains(self, expected_element, got_elements):
-        message = "Could not find:\n\n{0}\n\nin list:\n\n{0}".format(
+        message = "Could not find:\n\n{}\n\nin list:\n\n{}".format(
             json.dumps(expected_element, sort_keys=True, indent=4),
             json.dumps(got_elements, sort_keys=True, indent=4),
         )
@@ -383,9 +378,7 @@ class JsonApiTestCase(UpgradeTestCase):
 
         if method.lower() == "get":
             response = self.api_session.get(
-                "{}/upgrades-api/{}?{}".format(
-                    url, action, six.moves.urllib.parse.urlencode(data)
-                )
+                f"{url}/upgrades-api/{action}?{urlencode(data)}"
             )
 
         elif method.lower() == "post":

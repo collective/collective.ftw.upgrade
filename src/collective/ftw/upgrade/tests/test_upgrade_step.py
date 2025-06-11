@@ -3,7 +3,6 @@ from Acquisition import aq_parent
 from collective.ftw.upgrade import UpgradeStep
 from collective.ftw.upgrade.exceptions import NoAssociatedProfileError
 from collective.ftw.upgrade.indexing import HAS_INDEXING
-from collective.ftw.upgrade.indexing import processQueue
 from collective.ftw.upgrade.interfaces import IDuringUpgrade
 from collective.ftw.upgrade.interfaces import IUpgradeStep
 from collective.ftw.upgrade.tests.base import UpgradeTestCase
@@ -14,6 +13,7 @@ from ftw.builder import create
 from plone.app.testing import setRoles
 from plone.app.testing import TEST_USER_ID
 from plone.browserlayer.utils import register_layer
+from Products.CMFCore.indexing import processQueue
 from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone.utils import getFSVersionTuple
 from unittest import skipIf

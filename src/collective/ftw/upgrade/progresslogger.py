@@ -2,7 +2,6 @@ from AccessControl.SecurityInfo import ClassSecurityInformation
 from time import time
 
 import logging
-import six
 
 
 class ProgressLogger:

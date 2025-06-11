@@ -1,6 +1,7 @@
 from binascii import hexlify
 from collective.ftw.upgrade.utils import get_tempfile_authentication_directory
 from path import Path
+from plone.base.utils import safe_bytes
 from requests.auth import AuthBase
 from requests.auth import HTTPBasicAuth
 from requests.exceptions import HTTPError
@@ -13,7 +14,6 @@ import logging
 import os
 import re
 import requests
-import six
 import socket
 import sys
 import tempfile
@@ -80,7 +80,7 @@ class TempfileAuth(AuthBase):
             hexlify(os.urandom(32)), hexlify(os.urandom(32)), hashlib.sha256
         ).hexdigest()
         self.authfile = tempfile.NamedTemporaryFile(dir=directory)
-        self.authfile.write(six.ensure_binary(self.authhash))
+        self.authfile.write(safe_bytes(self.authhash))
         self.authfile.flush()
         # Make sure the file is readable by the group, so that the service
         # user running Zope can read it even when it is not the creator.

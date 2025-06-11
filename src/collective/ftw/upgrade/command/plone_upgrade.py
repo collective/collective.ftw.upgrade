@@ -5,8 +5,8 @@ from collective.ftw.upgrade.command.jsonapi import error_handling
 from collective.ftw.upgrade.command.jsonapi import with_api_requestor
 from collective.ftw.upgrade.command.terminal import TERMINAL
 from contextlib import closing
+from plone.base.utils import safe_text
 
-import six
 import sys
 
 
@@ -47,10 +47,7 @@ def plone_upgrade_command(args, requestor):
 
     with closing(requestor.POST(action, params=params, stream=True)) as response:
         for line in response.iter_lines(chunk_size=30):
-            if six.PY2 and isinstance(line, str):
-                line = line.encode("utf-8")
-            elif not six.PY2 and isinstance(line, bytes):
-                line = line.decode("utf-8")
+            line = safe_text(line)
 
             print(line)
 

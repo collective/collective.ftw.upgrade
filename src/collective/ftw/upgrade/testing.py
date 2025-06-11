@@ -78,31 +78,6 @@ class UpgradeLayer(PloneSandboxLayer):
         applyProfile(portal, "collective.ftw.upgrade:default")
 
         self.fix_plone_app_jquery_version(portal)
-        self.prevent_csrf_by_initializing_site_storages(portal)
-
-    def prevent_csrf_by_initializing_site_storages(self, portal):
-        """Plone auto-protection results in confirmation pages
-        when first hitting Plone with the browser.
-
-        By hitting the site once we can initialize all standard Plone
-        containers which cause writes on first hit.
-        We do this with disabled protection.
-        """
-        try:
-            from plone.protect import auto
-        except ImportError:
-            return
-
-        # transaction.commit()
-        # with browser(portal.aq_inner.aq_parent):
-        #     crsrf_disabled_ori = auto.CSRF_DISABLED
-        #     auto.CSRF_DISABLED = True
-        #     try:
-        #         browser.login(SITE_OWNER_NAME).open(
-        #             view='overview-controlpanel')
-        #     finally:
-        #         auto.CSRF_DISABLED = crsrf_disabled_ori
-        #         transaction.begin()
 
     def fix_plone_app_jquery_version(self, portal):
         try:

@@ -13,8 +13,6 @@ from zope.configuration.config import ConfigurationExecutionError
 from zope.interface import Interface
 from zope.interface import providedBy
 
-import six
-
 
 class IFoo(Interface):
     """Dummy interface."""

@@ -3,8 +3,6 @@ from datetime import datetime
 from ftw.builder import Builder
 from ftw.builder import create
 
-import six
-
 
 class TestTouchCommand(CommandTestCase):
 

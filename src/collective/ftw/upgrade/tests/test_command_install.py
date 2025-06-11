@@ -7,14 +7,12 @@ from collective.ftw.upgrade.tests.helpers import truncate_memory_and_duration
 from datetime import datetime
 from ftw.builder import Builder
 from ftw.builder import create
-from importlib import reload
 from persistent.list import PersistentList
 from plone.app.testing import setRoles
 from plone.app.testing import TEST_USER_ID
 from unittest import skipIf
 
 import os
-import six
 import sys
 import transaction
 
@@ -150,10 +148,6 @@ class TestInstallCommand(CommandAndInstanceTestCase):
             # It's the easiest way to just temporarily change the system encoding.
             system_encoding = sys.getdefaultencoding()
             changed_defaultencoding = False
-            if six.PY2 and system_encoding != "utf-8":
-                reload(sys)
-                sys.setdefaultencoding("utf-8")
-                changed_defaultencoding = True
             try:
                 exitcode, output = self.upgrade_script("install -s plone --proposed")
             finally:

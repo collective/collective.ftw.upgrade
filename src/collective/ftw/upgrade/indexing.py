@@ -1,29 +1,7 @@
-import pkg_resources
+from Products.CMFCore.indexing import getQueue
 
 
-HAS_INDEXING = False
-
-try:
-    # Plone 5
-    from Products.CMFCore.indexing import getQueue
-    from Products.CMFCore.indexing import processQueue
-except ImportError:
-    try:
-        # Plone 4 with collective.indexing
-        pkg_resources.get_distribution("collective.indexing")
-    except pkg_resources.DistributionNotFound:
-
-        def processQueue():
-            # Plone 4 without collective.indexing
-            pass
-
-    else:
-        from collective.indexing.queue import getQueue
-        from collective.indexing.queue import processQueue
-
-        HAS_INDEXING = True
-else:
-    HAS_INDEXING = True
+HAS_INDEXING = True
 
 
 if HAS_INDEXING:

@@ -1,10 +1,7 @@
 from AccessControl import getSecurityManager
-from AccessControl import Permissions
 from collective.ftw.upgrade.jsonapi.base import APIView
 from collective.ftw.upgrade.jsonapi.utils import action
 from collective.ftw.upgrade.jsonapi.utils import jsonify
-from plone.base.interfaces import IPloneSiteRoot
-from ZODB.broken import Broken
 
 
 class ZopeAppAPI(APIView):

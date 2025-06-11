@@ -63,9 +63,9 @@ def extend_auto_upgrades_with_human_formatted_date_version(profiles):
     corresponding version is a 14 digit timestamp with the timestamp in a
     human readable format.
     """
-    to_human_readable = lambda datestr: datetime.strptime(
-        datestr, "%Y%m%d%H%M%S"
-    ).strftime("%Y/%m/%d %H:%M")
+
+    def to_human_readable(datestr):
+        return datetime.strptime(datestr, "%Y%m%d%H%M%S").strftime("%Y/%m/%d %H:%M")
 
     for profile in profiles:
         if len(profile.get("db_version", "")) == 14:

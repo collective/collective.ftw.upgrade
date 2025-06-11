@@ -5,7 +5,6 @@ from ftw.builder import Builder
 
 import json
 import re
-import six
 
 
 class TestListCommand(CommandAndInstanceTestCase):

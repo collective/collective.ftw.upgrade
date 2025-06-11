@@ -6,8 +6,6 @@ from zope.component import adapts
 from zope.interface import implementer
 from zope.interface import Interface
 
-import six
-
 
 ANNOTATION_KEY = "ftw.upgrade:recorder"
 
