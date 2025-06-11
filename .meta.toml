@@ -1,0 +1,67 @@
+# Generated from:
+# https://github.com/plone/meta/tree/main/src/plone/meta/default
+# See the inline comments on how to expand/tweak this configuration file
+[meta]
+template = "default"
+commit-id = "2.0.1.dev0"
+
+[pyproject]
+codespell_ignores = "requestor,"
+dependencies_mappings = [
+    """'Plone' = [
+        'AccessControl',
+        'Acquisition',
+        'App',
+        'BTrees',
+        'lxml',
+        'OFS',
+        'persistent',
+        'plone.app.contenttypes',
+        'plone.app.intid',
+        'plone.app.relationfield',
+        'plone.app.textfield',
+        'plone.app.uuid',
+        'plone.base',
+        'plone.browserlayer',
+        'plone.dexterity',
+        'plone.namedfile',
+        'plone.portlets',
+        'plone.protect',
+        'plone.registry',
+        'plone.uuid',
+        'Products.BTreeFolder2',
+        'Products.CMFCore',
+        'Products.CMFPlacefulWorkflow',
+        'Products.CMFPlone',
+        'Products.GenericSetup',
+        'Products.SiteAccess',
+        'Products.ZCatalog',
+        'transaction',
+        'z3c.relationfield',
+        'zExceptions',
+        'zope.annotation',
+        'zope.browser',
+        'zope.component',
+        'zope.configuration',
+        'zope.container',
+        'zope.deprecation',
+        'zope.event',
+        'zope.globalrequest',
+        'zope.interface',
+        'zope.intid',
+        'zope.keyreference',
+        'zope.lifecycleevent',
+        'zope.publisher',
+        'zope.schema',
+        'zope.security',
+        'ZPublisher',
+    ]
+    'plone.app.testing' = [
+        'plone.testing',
+    ]
+    """,
+]
+dependencies_ignores = "['blessed','cgi','distutils','other.package']"
+
+[tox]
+use_mxdev = true
