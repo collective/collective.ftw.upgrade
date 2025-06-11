@@ -43,7 +43,7 @@ class SafeObjectGetter:
                     brain.getRID(), brain.getPath()
                 )
             )
-            self.errors.append({"type": "Inexistant brain", "path": brain.getPath()})
+            self.errors.append({"type": "Inexistent brain", "path": brain.getPath()})
             self.catalog.uncatalog_object(brain.getPath())
             return None
 

@@ -227,7 +227,7 @@ def validate_tempfile_authentication_header_value(header_value):
 
     # Verify that "others" do not have any permissions on this file.
     if filepath.stat().st_mode & stat.S_IRWXO:
-        raise ValueError('tempfile auth: tempfile is accesible by "others".')
+        raise ValueError('tempfile auth: tempfile is accessible by "others".')
 
     if filepath.getsize() != 64:
         raise ValueError("tempfile auth: tempfile size is invalid.")

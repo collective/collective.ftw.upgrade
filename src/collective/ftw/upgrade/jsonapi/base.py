@@ -1,4 +1,4 @@
-from collective.ftw.upgrade.jsonapi.exceptions import UnkownAPIAction
+from collective.ftw.upgrade.jsonapi.exceptions import UnknownAPIAction
 from collective.ftw.upgrade.jsonapi.exceptions import WrongAPIVersion
 from collective.ftw.upgrade.jsonapi.utils import action
 from collective.ftw.upgrade.jsonapi.utils import ErrorHandling
@@ -37,7 +37,7 @@ class APIView(BrowserView):
             return action
 
         with ErrorHandling(self.request.RESPONSE):
-            raise UnkownAPIAction(name)
+            raise UnknownAPIAction(name)
         request["TraversalRequestNameStack"] = []
         return ""
 

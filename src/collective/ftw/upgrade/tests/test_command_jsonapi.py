@@ -46,7 +46,7 @@ class TestAPIRequestor(CommandAndInstanceTestCase):
             requestor.GET("wrong_action")
 
         self.assertEqual(
-            ["ERROR", "Unkown API action", 'There is no API action "wrong_action".'],
+            ["ERROR", "Unknown API action", 'There is no API action "wrong_action".'],
             cm.exception.response.json(),
         )
 

@@ -18,10 +18,10 @@ class WrongAPIVersion(APIError):
         )
 
 
-class UnkownAPIAction(APIError):
+class UnknownAPIAction(APIError):
     def __init__(self, action_name):
         super().__init__(
-            "Unkown API action",
+            "Unknown API action",
             f'There is no API action "{action_name}".',
             response_code=404,
         )
@@ -91,7 +91,7 @@ class UpgradeNotFoundWrapper(APIError):
     def __init__(self, original_exception):
         api_upgrade_id = original_exception.api_id
         super().__init__(
-            "Upgrade not found", f'The upgrade "{api_upgrade_id}" is unkown.'
+            "Upgrade not found", f'The upgrade "{api_upgrade_id}" is unknown.'
         )
 
 

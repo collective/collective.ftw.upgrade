@@ -25,7 +25,7 @@ receives the current time as timestamp:
 $ bin/upgrade touch src/my/package/upgrades/20110101000000_foo
 [/quote]
 
-{t.bold}MOVE UPRADE BETWEEN OTHER UPGRADES:{t.normal}
+{t.bold}MOVE UPGRADE BETWEEN OTHER UPGRADES:{t.normal}
     An upgrade can be moved to a specific position other upgrades by \
 using the "--before" or "--after" optional arguments:
 [quote]

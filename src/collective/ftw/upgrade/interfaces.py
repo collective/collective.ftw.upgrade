@@ -73,7 +73,7 @@ class IUpgradeInformationGatherer(Interface):
         """
 
     def get_upgrades_by_api_ids(*api_ids):
-        """Returns a list of ugprade information dicts for each upgrade which
+        """Returns a list of upgrade information dicts for each upgrade which
         is selected with a positional argument.
         The upgrades are ordered in the proposed installation order.
         """
@@ -134,7 +134,7 @@ class IUpgradeStep(Interface):
 
     def actions_remove_action(category, action_id):
         """Removes an action identified by ``action_id`` from
-        the ``portal_actions`` tool from a particulary ``category``.
+        the ``portal_actions`` tool from a particular ``category``.
         """
 
     def actions_remove_type_action(portal_type, action_id):

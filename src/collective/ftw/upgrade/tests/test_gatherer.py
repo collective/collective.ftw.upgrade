@@ -16,7 +16,7 @@ from zope.interface.verify import verifyClass
 
 
 class NotDeferrableUpgrade(UpgradeStep):
-    """Test that attribute value is used, not attribtue presence."""
+    """Test that attribute value is used, not attribute presence."""
 
     deferrable = False
 

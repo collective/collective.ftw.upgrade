@@ -69,10 +69,10 @@ class TestZopeAppJsonApi(JsonApiTestCase):
             "There should always be a trailing newline.",
         )
 
-    def test_requesting_unkown_action(self):
+    def test_requesting_unknown_action(self):
         with self.expect_api_error(
             status=404,
-            message="Unkown API action",
+            message="Unknown API action",
             details='There is no API action "something".',
         ) as result:
             result["response"] = self.api_request("GET", "something", context=self.app)

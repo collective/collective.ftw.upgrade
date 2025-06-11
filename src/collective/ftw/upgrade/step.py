@@ -214,7 +214,7 @@ class UpgradeStep:
 
     def actions_remove_action(self, category, action_id):
         """Removes an action identified by ``action_id`` from
-        the ``portal_actions`` tool from a particulary ``category``.
+        the ``portal_actions`` tool from a particular ``category``.
         """
 
         actions_tool = self.getToolByName("portal_actions")

@@ -170,10 +170,10 @@ class Executioner:
     def _set_portal_setup_version(self, profileid, last_dest_version):
         old_version = self.portal_setup.getLastVersionForProfile(profileid)
 
-        def compareable(v):
+        def comparable(v):
             return LooseVersion(".".join(v))
 
-        if old_version == "unknown" or compareable(last_dest_version) > compareable(
+        if old_version == "unknown" or comparable(last_dest_version) > comparable(
             old_version
         ):
             self.portal_setup.setLastVersionForProfile(profileid, last_dest_version)

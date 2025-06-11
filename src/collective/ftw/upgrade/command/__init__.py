@@ -79,7 +79,7 @@ It creates a tempfile, readable only for the owner user and writes a random \
 hash to the file. The filename and the hash is submitted as request header \
 and the backend reads the tempfile and verifies the content.
     The idea is that if a user has access to the machine with the user \
-running Zope, he can easily create an emergency administator user from the \
+running Zope, he can easily create an emergency administrator user from the \
 command line and acquire full manager access to the Zope installation. \
 By being able to write the tempfile as this user on the server machine \
 the access is verified.

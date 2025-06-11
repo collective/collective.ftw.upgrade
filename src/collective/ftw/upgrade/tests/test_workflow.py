@@ -241,7 +241,7 @@ class TestWorkflowSecurityUpdater(WorkflowTestCase):
         updater.update(["folder_workflow"])
 
         self.assert_permission_not_acquired(
-            "View", folder, "The folder should have been updated but wasnt."
+            "View", folder, "The folder should have been updated but wasn't."
         )
         self.assert_permission_acquired(
             "View", document, "The document should NOT have been updated but it was."
@@ -315,7 +315,7 @@ class TestWorkflowSecurityUpdater(WorkflowTestCase):
         )
 
         self.assertEqual(
-            [{"type": "Inexistant brain", "path": path}],
+            [{"type": "Inexistent brain", "path": path}],
             updater.safe_object_getter.errors,
             "Failing brains should get collected in the object getter.",
         )

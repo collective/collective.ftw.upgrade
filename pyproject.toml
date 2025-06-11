@@ -179,3 +179,13 @@ parallel = true
 omit = [
   "src/collective/ftw/upgrade/locales/*.py",
 ]
+
+[tool.codespell]
+ignore-words-list = "discreet,assertin,thet,requestor,"
+skip = "*.po,"
+##
+# Add extra configuration options in .meta.toml:
+#  [pyproject]
+#  codespell_ignores = "foo,bar"
+#  codespell_skip = "*.po,*.map,package-lock.json"
+##

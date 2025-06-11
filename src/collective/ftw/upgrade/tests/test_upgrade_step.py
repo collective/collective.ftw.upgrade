@@ -332,7 +332,7 @@ class TestUpgradeStep(UpgradeTestCase):
                 )
 
                 testcase.assertEqual(
-                    [{"type": "Inexistant brain", "path": path}],
+                    [{"type": "Inexistent brain", "path": path}],
                     self.safe_object_getter.errors,
                     "Failing brains should get collected in the object getter.",
                 )

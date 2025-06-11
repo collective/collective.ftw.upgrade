@@ -124,7 +124,7 @@ class TestSortedProfileIds(TestCase):
         """In the this example the profiles "baz" and "xy"
         have no dependencies to another and thus might be
         ordered in any order from the graph point of view.
-        However, we want a cosistent ordern and therefore
+        However, we want a consistent order and therefore
         order those root nodes by name.
         """
         listProfileInfo = Mock()

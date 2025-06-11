@@ -152,7 +152,7 @@ class TestPloneSiteJsonApi(JsonApiTestCase):
             )
         self.assertEqual("GET", result["response"].headers.get("allow"))
 
-    def test_get_unkown_profile_returns_error(self):
+    def test_get_unknown_profile_returns_error(self):
         with self.expect_api_error(
             status=400,
             message="Profile not available",
@@ -432,7 +432,7 @@ class TestPloneSiteJsonApi(JsonApiTestCase):
         with self.expect_api_error(
             status=400,
             message="Upgrade not found",
-            details='The upgrade "foo@bar:default" is unkown.',
+            details='The upgrade "foo@bar:default" is unknown.',
         ) as result:
             result["response"] = self.api_request(
                 "POST", "execute_upgrades", {"upgrades:list": "foo@bar:default"}

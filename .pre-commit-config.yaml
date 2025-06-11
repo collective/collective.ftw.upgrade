@@ -41,20 +41,19 @@ repos:
 #  _your own configuration lines_
 #  """
 ##
-# -   repo: https://github.com/codespell-project/codespell
-#     rev: v2.4.1
-#     hooks:
-#     -   id: codespell
-#         additional_dependencies:
-#           - tomli
-#
-# ##
-# # Add extra configuration options in .meta.toml:
-# #  [pre_commit]
-# #  codespell_extra_lines = """
-# #  _your own configuration lines_
-# #  """
-# ##
+-   repo: https://github.com/codespell-project/codespell
+    rev: v2.4.1
+    hooks:
+    -   id: codespell
+        additional_dependencies:
+          - tomli
+##
+# Add extra configuration options in .meta.toml:
+#  [pre_commit]
+#  codespell_extra_lines = """
+#  _your own configuration lines_
+#  """
+##
 # -   repo: https://github.com/mgedmin/check-manifest
 #     rev: "0.50"
 #     hooks:

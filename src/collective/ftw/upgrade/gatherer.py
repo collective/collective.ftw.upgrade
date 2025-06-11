@@ -25,7 +25,7 @@ except ImportError:
 
 def flatten_upgrades(upgrades):
     """Flattens the data structure of a list of upgrades: removes grouping.
-    The result is an iterable with dicts containg upgrade information.
+    The result is an iterable with dicts containing upgrade information.
     """
 
     for item in upgrades:

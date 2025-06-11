@@ -339,7 +339,7 @@ The ``UpgradeStep`` class has various helper functions:
 
 ``self.update_security(obj, reindex_security=True)``
     Update the security of a single object (checkboxes in manage_access).
-    This is usefuly in combination with the ``ProgressLogger``.
+    This is useful in combination with the ``ProgressLogger``.
     It is possible to skip reindexing the object security in the catalog
     (``allowedRolesAndUsers``). This speeds up the update but should only be disabled
     when there are no changes for the ``View`` permission.
