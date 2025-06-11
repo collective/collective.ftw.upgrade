@@ -19,18 +19,17 @@ repos:
     rev: 25.1.0
     hooks:
     -   id: black
-# -   repo: https://github.com/collective/zpretty
-#     rev: 3.1.0
-#     hooks:
-#     -   id: zpretty
-#
-# ##
-# # Add extra configuration options in .meta.toml:
-# #  [pre_commit]
-# #  zpretty_extra_lines = """
-# #  _your own configuration lines_
-# #  """
-# ##
+-   repo: https://github.com/collective/zpretty
+    rev: 3.1.0
+    hooks:
+    -   id: zpretty
+##
+# Add extra configuration options in .meta.toml:
+#  [pre_commit]
+#  zpretty_extra_lines = """
+#  _your own configuration lines_
+#  """
+##
 # -   repo: https://github.com/PyCQA/flake8
 #     rev: 7.1.2
 #     hooks:
