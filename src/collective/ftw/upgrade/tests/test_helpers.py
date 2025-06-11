@@ -2,12 +2,9 @@ from collective.ftw.upgrade.helpers import update_security_for
 from collective.ftw.upgrade.tests.base import WorkflowTestCase
 from ftw.builder import Builder
 from ftw.builder import create
-from Products.CMFPlone.utils import getFSVersionTuple
 
 
-ALLOWED_ROLES_AND_USERS_PERMISSION = "View"
-if getFSVersionTuple() > (5, 2):
-    ALLOWED_ROLES_AND_USERS_PERMISSION = "Access contents information"
+ALLOWED_ROLES_AND_USERS_PERMISSION = "Access contents information"
 
 
 class TestUpdateSecurity(WorkflowTestCase):

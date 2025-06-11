@@ -15,7 +15,6 @@ from plone.app.testing import TEST_USER_ID
 from plone.browserlayer.utils import register_layer
 from Products.CMFCore.indexing import processQueue
 from Products.CMFCore.utils import getToolByName
-from Products.CMFPlone.utils import getFSVersionTuple
 from unittest import skipIf
 from zope.interface import alsoProvides
 from zope.interface import Interface
@@ -29,9 +28,7 @@ try:
 except ImportError:
     get_installer = None
 
-ALLOWED_ROLES_AND_USERS_PERMISSION = "View"
-if getFSVersionTuple() > (5, 2):
-    ALLOWED_ROLES_AND_USERS_PERMISSION = "Access contents information"
+ALLOWED_ROLES_AND_USERS_PERMISSION = "Access contents information"
 
 
 class IMyProductLayer(Interface):
@@ -783,14 +780,9 @@ class TestUpgradeStep(UpgradeTestCase):
         self.assertEqual("FancyFolder", subfolder.__class__.__name__)
 
     def test_migrate_class_also_updates_provided_interfaces_info(self):
-        if getFSVersionTuple() > (5,):
-            from plone.app.contenttypes.content import Link
-            from plone.app.contenttypes.interfaces import IDocument
-            from plone.app.contenttypes.interfaces import ILink
-        else:
-            from Products.ATContentTypes.content.link import ATLink as Link
-            from Products.ATContentTypes.interfaces import IATDocument as IDocument
-            from Products.ATContentTypes.interfaces import IATLink as ILink
+        from plone.app.contenttypes.content import Link
+        from plone.app.contenttypes.interfaces import IDocument
+        from plone.app.contenttypes.interfaces import ILink
 
         obj = create(Builder("document"))
         self.assertTrue(IDocument.providedBy(obj))

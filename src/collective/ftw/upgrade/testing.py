@@ -11,7 +11,6 @@ from plone.app.testing import PLONE_ZSERVER
 from plone.app.testing import PloneSandboxLayer
 from plone.testing import z2
 from Products.CMFCore.utils import getToolByName
-from Products.CMFPlone.utils import getFSVersionTuple
 from Products.SiteAccess.VirtualHostMonster import manage_addVirtualHostMonster
 from zope.configuration import xmlconfig
 
@@ -71,9 +70,7 @@ class UpgradeLayer(PloneSandboxLayer):
         manage_addVirtualHostMonster(app, "virtual_hosting")
 
     def setUpPloneSite(self, portal):
-        if getFSVersionTuple() > (5,):
-            applyProfile(portal, "plone.app.contenttypes:default")
-
+        applyProfile(portal, "plone.app.contenttypes:default")
         applyProfile(portal, "Products.CMFPlacefulWorkflow:CMFPlacefulWorkflow")
         applyProfile(portal, "collective.ftw.upgrade:default")
 
