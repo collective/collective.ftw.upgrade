@@ -39,20 +39,22 @@ def todt(date):
     return date.replace(tzinfo=None)
 
 
-@skipIf(getFSVersionTuple() > (5, ),
-        'The inplace migrator migrates from Archetypes.'
-        ' Plone 5 has no Archetypes objects.')
+@skipIf(
+    getFSVersionTuple() > (5,),
+    "The inplace migrator migrates from Archetypes."
+    " Plone 5 has no Archetypes objects.",
+)
 class TestInplaceMigrator(UpgradeTestCase):
 
     def setUp(self):
         super().setUp()
-        self.wftool = getToolByName(self.portal, 'portal_workflow')
+        self.wftool = getToolByName(self.portal, "portal_workflow")
         self.wftool.setChainForPortalTypes(
-            ['Document', 'Folder'],
-            'simple_publication_workflow')
+            ["Document", "Folder"], "simple_publication_workflow"
+        )
 
     def test_migrate_archetypes_folder_to_dexterity(self):
-        self.grant('Manager')
+        self.grant("Manager")
 
         creation_date = datetime(2015, 11, 29, 10, 45)
         modification_date = datetime(2016, 1, 2, 9, 30)
@@ -60,78 +62,90 @@ class TestInplaceMigrator(UpgradeTestCase):
         expires_date = datetime(2016, 3, 3, 3, 30)
 
         with freeze_time(creation_date):
-            folder = create(Builder('folder')
-                            .titled('The Folder')
-                            .having(description='The Description',
-                                    excludeFromNav=True,
-                                    subject='One\nTwo',
-                                    effectiveDate=DateTime(effective_date),
-                                    expirationDate=DateTime(expires_date))
-                            .in_state('published'))
+            folder = create(
+                Builder("folder")
+                .titled("The Folder")
+                .having(
+                    description="The Description",
+                    excludeFromNav=True,
+                    subject="One\nTwo",
+                    effectiveDate=DateTime(effective_date),
+                    expirationDate=DateTime(expires_date),
+                )
+                .in_state("published")
+            )
 
-        setattr(folder, '__ac_local_roles_block__', True)
-        create(Builder('user').named('Hugo', 'Boss')
-               .with_roles('Reader', 'Editor', on=self.portal))  # local roles!
-        create(Builder('user').named('John', 'Doe')
-               .with_roles('Reader', 'Editor', on=folder))
+        setattr(folder, "__ac_local_roles_block__", True)
+        create(
+            Builder("user")
+            .named("Hugo", "Boss")
+            .with_roles("Reader", "Editor", on=self.portal)
+        )  # local roles!
+        create(
+            Builder("user")
+            .named("John", "Doe")
+            .with_roles("Reader", "Editor", on=folder)
+        )
 
-        folder._setProperty('search_label', 'HB', 'string')
+        folder._setProperty("search_label", "HB", "string")
 
         with freeze_time(modification_date):
             folder.reindexObject()  # update modification date
 
         self.assertTrue(IBaseObject.providedBy(folder))
         self.assertFalse(IDexterityContent.providedBy(folder))
-        self.assertEqual(('', 'plone', 'the-folder'), folder.getPhysicalPath())
-        self.assertEqual('The Folder', folder.Title())
-        self.assertEqual('The Description', folder.Description())
+        self.assertEqual(("", "plone", "the-folder"), folder.getPhysicalPath())
+        self.assertEqual("The Folder", folder.Title())
+        self.assertEqual("The Description", folder.Description())
         self.assertEqual(True, folder.exclude_from_nav())
-        self.assertEqual(('One', 'Two'), folder.Subject())
+        self.assertEqual(("One", "Two"), folder.Subject())
         self.assertEqual(todt(creation_date), todt(folder.created()))
         self.assertEqual(todt(modification_date), todt(folder.modified()))
         self.assertEqual(todt(effective_date), todt(folder.effective()))
         self.assertEqual(todt(expires_date), todt(folder.expires()))
-        self.assertEqual('HB', folder.getProperty('search_label', None))
-        self.assertEqual('published', self.review_state(folder))
-        self.assertEqual((('john.doe', ('Reader', 'Editor')),
-                          ('test_user_1_', ('Owner',))),
-                         folder.get_local_roles())
+        self.assertEqual("HB", folder.getProperty("search_label", None))
+        self.assertEqual("published", self.review_state(folder))
+        self.assertEqual(
+            (("john.doe", ("Reader", "Editor")), ("test_user_1_", ("Owner",))),
+            folder.get_local_roles(),
+        )
 
         old_catalog_indexdata = self.get_catalog_indexdata_for(folder)
 
-        self.install_profile('plone.app.contenttypes:default')
-        InplaceMigrator('Folder').migrate_object(folder)
+        self.install_profile("plone.app.contenttypes:default")
+        InplaceMigrator("Folder").migrate_object(folder)
 
-        folder = self.portal.get('the-folder')
+        folder = self.portal.get("the-folder")
         self.assertFalse(IBaseObject.providedBy(folder))
         self.assertTrue(IDexterityContent.providedBy(folder))
-        self.assertEqual(('', 'plone', 'the-folder'), folder.getPhysicalPath())
-        self.assertEqual('The Folder', folder.Title())
-        self.assertEqual('The Description', folder.Description())
+        self.assertEqual(("", "plone", "the-folder"), folder.getPhysicalPath())
+        self.assertEqual("The Folder", folder.Title())
+        self.assertEqual("The Description", folder.Description())
         self.assertEqual(True, folder.exclude_from_nav)
-        self.assertEqual(('One', 'Two'), folder.Subject())
+        self.assertEqual(("One", "Two"), folder.Subject())
         self.assertEqual(todt(creation_date), todt(folder.created()))
         self.assertEqual(todt(modification_date), todt(folder.modified()))
         self.assertEqual(todt(effective_date), todt(folder.effective()))
         self.assertEqual(todt(expires_date), todt(folder.expires()))
-        self.assertEqual('HB', folder.getProperty('search_label', None))
-        self.assertEqual('published', self.review_state(folder))
-        self.assertEqual((('john.doe', ('Reader', 'Editor')),
-                          ('test_user_1_', ('Owner',))),
-                         folder.get_local_roles())
+        self.assertEqual("HB", folder.getProperty("search_label", None))
+        self.assertEqual("published", self.review_state(folder))
+        self.assertEqual(
+            (("john.doe", ("Reader", "Editor")), ("test_user_1_", ("Owner",))),
+            folder.get_local_roles(),
+        )
 
         self.maxDiff = None
 
         new_catalog_indexdata = self.get_catalog_indexdata_for(folder)
         # In Plone 4.3.7, the SearchableText changes here.
-        del old_catalog_indexdata['SearchableText']
-        del new_catalog_indexdata['SearchableText']
+        del old_catalog_indexdata["SearchableText"]
+        del new_catalog_indexdata["SearchableText"]
 
         self.assertDictEqual(old_catalog_indexdata, new_catalog_indexdata)
 
     def test_migrate_dexterity_folder_to_dexterity(self):
-        self.grant('Manager')
-        self.install_profile('plone.app.contenttypes:default')
+        self.grant("Manager")
+        self.install_profile("plone.app.contenttypes:default")
 
         creation_date = datetime(2015, 11, 29, 10, 45)
         modification_date = datetime(2016, 1, 2, 9, 30)
@@ -140,400 +154,433 @@ class TestInplaceMigrator(UpgradeTestCase):
 
         with dx_content_builders_registered():
             with freeze_time(creation_date):
-                folder = create(Builder('folder')
-                                .titled('The Folder')
-                                .having(description='The Description',
-                                        exclude_from_nav=True,
-                                        subjects=('One', 'Two'),
-                                        effective=effective_date,
-                                        expires=expires_date)
-                                .in_state('pending'))
+                folder = create(
+                    Builder("folder")
+                    .titled("The Folder")
+                    .having(
+                        description="The Description",
+                        exclude_from_nav=True,
+                        subjects=("One", "Two"),
+                        effective=effective_date,
+                        expires=expires_date,
+                    )
+                    .in_state("pending")
+                )
 
         with freeze_time(modification_date):
             folder.reindexObject()  # update modification date
 
         self.assertFalse(IBaseObject.providedBy(folder))
         self.assertTrue(IDexterityContent.providedBy(folder))
-        self.assertEqual(('', 'plone', 'the-folder'), folder.getPhysicalPath())
-        self.assertEqual('The Folder', folder.Title())
-        self.assertEqual('The Description', folder.Description())
+        self.assertEqual(("", "plone", "the-folder"), folder.getPhysicalPath())
+        self.assertEqual("The Folder", folder.Title())
+        self.assertEqual("The Description", folder.Description())
         self.assertEqual(True, folder.exclude_from_nav)
-        self.assertEqual(('One', 'Two'), folder.Subject())
+        self.assertEqual(("One", "Two"), folder.Subject())
         self.assertEqual(todt(creation_date), todt(folder.created()))
         self.assertEqual(todt(modification_date), todt(folder.modified()))
         self.assertEqual(todt(effective_date), todt(folder.effective()))
         self.assertEqual(todt(expires_date), todt(folder.expires()))
-        self.assertEqual('pending', self.review_state(folder))
+        self.assertEqual("pending", self.review_state(folder))
 
         old_catalog_indexdata = self.get_catalog_indexdata_for(folder)
 
-        InplaceMigrator('Folder').migrate_object(folder)
+        InplaceMigrator("Folder").migrate_object(folder)
 
-        folder = self.portal.get('the-folder')
+        folder = self.portal.get("the-folder")
         self.assertFalse(IBaseObject.providedBy(folder))
         self.assertTrue(IDexterityContent.providedBy(folder))
-        self.assertEqual(('', 'plone', 'the-folder'), folder.getPhysicalPath())
-        self.assertEqual('The Folder', folder.Title())
-        self.assertEqual('The Description', folder.Description())
+        self.assertEqual(("", "plone", "the-folder"), folder.getPhysicalPath())
+        self.assertEqual("The Folder", folder.Title())
+        self.assertEqual("The Description", folder.Description())
         self.assertEqual(True, folder.exclude_from_nav)
-        self.assertEqual(('One', 'Two'), folder.Subject())
+        self.assertEqual(("One", "Two"), folder.Subject())
         self.assertEqual(todt(creation_date), todt(folder.created()))
         self.assertEqual(todt(modification_date), todt(folder.modified()))
         self.assertEqual(todt(effective_date), todt(folder.effective()))
         self.assertEqual(todt(expires_date), todt(folder.expires()))
-        self.assertEqual('pending', self.review_state(folder))
+        self.assertEqual("pending", self.review_state(folder))
 
         self.maxDiff = None
-        self.assertDictEqual(old_catalog_indexdata,
-                             self.get_catalog_indexdata_for(folder))
+        self.assertDictEqual(
+            old_catalog_indexdata, self.get_catalog_indexdata_for(folder)
+        )
 
     def test_migrate_archetypes_page_to_dexterity(self):
-        self.grant('Manager')
+        self.grant("Manager")
 
-        page = create(Builder('page')
-                      .titled('The Page')
-                      .having(text='<p>Some Text</p>')
-                      .in_state('published'))
+        page = create(
+            Builder("page")
+            .titled("The Page")
+            .having(text="<p>Some Text</p>")
+            .in_state("published")
+        )
 
         self.assertTrue(IBaseObject.providedBy(page))
         self.assertFalse(IDexterityContent.providedBy(page))
-        self.assertEqual('The Page', page.Title())
-        self.assertEqual('<p>Some Text</p>', page.getText())
-        self.assertEqual('published', self.review_state(page))
+        self.assertEqual("The Page", page.Title())
+        self.assertEqual("<p>Some Text</p>", page.getText())
+        self.assertEqual("published", self.review_state(page))
 
-        self.install_profile('plone.app.contenttypes:default')
-        InplaceMigrator('Document').migrate_object(page)
+        self.install_profile("plone.app.contenttypes:default")
+        InplaceMigrator("Document").migrate_object(page)
 
-        page = self.portal.get('the-page')
+        page = self.portal.get("the-page")
         self.assertFalse(IBaseObject.providedBy(page))
         self.assertTrue(IDexterityContent.providedBy(page))
-        self.assertEqual(('', 'plone', 'the-page'), page.getPhysicalPath())
-        self.assertEqual('The Page', page.Title())
+        self.assertEqual(("", "plone", "the-page"), page.getPhysicalPath())
+        self.assertEqual("The Page", page.Title())
         self.assertIsInstance(page.text, RichTextValue)
-        self.assertEqual('<p>Some Text</p>', page.text.output)
-        self.assertEqual('published', self.review_state(page))
+        self.assertEqual("<p>Some Text</p>", page.text.output)
+        self.assertEqual("published", self.review_state(page))
 
     def test_migrate_empty_richtextfield_to_dexterity(self):
-        self.grant('Manager')
+        self.grant("Manager")
 
-        no_text_page = create(Builder('page')
-                              .titled('No Text Page')
-                              .having(text='')
-                              .in_state('published'))
+        no_text_page = create(
+            Builder("page").titled("No Text Page").having(text="").in_state("published")
+        )
 
         self.assertFalse(IDexterityContent.providedBy(no_text_page))
         self.assertTrue(IBaseObject.providedBy(no_text_page))
-        self.assertEqual('', no_text_page.getText())
+        self.assertEqual("", no_text_page.getText())
 
-        self.install_profile('plone.app.contenttypes:default')
-        InplaceMigrator('Document').migrate_object(no_text_page)
+        self.install_profile("plone.app.contenttypes:default")
+        InplaceMigrator("Document").migrate_object(no_text_page)
 
-        no_text_page = self.portal.get('no-text-page')
+        no_text_page = self.portal.get("no-text-page")
         self.assertFalse(IBaseObject.providedBy(no_text_page))
         self.assertTrue(IDexterityContent.providedBy(no_text_page))
         self.assertNotIsInstance(no_text_page.text, RichTextValue)
 
     def test_migrate_archetypes_file_to_dexterity(self):
-        self.grant('Manager')
+        self.grant("Manager")
 
         thefile = create(
-            Builder('file')
-            .titled('The File')
-            .attach_file_containing('<doc>Content</doc>', name='data.xml'))
+            Builder("file")
+            .titled("The File")
+            .attach_file_containing("<doc>Content</doc>", name="data.xml")
+        )
 
         self.assertTrue(IBaseObject.providedBy(thefile))
         self.assertFalse(IDexterityContent.providedBy(thefile))
-        self.assertEqual('The File', thefile.Title())
+        self.assertEqual("The File", thefile.Title())
 
-        self.install_profile('plone.app.contenttypes:default')
-        InplaceMigrator('File').migrate_object(thefile)
+        self.install_profile("plone.app.contenttypes:default")
+        InplaceMigrator("File").migrate_object(thefile)
 
-        thefile = self.portal.get('the-file')
+        thefile = self.portal.get("the-file")
         self.assertFalse(IBaseObject.providedBy(thefile))
         self.assertTrue(IDexterityContent.providedBy(thefile))
-        self.assertEqual(('', 'plone', 'the-file'), thefile.getPhysicalPath())
-        self.assertEqual('The File', thefile.Title())
-        self.assertEqual('data.xml', thefile.file.filename)
-        self.assertEqual('<doc>Content</doc>', thefile.file.data)
+        self.assertEqual(("", "plone", "the-file"), thefile.getPhysicalPath())
+        self.assertEqual("The File", thefile.Title())
+        self.assertEqual("data.xml", thefile.file.filename)
+        self.assertEqual("<doc>Content</doc>", thefile.file.data)
 
     def test_field_mapping_overrides_auto_mapping(self):
-        self.grant('Manager')
-        folder = create(Builder('folder').titled('The Title'))
-        self.install_profile('plone.app.contenttypes:default')
+        self.grant("Manager")
+        folder = create(Builder("folder").titled("The Title"))
+        self.install_profile("plone.app.contenttypes:default")
 
-        InplaceMigrator('Folder', {'title': 'description'},
-                        ignore_fields=['description']).migrate_object(folder)
+        InplaceMigrator(
+            "Folder", {"title": "description"}, ignore_fields=["description"]
+        ).migrate_object(folder)
         folder = self.portal.get(folder.getId())
-        self.assertEqual('The Title', folder.Description())
+        self.assertEqual("The Title", folder.Description())
 
     def test_DISABLE_FIELD_AUTOMAPPING_flag(self):
-        """When disabling field automapping we expect unmaped fields.
-        """
+        """When disabling field automapping we expect unmaped fields."""
 
-        self.grant('Manager')
-        folder = create(Builder('folder'))
-        self.install_profile('plone.app.contenttypes:default')
+        self.grant("Manager")
+        folder = create(Builder("folder"))
+        self.install_profile("plone.app.contenttypes:default")
 
         with self.assertRaises(FieldsNotMappedError) as cm:
-            (InplaceMigrator('Folder', options=DISABLE_FIELD_AUTOMAPPING)
-             .migrate_object(folder))
+            (
+                InplaceMigrator(
+                    "Folder", options=DISABLE_FIELD_AUTOMAPPING
+                ).migrate_object(folder)
+            )
 
-        self.assertIn('title', cm.exception.not_mapped_fields)
+        self.assertIn("title", cm.exception.not_mapped_fields)
 
     def test_IGNORE_UNMAPPED_FIELDS_flag(self):
-        self.grant('Manager')
-        folder = create(Builder('folder'))
-        self.install_profile('plone.app.contenttypes:default')
+        self.grant("Manager")
+        folder = create(Builder("folder"))
+        self.install_profile("plone.app.contenttypes:default")
 
-        (InplaceMigrator(
-            'Folder',
-            options=DISABLE_FIELD_AUTOMAPPING | IGNORE_UNMAPPED_FIELDS)
-         .migrate_object(folder))
+        (
+            InplaceMigrator(
+                "Folder", options=DISABLE_FIELD_AUTOMAPPING | IGNORE_UNMAPPED_FIELDS
+            ).migrate_object(folder)
+        )
 
     def test_BACKUP_AND_IGNORE_UNMAPPED_FIELDS_flag(self):
-        self.grant('Manager')
-        folder = create(Builder('folder')
-                        .titled('The Folder')
-                        .having(description='A very fancy folder.'))
-        self.install_profile('plone.app.contenttypes:default')
+        self.grant("Manager")
+        folder = create(
+            Builder("folder")
+            .titled("The Folder")
+            .having(description="A very fancy folder.")
+        )
+        self.install_profile("plone.app.contenttypes:default")
 
-        new_folder = (
-            InplaceMigrator(
-                'Folder',
-                options=DISABLE_FIELD_AUTOMAPPING | BACKUP_AND_IGNORE_UNMAPPED_FIELDS)
-            .migrate_object(folder))
+        new_folder = InplaceMigrator(
+            "Folder",
+            options=DISABLE_FIELD_AUTOMAPPING | BACKUP_AND_IGNORE_UNMAPPED_FIELDS,
+        ).migrate_object(folder)
 
         self.assertEqual(
-            {'nextPreviousEnabled': False,
-             'description': 'A very fancy folder.',
-             'contributors': (),
-             'title': 'The Folder',
-             'rights': '',
-             'language': 'en',
-             'relatedItems': [],
-             'creators': ('test_user_1_',)},
-            IAnnotations(new_folder).get(
-                UNMAPPED_FIELDS_BACKUP_ANN_KEY, None))
+            {
+                "nextPreviousEnabled": False,
+                "description": "A very fancy folder.",
+                "contributors": (),
+                "title": "The Folder",
+                "rights": "",
+                "language": "en",
+                "relatedItems": [],
+                "creators": ("test_user_1_",),
+            },
+            IAnnotations(new_folder).get(UNMAPPED_FIELDS_BACKUP_ANN_KEY, None),
+        )
 
     def test_IGNORE_STANDARD_FIELD_MAPPING_flag(self):
-        self.grant('Manager')
-        folder = create(Builder('folder'))
-        self.install_profile('plone.app.contenttypes:default')
+        self.grant("Manager")
+        folder = create(Builder("folder"))
+        self.install_profile("plone.app.contenttypes:default")
 
         with self.assertRaises(FieldsNotMappedError) as cm:
-            (InplaceMigrator('Folder',
-                             options=IGNORE_STANDARD_FIELD_MAPPING)
-             .migrate_object(folder))
+            (
+                InplaceMigrator(
+                    "Folder", options=IGNORE_STANDARD_FIELD_MAPPING
+                ).migrate_object(folder)
+            )
 
-        self.assertIn('expirationDate', cm.exception.not_mapped_fields)
+        self.assertIn("expirationDate", cm.exception.not_mapped_fields)
 
     def test_IGNORE_DEFAULT_IGNORE_FIELDS_flag(self):
-        self.grant('Manager')
-        folder = create(Builder('folder'))
-        self.install_profile('plone.app.contenttypes:default')
+        self.grant("Manager")
+        folder = create(Builder("folder"))
+        self.install_profile("plone.app.contenttypes:default")
 
         with self.assertRaises(FieldsNotMappedError) as cm:
-            (InplaceMigrator('Folder',
-                             options=IGNORE_DEFAULT_IGNORE_FIELDS)
-             .migrate_object(folder))
+            (
+                InplaceMigrator(
+                    "Folder", options=IGNORE_DEFAULT_IGNORE_FIELDS
+                ).migrate_object(folder)
+            )
 
-        self.assertIn('location', cm.exception.not_mapped_fields)
+        self.assertIn("location", cm.exception.not_mapped_fields)
 
     def test_migrate_constrain_types(self):
-        self.grant('Manager')
+        self.grant("Manager")
         self.maxDiff = None
 
-        folder = create(Builder('folder').titled('The Folder'))
+        folder = create(Builder("folder").titled("The Folder"))
         self.set_constraintypes_config(
             folder,
-            {'mode': ENABLED,
-             'locally allowed': ['Folder', 'Document', 'File'],
-             'immediately addable': ['Folder', 'Document']})
+            {
+                "mode": ENABLED,
+                "locally allowed": ["Folder", "Document", "File"],
+                "immediately addable": ["Folder", "Document"],
+            },
+        )
 
         self.assertTrue(IBaseObject.providedBy(folder))
         self.assertFalse(IDexterityContent.providedBy(folder))
         self.assertDictEqual(
-            {'mode': ENABLED,
-             'locally allowed': {'Folder', 'Document', 'File'},
-             'immediately addable': {'Folder', 'Document'}},
-            self.get_constraintypes_config(folder))
+            {
+                "mode": ENABLED,
+                "locally allowed": {"Folder", "Document", "File"},
+                "immediately addable": {"Folder", "Document"},
+            },
+            self.get_constraintypes_config(folder),
+        )
 
-        self.install_profile('plone.app.contenttypes:default')
-        InplaceMigrator('Folder').migrate_object(folder)
+        self.install_profile("plone.app.contenttypes:default")
+        InplaceMigrator("Folder").migrate_object(folder)
 
-        folder = self.portal.get('the-folder')
+        folder = self.portal.get("the-folder")
         self.assertFalse(IBaseObject.providedBy(folder))
         self.assertTrue(IDexterityContent.providedBy(folder))
         self.assertDictEqual(
-            {'mode': ENABLED,
-             'locally allowed': {'Folder', 'Document', 'File'},
-             'immediately addable': {'Folder', 'Document'}},
-            self.get_constraintypes_config(folder))
+            {
+                "mode": ENABLED,
+                "locally allowed": {"Folder", "Document", "File"},
+                "immediately addable": {"Folder", "Document"},
+            },
+            self.get_constraintypes_config(folder),
+        )
 
     def test_migrate_ownership(self):
-        john = create(Builder('user').named('John', 'Doe').with_roles('Manager'))
-        peter = create(Builder('user').named('Peter', 'Pan').with_roles('Manager'))
+        john = create(Builder("user").named("John", "Doe").with_roles("Manager"))
+        peter = create(Builder("user").named("Peter", "Pan").with_roles("Manager"))
 
         login(self.portal, john.getId())
-        folder = create(Builder('folder').titled('The Folder'))
+        folder = create(Builder("folder").titled("The Folder"))
         folder.changeOwnership(peter.getUser())
 
         self.assertTrue(IBaseObject.providedBy(folder))
-        self.assertEqual('john.doe', folder.Creator())
-        self.assertEqual('peter.pan', folder.getOwner().getId())
+        self.assertEqual("john.doe", folder.Creator())
+        self.assertEqual("peter.pan", folder.getOwner().getId())
 
-        self.grant('Manager')
-        self.install_profile('plone.app.contenttypes:default')
+        self.grant("Manager")
+        self.install_profile("plone.app.contenttypes:default")
         with self.login(SITE_OWNER_NAME):
-            InplaceMigrator('Folder').migrate_object(folder)
+            InplaceMigrator("Folder").migrate_object(folder)
 
-        folder = self.portal.get('the-folder')
+        folder = self.portal.get("the-folder")
         self.assertTrue(IDexterityContent.providedBy(folder))
-        self.assertEqual('john.doe', folder.Creator())
-        self.assertEqual('peter.pan', folder.getOwner().getId())
+        self.assertEqual("john.doe", folder.Creator())
+        self.assertEqual("peter.pan", folder.getOwner().getId())
 
     def test_migrate_ownership_no_IOwner(self):
-        john = create(Builder('user').named('John', 'Doe').with_roles('Manager'))
-        peter = create(Builder('user').named('Peter', 'Pan').with_roles('Manager'))
+        john = create(Builder("user").named("John", "Doe").with_roles("Manager"))
+        peter = create(Builder("user").named("Peter", "Pan").with_roles("Manager"))
 
         login(self.portal, john.getId())
-        folder = create(Builder('folder').titled('The Folder'))
+        folder = create(Builder("folder").titled("The Folder"))
         folder.changeOwnership(peter.getUser())
 
         self.assertTrue(IBaseObject.providedBy(folder))
-        self.assertEqual('john.doe', folder.Creator())
-        self.assertEqual('peter.pan', folder.getOwner().getId())
+        self.assertEqual("john.doe", folder.Creator())
+        self.assertEqual("peter.pan", folder.getOwner().getId())
 
-        self.grant('Manager')
-        self.install_profile('plone.app.contenttypes:default')
+        self.grant("Manager")
+        self.install_profile("plone.app.contenttypes:default")
 
         # The creators list behaves differently when the dublin core
         # behavior is used.
-        self.portal.portal_types['Folder'].behaviors = tuple(
-            name for name in self.portal.portal_types['Folder'].behaviors
-            if not (name == 'plone.dublincore' or 'IDublinCore' in name
-                    or name == 'plone.ownership'or 'IOwnership' in name))
+        self.portal.portal_types["Folder"].behaviors = tuple(
+            name
+            for name in self.portal.portal_types["Folder"].behaviors
+            if not (
+                name == "plone.dublincore"
+                or "IDublinCore" in name
+                or name == "plone.ownership"
+                or "IOwnership" in name
+            )
+        )
         with self.login(SITE_OWNER_NAME):
-            InplaceMigrator('Folder', options=IGNORE_UNMAPPED_FIELDS).migrate_object(folder)
+            InplaceMigrator("Folder", options=IGNORE_UNMAPPED_FIELDS).migrate_object(
+                folder
+            )
 
-        folder = self.portal.get('the-folder')
+        folder = self.portal.get("the-folder")
         self.assertTrue(IDexterityContent.providedBy(folder))
-        self.assertEqual('john.doe', folder.Creator())
-        self.assertEqual('peter.pan', folder.getOwner().getId())
+        self.assertEqual("john.doe", folder.Creator())
+        self.assertEqual("peter.pan", folder.getOwner().getId())
 
     def test_migrate_object_position(self):
-        self.grant('Manager')
-        container = create(Builder('folder').titled('Container'))
-        one = create(Builder('folder').titled('One').within(container))
-        two = create(Builder('folder').titled('Two').within(container))
-        three = create(Builder('folder').titled('Three').within(container))
+        self.grant("Manager")
+        container = create(Builder("folder").titled("Container"))
+        one = create(Builder("folder").titled("One").within(container))
+        two = create(Builder("folder").titled("Two").within(container))
+        three = create(Builder("folder").titled("Three").within(container))
 
         self.assertEqual(
-            [0, 1, 2],
-            list(map(container.getObjectPosition, ('one', 'two', 'three'))))
-        container.moveObjectsByDelta(['three'], -1)
+            [0, 1, 2], list(map(container.getObjectPosition, ("one", "two", "three")))
+        )
+        container.moveObjectsByDelta(["three"], -1)
         self.assertEqual(
-            [0, 2, 1],
-            list(map(container.getObjectPosition, ('one', 'two', 'three'))))
+            [0, 2, 1], list(map(container.getObjectPosition, ("one", "two", "three")))
+        )
 
-        self.install_profile('plone.app.contenttypes:default')
-        InplaceMigrator('Folder').migrate_object(container)
-        InplaceMigrator('Folder').migrate_object(three)
-        InplaceMigrator('Folder').migrate_object(two)
-        InplaceMigrator('Folder').migrate_object(one)
-        container = self.portal.get('container')
+        self.install_profile("plone.app.contenttypes:default")
+        InplaceMigrator("Folder").migrate_object(container)
+        InplaceMigrator("Folder").migrate_object(three)
+        InplaceMigrator("Folder").migrate_object(two)
+        InplaceMigrator("Folder").migrate_object(one)
+        container = self.portal.get("container")
 
         self.assertEqual(
-            [0, 2, 1],
-            list(map(container.getObjectPosition, ('one', 'two', 'three'))))
+            [0, 2, 1], list(map(container.getObjectPosition, ("one", "two", "three")))
+        )
 
     def test_migrate_portlets(self):
-        self.grant('Manager')
+        self.grant("Manager")
 
-        folder = create(Builder('folder').titled('The Folder'))
-        portlet = create(Builder('static portlet')
-                         .within(folder)
-                         .in_manager('plone.rightcolumn'))
+        folder = create(Builder("folder").titled("The Folder"))
+        portlet = create(
+            Builder("static portlet").within(folder).in_manager("plone.rightcolumn")
+        )
 
-        self.assertEqual({'plone.leftcolumn': [],
-                          'plone.rightcolumn': [portlet]},
-                         self.get_portlets_for(folder))
+        self.assertEqual(
+            {"plone.leftcolumn": [], "plone.rightcolumn": [portlet]},
+            self.get_portlets_for(folder),
+        )
 
-        self.install_profile('plone.app.contenttypes:default')
-        InplaceMigrator('Folder').migrate_object(folder)
+        self.install_profile("plone.app.contenttypes:default")
+        InplaceMigrator("Folder").migrate_object(folder)
 
-        folder = self.portal.get('the-folder')
-        self.assertEqual({'plone.leftcolumn': [],
-                          'plone.rightcolumn': [portlet]},
-                         self.get_portlets_for(folder))
+        folder = self.portal.get("the-folder")
+        self.assertEqual(
+            {"plone.leftcolumn": [], "plone.rightcolumn": [portlet]},
+            self.get_portlets_for(folder),
+        )
 
     def test_migrate_relations(self):
-        self.grant('Manager')
+        self.grant("Manager")
 
-        foo = create(Builder('folder').titled('Foo'))
-        bar = create(Builder('folder').titled('Bar')
-                     .having(relatedItems=[foo]))
+        foo = create(Builder("folder").titled("Foo"))
+        bar = create(Builder("folder").titled("Bar").having(relatedItems=[foo]))
 
         self.assertEqual([foo], bar.getRelatedItems())
         self.assertEqual([bar], foo.getBackReferences())
 
-        self.install_profile('plone.app.contenttypes:default')
-        list(map(InplaceMigrator('Folder').migrate_object, (foo, bar)))
+        self.install_profile("plone.app.contenttypes:default")
+        list(map(InplaceMigrator("Folder").migrate_object, (foo, bar)))
 
-        foo = self.portal.get('foo')
-        bar = self.portal.get('bar')
+        foo = self.portal.get("foo")
+        bar = self.portal.get("bar")
 
         self.assertEqual(
-            [foo],
-            list(map(attrgetter('to_object'), IRelatedItems(bar).relatedItems)))
+            [foo], list(map(attrgetter("to_object"), IRelatedItems(bar).relatedItems))
+        )
 
     def get_catalog_indexdata_for(self, obj):
-        catalog = getToolByName(obj, 'portal_catalog')
-        uid = '/'.join(obj.getPhysicalPath())
+        catalog = getToolByName(obj, "portal_catalog")
+        uid = "/".join(obj.getPhysicalPath())
         data = catalog.getIndexDataForUID(uid)
 
         # Remove some indexes in order to not assert them
         # since they must change from AT to DX in
-        del data['meta_type']
-        del data['object_provides']
-        del data['created']
-        del data['modified']
-        data.pop('sync_uid', None)
+        del data["meta_type"]
+        del data["object_provides"]
+        del data["created"]
+        del data["modified"]
+        data.pop("sync_uid", None)
         return data
 
     def review_state(self, obj):
-        return self.wftool.getInfoFor(obj, 'review_state', None)
+        return self.wftool.getInfoFor(obj, "review_state", None)
 
     def get_constraintypes_config(self, obj):
         ctypes = IConstrainTypes(obj)
-        return {'mode': ctypes.getConstrainTypesMode(),
-                'locally allowed': set(ctypes.getLocallyAllowedTypes()),
-                'immediately addable': set(
-                    ctypes.getImmediatelyAddableTypes())}
+        return {
+            "mode": ctypes.getConstrainTypesMode(),
+            "locally allowed": set(ctypes.getLocallyAllowedTypes()),
+            "immediately addable": set(ctypes.getImmediatelyAddableTypes()),
+        }
 
     def set_constraintypes_config(self, obj, config):
         self.assertEqual(
-            {'mode', 'locally allowed', 'immediately addable'},
-            set(config))
+            {"mode", "locally allowed", "immediately addable"}, set(config)
+        )
 
         ctypes = ISelectableConstrainTypes(obj)
-        ctypes.setConstrainTypesMode(config['mode'])
-        ctypes.setLocallyAllowedTypes(config['locally allowed'])
-        ctypes.setImmediatelyAddableTypes(config['immediately addable'])
+        ctypes.setConstrainTypesMode(config["mode"])
+        ctypes.setLocallyAllowedTypes(config["locally allowed"])
+        ctypes.setImmediatelyAddableTypes(config["immediately addable"])
 
     def get_portlets_for(self, container):
         portlets = {}
 
-        for manager_name in ('plone.leftcolumn', 'plone.rightcolumn'):
+        for manager_name in ("plone.leftcolumn", "plone.rightcolumn"):
             manager = getUtility(
-                IPortletManager,
-                name=manager_name,
-                context=self.portal
+                IPortletManager, name=manager_name, context=self.portal
             )
             assignments = getMultiAdapter(
-                (container, manager),
-                IPortletAssignmentMapping,
-                context=self.portal
+                (container, manager), IPortletAssignmentMapping, context=self.portal
             )
             portlets[manager_name] = list(assignments.values())
 

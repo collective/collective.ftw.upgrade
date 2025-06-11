@@ -30,18 +30,20 @@ class SafeObjectGetter:
         self.errors = []
         self.log = log
 
-    security.declarePrivate('catalog_unrestricted_get_object')
+    security.declarePrivate("catalog_unrestricted_get_object")
+
     def catalog_unrestricted_get_object(self, brain):
-        """Returns the unrestricted object of a brain.
-        """
+        """Returns the unrestricted object of a brain."""
         try:
             return self.portal.unrestrictedTraverse(brain.getPath())
         except (AttributeError, KeyError, NotFound):
-            self.log.warning('The object of the brain with rid {!r} no longer'
-                             ' exists at the path {!r}; removing the brain.'.format(
-                                 brain.getRID(), brain.getPath()))
-            self.errors.append({'type': 'Inexistant brain',
-                                'path': brain.getPath()})
+            self.log.warning(
+                "The object of the brain with rid {!r} no longer"
+                " exists at the path {!r}; removing the brain.".format(
+                    brain.getRID(), brain.getPath()
+                )
+            )
+            self.errors.append({"type": "Inexistant brain", "path": brain.getPath()})
             self.catalog.uncatalog_object(brain.getPath())
             return None
 
@@ -156,7 +158,7 @@ class SavepointIterator:
         self.logger = logger
 
         if self.logger is None:
-            self.logger = logging.getLogger('collective.ftw.upgrade')
+            self.logger = logging.getLogger("collective.ftw.upgrade")
 
         if not threshold:
             raise ValueError("Threshold must be a non-zero value")
@@ -190,51 +192,52 @@ class SavepointIterator:
         variable ``UPGRADE_SAVEPOINT_THRESHOLD``.
         When set to ``"None"``, savepoints are disabled.
         """
-        value = os.environ.get('UPGRADE_SAVEPOINT_THRESHOLD', None)
+        value = os.environ.get("UPGRADE_SAVEPOINT_THRESHOLD", None)
         if value is None:
             # default unchanged; use application default
             return 1000
 
         value = value.strip().lower()
-        if value == 'none':
+        if value == "none":
             # threshold disabled
             return None
 
         try:
             value = int(value)
         except ValueError:
-            raise ValueError(f'Invalid savepoint threshold {value!r}')
+            raise ValueError(f"Invalid savepoint threshold {value!r}")
 
         if value > 0:
             return value
         else:
-            raise ValueError(f'Invalid savepoint threshold {value!r}')
+            raise ValueError(f"Invalid savepoint threshold {value!r}")
 
 
 def get_memory_usage():
     mem_info = psutil.Process().memory_info()
-    return mem_info.rss / 1024.0 ** 2.0
+    return mem_info.rss / 1024.0**2.0
 
 
 def log_memory_usage(logger):
     rss = get_memory_usage()
-    logger.log(
-        logging.INFO,
-        f'Current memory usage in MB (RSS): {rss:0.1f}')
+    logger.log(logging.INFO, f"Current memory usage in MB (RSS): {rss:0.1f}")
 
 
-LOAD_LIMITS = {'memory_available': 100 * 1024 * 1024,
-               'memory_percent': 95}
+LOAD_LIMITS = {"memory_available": 100 * 1024 * 1024, "memory_percent": 95}
 
 
 def _is_memory_full(load, load_limits):
-    return (load['memory_available'] < load_limits['memory_available']
-            or load['memory_percent'] > load_limits['memory_percent'])
+    return (
+        load["memory_available"] < load_limits["memory_available"]
+        or load["memory_percent"] > load_limits["memory_percent"]
+    )
 
 
 def _get_system_load():
-    return {'memory_available': psutil.virtual_memory().available,
-            'memory_percent': psutil.virtual_memory().percent}
+    return {
+        "memory_available": psutil.virtual_memory().available,
+        "memory_percent": psutil.virtual_memory().percent,
+    }
 
 
 def is_memory_critical(load_limits=None):
@@ -284,21 +287,22 @@ def get_sorted_profile_ids(portal_setup):
     dependencies = []
 
     for profile in portal_setup.listProfileInfo():
-        profile_ids.append(profile['id'])
+        profile_ids.append(profile["id"])
 
     for profile in portal_setup.listProfileInfo():
-        for dependency in (list(profile.get('dependencies') or []) +
-                           list(profile.get('collective.ftw.upgrade:dependencies') or [])):
-            dependency = re.sub('^profile-', '', dependency)
+        for dependency in list(profile.get("dependencies") or []) + list(
+            profile.get("collective.ftw.upgrade:dependencies") or []
+        ):
+            dependency = re.sub("^profile-", "", dependency)
             if dependency in profile_ids:
-                dependencies.append((profile['id'], dependency))
+                dependencies.append((profile["id"], dependency))
 
     order = topological_sort(profile_ids, dependencies)
 
     if order is None:
         raise CyclicDependencies(
-            dependencies,
-            find_cyclic_dependencies(deepcopy(dependencies)))
+            dependencies, find_cyclic_dependencies(deepcopy(dependencies))
+        )
     else:
         return list(reversed(order))
 
@@ -315,24 +319,24 @@ def format_duration(seconds):
     result = []
 
     if hours == 1:
-        result.append('1 hour')
+        result.append("1 hour")
     elif hours > 1:
-        result.append('%i hours' % hours)
+        result.append("%i hours" % hours)
 
     if minutes == 1:
-        result.append('1 minute')
+        result.append("1 minute")
     elif minutes > 1:
-        result.append('%i minutes' % minutes)
+        result.append("%i minutes" % minutes)
 
     if seconds == 1:
-        result.append('1 second')
+        result.append("1 second")
     elif seconds > 1:
-        result.append('%i seconds' % seconds)
+        result.append("%i seconds" % seconds)
 
     if len(result) == 0:
-        return '0 seconds'
+        return "0 seconds"
     else:
-        return ', '.join(result)
+        return ", ".join(result)
 
 
 def subject_from_docstring(docstring):
@@ -342,13 +346,13 @@ def subject_from_docstring(docstring):
     """
     lines = list(map(str.strip, docstring.strip().splitlines()))
     try:
-        lines.index('')
+        lines.index("")
     except ValueError:
         pass  # '' is not in list
     else:
-        lines = lines[:lines.index('')]
+        lines = lines[: lines.index("")]
 
-    return ' '.join(lines).strip()
+    return " ".join(lines).strip()
 
 
 def get_tempfile_authentication_directory(directory=None):
@@ -357,17 +361,19 @@ def get_tempfile_authentication_directory(directory=None):
     If the directory does not exist it is created.
     """
     directory = Path(directory) or Path.cwd()
-    if not directory.joinpath('bin', 'buildout').is_file():
+    if not directory.joinpath("bin", "buildout").is_file():
         return get_tempfile_authentication_directory(directory.parent)
 
-    auth_directory = directory.joinpath('var', 'ftw.upgrade-authentication')
+    auth_directory = directory.joinpath("var", "ftw.upgrade-authentication")
     if not auth_directory.is_dir():
         auth_directory.mkdir(mode=0o770)
 
     # Verify that "others" do not have any permissions on this directory.
     if auth_directory.stat().st_mode & stat.S_IRWXO:
-        raise ValueError('{} has invalid mode: "others" should not have '
-                         'any permissions'.format(auth_directory))
+        raise ValueError(
+            '{} has invalid mode: "others" should not have '
+            "any permissions".format(auth_directory)
+        )
 
     return auth_directory
 
@@ -417,7 +423,7 @@ def get_portal_migration(context):
 
     Please see 4teamwork/ftw.upgrade#170 for a more in depth explanation.
     """
-    portal_migration = getattr(context, 'portal_migration')
+    portal_migration = getattr(context, "portal_migration")
     return portal_migration
 
 
@@ -427,14 +433,14 @@ def get_logdir():
     have to figure out the path to var/log/ ourselves.
     """
     zconf = getConfiguration()
-    eventlog = getattr(zconf, 'eventlog', None)
+    eventlog = getattr(zconf, "eventlog", None)
 
     if eventlog is None:
         return None
 
     handler_factories = eventlog.handler_factories
     eventlog_path = handler_factories[0].section.path
-    if not eventlog_path.endswith('.log'):
+    if not eventlog_path.endswith(".log"):
         return None
     log_dir = os.path.dirname(eventlog_path)
     return log_dir

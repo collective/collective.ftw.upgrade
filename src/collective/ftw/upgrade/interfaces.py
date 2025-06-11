@@ -15,8 +15,7 @@ except ImportError:
 
 
 class IUpgradeLayer(Interface):
-    """ftw.upgrade specific browser layer.
-    """
+    """ftw.upgrade specific browser layer."""
 
 
 class IDuringUpgrade(Interface):
@@ -42,8 +41,7 @@ class IUpgradeInformationGatherer(Interface):
     """
 
     def __init__(portal_setup):
-        """Adapts portal_setup.
-        """
+        """Adapts portal_setup."""
 
     def get_profiles():
         """Returns upgrades grouped by done / proposed and assigned profile.
@@ -88,8 +86,7 @@ class IExecutioner(Interface):
     """
 
     def __init__(portal_setup):
-        """Adapts portal_setup.
-        """
+        """Adapts portal_setup."""
 
     def install(data):
         """Installs the dict data.
@@ -105,7 +102,7 @@ class IUpgradeStep(Interface):
     Register the classmethod ``upgrade`` in ZCML.
     """
 
-    portal_setup = Attribute('The portal_setup tool.')
+    portal_setup = Attribute("The portal_setup tool.")
 
     def __call__():
         """This method is implemented in each upgrade step with the
@@ -125,20 +122,16 @@ class IUpgradeStep(Interface):
         """
 
     def catalog_rebuild_index(name):
-        """Reindex the ``portal_catalog`` index identified by ``name``.
-        """
+        """Reindex the ``portal_catalog`` index identified by ``name``."""
 
     def catalog_has_index(name):
-        """Returns whether there is a catalog index ``name``.
-        """
+        """Returns whether there is a catalog index ``name``."""
 
     def catalog_add_index(name, type_, extra=None):
-        """Adds a new index to the ``portal_catalog`` tool.
-        """
+        """Adds a new index to the ``portal_catalog`` tool."""
 
     def catalog_remove_index(name):
-        """Removes an index to from ``portal_catalog`` tool.
-        """
+        """Removes an index to from ``portal_catalog`` tool."""
 
     def actions_remove_action(category, action_id):
         """Removes an action identified by ``action_id`` from
@@ -150,7 +143,7 @@ class IUpgradeStep(Interface):
         by ``portal_type`` with the action id ``action_id``.
         """
 
-    def set_property(context, key, value, data_type='string'):
+    def set_property(context, key, value, data_type="string"):
         """Set a property with the key ``value`` and the value ``value``
         on the ``context`` safely. The property is created with the
         type ``data_type`` if it does not exist.
@@ -184,12 +177,10 @@ class IPostUpgrade(Interface):
     """
 
     def __init__(portal, request):
-        """The adapter adapts portal and request.
-        """
+        """The adapter adapts portal and request."""
 
     def __call__():
-        """Runs the post upgrade adapter.
-        """
+        """Runs the post upgrade adapter."""
 
 
 class IUpgradeStepRecorder(Interface):

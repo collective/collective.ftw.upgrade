@@ -41,7 +41,7 @@ except ImportError:
     get_installer = None
 
 
-LOG = logging.getLogger('collective.ftw.upgrade')
+LOG = logging.getLogger("collective.ftw.upgrade")
 
 
 @implementer(IUpgradeStep)
@@ -59,66 +59,75 @@ class UpgradeStep:
         obj.__init__(*args, **kwargs)
         return obj()
 
-    def __init__(self, portal_setup,
-                 associated_profile=None,
-                 base_profile=None,
-                 target_version=None):
+    def __init__(
+        self,
+        portal_setup,
+        associated_profile=None,
+        base_profile=None,
+        target_version=None,
+    ):
         self.portal_setup = portal_setup
-        self.portal = self.getToolByName('portal_url').getPortalObject()
+        self.portal = self.getToolByName("portal_url").getPortalObject()
         self.associated_profile = associated_profile
         self.base_profile = base_profile
         self.target_version = target_version
-        self.catalog = self.getToolByName('portal_catalog')
+        self.catalog = self.getToolByName("portal_catalog")
         self._safe_object_getter = None
 
-    security.declarePrivate('__call__')
+    security.declarePrivate("__call__")
+
     def __call__(self):
         """This method is implemented in each upgrade step with the
         tasks the upgrade should perform.
         """
         raise NotImplementedError()
 
-    security.declarePrivate('getToolByName')
+    security.declarePrivate("getToolByName")
+
     def getToolByName(self, tool_name):
         """Returns the tool with the name ``tool_name`` of the upgraded
         site.
         """
         return getToolByName(self.portal_setup, tool_name)
 
-    def _iterate_and_log(self, catalog_query, full_objects, message,
-                         logger=None, savepoints=None):
+    def _iterate_and_log(
+        self, catalog_query, full_objects, message, logger=None, savepoints=None
+    ):
         results = self.catalog_unrestricted_search(
-            catalog_query, full_objects=full_objects)
+            catalog_query, full_objects=full_objects
+        )
         items = SavepointIterator.build(results, savepoints, logger)
         return ProgressLogger(message, items, logger=logger)
 
-    security.declarePrivate('objects')
-    def objects(self, catalog_query, message, logger=None,
-                savepoints=None):
+    security.declarePrivate("objects")
+
+    def objects(self, catalog_query, message, logger=None, savepoints=None):
         """Queries the catalog (unrestricted) and an iterator with full
         objects.
         The iterator configures and calls a ``ProgressLogger`` with the
         passed ``message``.
         """
-        return self._iterate_and_log(catalog_query, True, message,
-                                     logger=logger, savepoints=savepoints)
+        return self._iterate_and_log(
+            catalog_query, True, message, logger=logger, savepoints=savepoints
+        )
 
-    security.declarePrivate('brains')
-    def brains(self, catalog_query, message, logger=None,
-               savepoints=None):
+    security.declarePrivate("brains")
+
+    def brains(self, catalog_query, message, logger=None, savepoints=None):
         """Queries the catalog (unrestricted) and creates an iterator
         over the brains.
         The iterator configures and calls a ``ProgressLogger`` with the
         passed ``message``.
         """
 
-        return self._iterate_and_log(catalog_query, False, message,
-                                     logger=logger, savepoints=savepoints)
+        return self._iterate_and_log(
+            catalog_query, False, message, logger=logger, savepoints=savepoints
+        )
 
-    security.declarePrivate('catalog_rebuild_index')
+    security.declarePrivate("catalog_rebuild_index")
+
     def catalog_rebuild_index(self, name):
-        """Reindex the ``portal_catalog`` index identified by ``name``.
-        """
+        """Reindex the ``portal_catalog`` index identified by ``name``."""
         LOG.info("Reindexing index %s" % name)
 
         # pylint: disable=W0212
@@ -129,14 +138,15 @@ class UpgradeStep:
 
         LOG.info("Reindexing index %s DONE" % name)
 
-    security.declarePrivate('catalog_reindex_objects')
+    security.declarePrivate("catalog_reindex_objects")
+
     def catalog_reindex_objects(self, query, idxs=None, savepoints=None):
         """Reindex all objects found in the catalog with `query`.
         A list of indexes can be passed as `idxs` for limiting the
         indexed indexes.
         """
 
-        title = '.'.join((self.__module__, self.__class__.__name__))
+        title = ".".join((self.__module__, self.__class__.__name__))
 
         for obj in self.objects(query, title, savepoints=savepoints):
             if idxs is None:
@@ -146,28 +156,28 @@ class UpgradeStep:
 
                 # Restore modification date
                 obj.setModificationDate(modification_date)
-                obj.reindexObject(idxs=['modified'])
+                obj.reindexObject(idxs=["modified"])
 
             else:
                 obj.reindexObject(idxs=idxs)
 
-    security.declarePrivate('catalog_has_index')
+    security.declarePrivate("catalog_has_index")
+
     def catalog_has_index(self, name):
-        """Returns whether there is a catalog index ``name``.
-        """
+        """Returns whether there is a catalog index ``name``."""
         index_names = self.catalog.indexes()
         return name in index_names
 
-    security.declarePrivate('catalog_add_index')
+    security.declarePrivate("catalog_add_index")
+
     def catalog_add_index(self, name, type_, extra=None):
-        """Adds a new index to the ``portal_catalog`` tool.
-        """
+        """Adds a new index to the ``portal_catalog`` tool."""
         return self.catalog.addIndex(name, type_, extra=extra)
 
-    security.declarePrivate('catalog_remove_index')
+    security.declarePrivate("catalog_remove_index")
+
     def catalog_remove_index(self, name):
-        """Removes an index to from ``portal_catalog`` tool.
-        """
+        """Removes an index to from ``portal_catalog`` tool."""
         return self.catalog.delIndex(name)
 
     @property
@@ -176,13 +186,14 @@ class UpgradeStep:
             self._safe_object_getter = SafeObjectGetter(self.portal, self.catalog, LOG)
         return self._safe_object_getter
 
-    security.declarePrivate('catalog_unrestricted_get_object')
+    security.declarePrivate("catalog_unrestricted_get_object")
+
     def catalog_unrestricted_get_object(self, brain):
-        """Returns the unrestricted object of a brain.
-        """
+        """Returns the unrestricted object of a brain."""
         return self.safe_object_getter.catalog_unrestricted_get_object(brain)
 
-    security.declarePrivate('catalog_unrestricted_search')
+    security.declarePrivate("catalog_unrestricted_search")
+
     def catalog_unrestricted_search(self, query, full_objects=False):
         """Search catalog without security checks.
         If `full_objects` is `True`, objects instead of brains
@@ -191,21 +202,23 @@ class UpgradeStep:
         brains = tuple(self.catalog.unrestrictedSearchResults(query))
 
         if full_objects:
-            generator = (self.catalog_unrestricted_get_object(brain)
-                         for brain in brains)
+            generator = (
+                self.catalog_unrestricted_get_object(brain) for brain in brains
+            )
             generator = (obj for obj in generator if obj is not None)
             return SizedGenerator(generator, len(brains))
 
         else:
             return brains
 
-    security.declarePrivate('actions_remove_action')
+    security.declarePrivate("actions_remove_action")
+
     def actions_remove_action(self, category, action_id):
         """Removes an action identified by ``action_id`` from
         the ``portal_actions`` tool from a particulary ``category``.
         """
 
-        actions_tool = self.getToolByName('portal_actions')
+        actions_tool = self.getToolByName("portal_actions")
         cat = actions_tool.get(category)
 
         if cat and action_id in cat:
@@ -215,12 +228,13 @@ class UpgradeStep:
         else:
             return False
 
-    security.declarePrivate('actions_remove_type_action')
+    security.declarePrivate("actions_remove_type_action")
+
     def actions_remove_type_action(self, portal_type, action_id):
         """Removes a ``portal_types`` action from the type identified
         by ``portal_type`` with the action id ``action_id``.
         """
-        ttool = self.getToolByName('portal_types')
+        ttool = self.getToolByName("portal_types")
         fti = ttool.get(portal_type)
 
         actions = []
@@ -235,7 +249,8 @@ class UpgradeStep:
         fti._actions = tuple(actions)  # pylint: disable=W0212
         return found
 
-    security.declarePrivate('actions_add_type_action')
+    security.declarePrivate("actions_add_type_action")
+
     def actions_add_type_action(self, portal_type, after, action_id, **kwargs):
         """Add a ``portal_types`` action from the type identified
         by ``portal_type``, the position can be defined by the
@@ -245,7 +260,7 @@ class UpgradeStep:
         actions = []
         found = False
 
-        ttool = self.getToolByName('portal_types')
+        ttool = self.getToolByName("portal_types")
         fti = ttool.get(portal_type)
 
         new_action = ActionInformation(id=action_id, **kwargs)
@@ -261,8 +276,9 @@ class UpgradeStep:
 
         fti._actions = tuple(actions)  # pylint: disable=W0212
 
-    security.declarePrivate('set_property')
-    def set_property(self, context, key, value, data_type='string'):
+    security.declarePrivate("set_property")
+
+    def set_property(self, context, key, value, data_type="string"):
         """Set a property with the key ``value`` and the value ``value``
         on the ``context`` safely. The property is created with the
         type ``data_type`` if it does not exist.
@@ -275,7 +291,8 @@ class UpgradeStep:
             context._setProperty(key, value, data_type)
         # pylint: enable=W0212
 
-    security.declarePrivate('add_lines_to_property')
+    security.declarePrivate("add_lines_to_property")
+
     def add_lines_to_property(self, context, key, lines):
         """Updates a property with key ``key`` on the object ``context``
         adding ``lines``. The property is expected to be of type "lines".
@@ -296,89 +313,93 @@ class UpgradeStep:
         else:
             data = [lines]
 
-        self.set_property(context, key, data, data_type='lines')
+        self.set_property(context, key, data, data_type="lines")
 
-    security.declarePrivate('setup_install_profile')
-    def setup_install_profile(self, profileid, steps=None,
-                              dependency_strategy=None):
+    security.declarePrivate("setup_install_profile")
+
+    def setup_install_profile(self, profileid, steps=None, dependency_strategy=None):
         """Installs the generic setup profile identified by ``profileid``.
         If a list step names is passed with ``steps`` (e.g. ['actions']),
         only those steps are installed. All steps are installed by default.
         """
-        setup = self.getToolByName('portal_setup')
+        setup = self.getToolByName("portal_setup")
         if steps is None:
-            runargs = {'purge_old': False}
+            runargs = {"purge_old": False}
             if DEPENDENCY_STRATEGY_NEW is not None:
-                runargs['dependency_strategy'] = (
-                    dependency_strategy or DEPENDENCY_STRATEGY_NEW)
+                runargs["dependency_strategy"] = (
+                    dependency_strategy or DEPENDENCY_STRATEGY_NEW
+                )
 
             setup.runAllImportStepsFromProfile(profileid, **runargs)
         else:
             for step in steps:
-                setup.runImportStepFromProfile(profileid,
-                                               step,
-                                               run_dependencies=False,
-                                               purge_old=False)
+                setup.runImportStepFromProfile(
+                    profileid, step, run_dependencies=False, purge_old=False
+                )
 
-    security.declarePrivate('ensure_profile_installed')
+    security.declarePrivate("ensure_profile_installed")
+
     def ensure_profile_installed(self, profileid):
-        """Install a generic setup profile only when it is not yet installed.
-        """
+        """Install a generic setup profile only when it is not yet installed."""
         if not self.is_profile_installed(profileid):
             self.setup_install_profile(profileid)
 
-    security.declarePrivate('install_upgrade_profile')
+    security.declarePrivate("install_upgrade_profile")
+
     def install_upgrade_profile(self, steps=None):
-        """Installs the generic setup profile for this upgrade step.
-        """
+        """Installs the generic setup profile for this upgrade step."""
         if self.associated_profile is None:
             raise NoAssociatedProfileError()
 
         self.setup_install_profile(self.associated_profile, steps=steps)
 
-    security.declarePrivate('is_product_installed')
+    security.declarePrivate("is_product_installed")
+
     def is_profile_installed(self, profileid):
         """Checks whether a generic setup profile is installed.
         Respects product uninstallation via quickinstaller.
         """
-        profileid = re.sub(r'^profile-', '', profileid)
+        profileid = re.sub(r"^profile-", "", profileid)
 
         try:
             profileinfo = self.portal_setup.getProfileInfo(profileid)
         except KeyError:
             return False
 
-        if not self.is_product_installed(profileinfo['product']):
+        if not self.is_product_installed(profileinfo["product"]):
             return False
 
         version = self.portal_setup.getLastVersionForProfile(profileid)
-        return version != 'unknown'
+        return version != "unknown"
 
-    security.declarePrivate('is_product_installed')
+    security.declarePrivate("is_product_installed")
+
     def is_product_installed(self, product_name):
-        """Check whether a product is installed.
-        """
+        """Check whether a product is installed."""
         if get_installer is not None:
             quickinstaller = get_installer(self.portal, self.portal.REQUEST)
-            return (quickinstaller.is_product_installable(product_name)
-                    and quickinstaller.is_product_installed(product_name))
+            return quickinstaller.is_product_installable(
+                product_name
+            ) and quickinstaller.is_product_installed(product_name)
         else:
-            quickinstaller = self.getToolByName('portal_quickinstaller')
-            return (quickinstaller.isProductInstallable(product_name)
-                    and quickinstaller.isProductInstalled(product_name))
+            quickinstaller = self.getToolByName("portal_quickinstaller")
+            return quickinstaller.isProductInstallable(
+                product_name
+            ) and quickinstaller.isProductInstalled(product_name)
 
-    security.declarePrivate('uninstall_product')
+    security.declarePrivate("uninstall_product")
+
     def uninstall_product(self, product_name):
-        """Uninstalls a product using the quick installer.
-        """
+        """Uninstalls a product using the quick installer."""
         if get_installer is not None:
             quickinstaller = get_installer(self.portal, self.portal.REQUEST)
             quickinstaller.uninstall_product(product_name)
         else:
-            quickinstaller = self.getToolByName('portal_quickinstaller')
+            quickinstaller = self.getToolByName("portal_quickinstaller")
             quickinstaller.uninstallProducts([product_name])
 
-    security.declarePrivate('migrate_class')
+    security.declarePrivate("migrate_class")
+
     def migrate_class(self, obj, new_class):
         """Changes the class of a object and notifies the container so that
         the change is persistent.
@@ -408,12 +429,13 @@ class UpgradeStep:
 
         notify(ClassMigratedEvent(obj))
 
-    security.declarePrivate('remove_broken_browserlayer')
+    security.declarePrivate("remove_broken_browserlayer")
+
     def remove_broken_browserlayer(self, name, dottedname):
         """Removes a browser layer registration, whose interface can't be
         imported any more, from the persistent registry.
         """
-        iface_name = dottedname.split('.')[-1]
+        iface_name = dottedname.split(".")[-1]
         sm = self.portal.getSiteManager()
         adapters = sm.utilities._adapters
         subscribers = sm.utilities._subscribers
@@ -424,15 +446,21 @@ class UpgradeStep:
 
         # ... as well as subscribers
         layer_subscribers = subscribers[0][ILocalBrowserLayerType]
-        remaining_layers = tuple([layer for layer in layer_subscribers['']
-                                  if not layer.__name__ == iface_name])
-        layer_subscribers[''] = remaining_layers
+        remaining_layers = tuple(
+            [
+                layer
+                for layer in layer_subscribers[""]
+                if not layer.__name__ == iface_name
+            ]
+        )
+        layer_subscribers[""] = remaining_layers
 
         sm._utility_registrations.pop((ILocalBrowserLayerType, name), None)
 
         sm.utilities._p_changed = True
 
-    security.declarePrivate('remove_broken_portlet_manager')
+    security.declarePrivate("remove_broken_portlet_manager")
+
     def remove_broken_portlet_manager(self, name):
         """Removes a portlet manager, that cannot be imported any more, from
         the persistent registry.
@@ -444,48 +472,53 @@ class UpgradeStep:
         sm = self.portal.getSiteManager()
 
         manager_renderer = sm.adapters.lookup(
-            [Interface, IBrowserRequest, IBrowserView],
-            IPortletManagerRenderer,
-            name)
+            [Interface, IBrowserRequest, IBrowserView], IPortletManagerRenderer, name
+        )
         if manager_renderer is not None:
             with log_silencer("ZODB.Connection", "Couldn't load state for"):
                 sm.unregisterAdapter(
                     manager_renderer,
                     [Interface, IBrowserRequest, IBrowserView],
                     IPortletManagerRenderer,
-                    name)
+                    name,
+                )
             LOG.info(f"Removed portlet manager renderer {name}")
 
         with log_silencer("ZODB.Connection", "Couldn't load state for"):
             manager = sm.queryUtility(IPortletManager, name=name)
             if manager is not None:
-                sm.unregisterUtility(component=manager,
-                                     name=name,
-                                     provided=IPortletManager)
+                sm.unregisterUtility(
+                    component=manager, name=name, provided=IPortletManager
+                )
                 LOG.info(f"Removed portlet manager {name}")
 
-    security.declarePrivate('update_security')
+    security.declarePrivate("update_security")
+
     def update_security(self, obj, reindex_security=True):
         """Update the object security and reindex the security indexes in
         the catalog.
         """
         return update_security_for(obj, reindex_security=reindex_security)
 
-    security.declarePrivate('update_workflow_security')
-    def update_workflow_security(self, workflow_names, reindex_security=True,
-                                 savepoints=1000):
+    security.declarePrivate("update_workflow_security")
+
+    def update_workflow_security(
+        self, workflow_names, reindex_security=True, savepoints=1000
+    ):
         """Updates the object security of all objects with one of the
         passed workflows.
         `workflows` is expected to be a list of workflow names.
         If `savepoints` is None, no savepoints will be created.
         """
 
-        if getattr(workflow_names, '__iter__', None) is None or \
-                isinstance(workflow_names, str):
-            raise ValueError(
-                '"workflows" must be a list of workflow names.')
+        if getattr(workflow_names, "__iter__", None) is None or isinstance(
+            workflow_names, str
+        ):
+            raise ValueError('"workflows" must be a list of workflow names.')
 
         from collective.ftw.upgrade.workflow import WorkflowSecurityUpdater
+
         updater = WorkflowSecurityUpdater()
-        updater.update(workflow_names, reindex_security=reindex_security,
-                       savepoints=savepoints)
+        updater.update(
+            workflow_names, reindex_security=reindex_security, savepoints=savepoints
+        )

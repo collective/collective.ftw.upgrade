@@ -4,7 +4,7 @@ from Products.CMFCore.utils import getToolByName
 import logging
 
 
-LOG = logging.getLogger('collective.ftw.upgrade.PlacefulWorkflowPolicyActivator')
+LOG = logging.getLogger("collective.ftw.upgrade.PlacefulWorkflowPolicyActivator")
 
 
 class PlacefulWorkflowPolicyActivator:
@@ -12,15 +12,21 @@ class PlacefulWorkflowPolicyActivator:
     def __init__(self, context):
         self.context = context
 
-    def activate_policy(self, policy_id, review_state_mapping,
-                        activate_in=True, activate_below=True,
-                        **chain_updater_kwargs):
+    def activate_policy(
+        self,
+        policy_id,
+        review_state_mapping,
+        activate_in=True,
+        activate_below=True,
+        **chain_updater_kwargs,
+    ):
 
-        with WorkflowChainUpdater(self.get_objects(), review_state_mapping,
-                                  **chain_updater_kwargs):
-            self._activate_placeful_policy(policy_id,
-                                           activate_in=activate_in,
-                                           activate_below=activate_below)
+        with WorkflowChainUpdater(
+            self.get_objects(), review_state_mapping, **chain_updater_kwargs
+        ):
+            self._activate_placeful_policy(
+                policy_id, activate_in=activate_in, activate_below=activate_below
+            )
 
     def get_objects(self):
         objects = []
@@ -33,15 +39,17 @@ class PlacefulWorkflowPolicyActivator:
         recurse(self.context)
         return objects
 
-    def _activate_placeful_policy(self, policy_id,
-                                  activate_in=True, activate_below=True):
-        LOG.info('Activating placeful policy %s' % policy_id)
-        pwf_tool = getToolByName(self.context, 'portal_placeful_workflow')
+    def _activate_placeful_policy(
+        self, policy_id, activate_in=True, activate_below=True
+    ):
+        LOG.info("Activating placeful policy %s" % policy_id)
+        pwf_tool = getToolByName(self.context, "portal_placeful_workflow")
         policy_config = pwf_tool.getWorkflowPolicyConfig(self.context)
 
         if not policy_config:
             self.context.manage_addProduct[
-                'CMFPlacefulWorkflow'].manage_addWorkflowPolicyConfig()
+                "CMFPlacefulWorkflow"
+            ].manage_addWorkflowPolicyConfig()
             policy_config = pwf_tool.getWorkflowPolicyConfig(self.context)
 
         if activate_in:

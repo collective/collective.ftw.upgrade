@@ -12,20 +12,18 @@ class TestPloneUpgradeNeededCommand(CommandAndInstanceTestCase):
         self.write_zconf_with_test_instance()
 
     def test_help(self):
-        self.upgrade_script('plone_upgrade_needed --help')
+        self.upgrade_script("plone_upgrade_needed --help")
 
     def test_plone_upgrade_already_uptodate(self):
-        exitcode, output = self.upgrade_script(
-            'plone_upgrade_needed -s plone')
+        exitcode, output = self.upgrade_script("plone_upgrade_needed -s plone")
         self.assertEqual(0, exitcode)
-        self.assertIn('false', output)
+        self.assertIn("false", output)
 
     def test_plone_upgrade_needed(self):
-        setup = getToolByName(self.portal, 'portal_setup')
-        setup.setLastVersionForProfile(_DEFAULT_PROFILE, '4')
+        setup = getToolByName(self.portal, "portal_setup")
+        setup.setLastVersionForProfile(_DEFAULT_PROFILE, "4")
         transaction.commit()
 
-        exitcode, output = self.upgrade_script(
-            'plone_upgrade_needed -s plone')
+        exitcode, output = self.upgrade_script("plone_upgrade_needed -s plone")
         self.assertEqual(0, exitcode)
-        self.assertIn('true', output)
+        self.assertIn("true", output)

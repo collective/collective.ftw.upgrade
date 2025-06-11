@@ -13,7 +13,7 @@ import re
 
 @implementer(IPublishTraverse)
 class APIView(BrowserView):
-    api_version = 'v1'
+    api_version = "v1"
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -21,7 +21,7 @@ class APIView(BrowserView):
 
     def publishTraverse(self, request, name):
         requested_api_version = None
-        if re.match(r'v\d+', name):
+        if re.match(r"v\d+", name):
             requested_api_version = name
 
         if requested_api_version == self.api_version:
@@ -29,20 +29,22 @@ class APIView(BrowserView):
         elif requested_api_version is not None:
             with ErrorHandling(self.request.RESPONSE):
                 raise WrongAPIVersion(requested_api_version)
-            request['TraversalRequestNameStack'] = []
-            return ''
+            request["TraversalRequestNameStack"] = []
+            return ""
 
         action = getattr(self, name, None)
-        if action and getattr(action, 'action_info', None):
+        if action and getattr(action, "action_info", None):
             return action
 
         with ErrorHandling(self.request.RESPONSE):
             raise UnkownAPIAction(name)
-        request['TraversalRequestNameStack'] = []
-        return ''
+        request["TraversalRequestNameStack"] = []
+        return ""
 
     @jsonify
-    @action('GET')
+    @action("GET")
     def __call__(self):
-        return {'actions': get_action_discovery_information(self),
-                'api_version': self.api_version}
+        return {
+            "actions": get_action_discovery_information(self),
+            "api_version": self.api_version,
+        }

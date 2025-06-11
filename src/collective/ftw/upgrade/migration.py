@@ -39,30 +39,36 @@ import six
 
 
 try:
-    pkg_resources.get_distribution('Products.Archetypes')
+    pkg_resources.get_distribution("Products.Archetypes")
 except pkg_resources.DistributionNotFound:
+
     class IBaseObject(Interface):
         pass
 
     class IComputedField(Interface):
         pass
+
 else:
     from Products.Archetypes.interfaces import IBaseObject
     from Products.Archetypes.interfaces import IComputedField
 
 try:
-    pkg_resources.get_distribution('plone.app.blob')
+    pkg_resources.get_distribution("plone.app.blob")
 except pkg_resources.DistributionNotFound:
+
     class IBlobWrapper(Interface):
         pass
+
 else:
     from plone.app.blob.interfaces import IBlobWrapper
 
 try:
-    pkg_resources.get_distribution('archetypes.referencebrowserwidget')
+    pkg_resources.get_distribution("archetypes.referencebrowserwidget")
 except pkg_resources.DistributionNotFound:
+
     class IATReferenceField(Interface):
         pass
+
 else:
     from archetypes.referencebrowserwidget.interfaces import IATReferenceField
 
@@ -74,65 +80,60 @@ IGNORE_STANDARD_FIELD_MAPPING = 8
 IGNORE_DEFAULT_IGNORE_FIELDS = 16
 SKIP_MODIFIED_EVENT = 32
 
-UNMAPPED_FIELDS_BACKUP_ANN_KEY = 'ftw.upgrade.migration:fields_backup'
+UNMAPPED_FIELDS_BACKUP_ANN_KEY = "ftw.upgrade.migration:fields_backup"
 
-LOG = logging.getLogger('collective.ftw.upgrade.migration')
+LOG = logging.getLogger("collective.ftw.upgrade.migration")
 
 
 DEFAULT_ATTRIBUTES_TO_COPY = (
-    '__ac_local_roles__',
-    '__ac_local_roles_block__',
-    '__annotations__',
-    '_count',
-    '_mt_index',
-    '_owner',
-    '_tree',
-    'workflow_history',
+    "__ac_local_roles__",
+    "__ac_local_roles_block__",
+    "__annotations__",
+    "_count",
+    "_mt_index",
+    "_owner",
+    "_tree",
+    "workflow_history",
 )
 
 
 DUBLIN_CORE_IGNORES = (
-    'allowDiscussion',
-    'contributors',
-    'creators',
-    'nextPreviousEnabled',
-    'rights',
-    'language',
-    'relatedItems',
+    "allowDiscussion",
+    "contributors",
+    "creators",
+    "nextPreviousEnabled",
+    "rights",
+    "language",
+    "relatedItems",
 )
 
 
 DEFAULT_IGNORED_FIELDS = (
     # ID, creation date and modification date are set by method, not by field.
-    'id',
-    'creation_date',
-    'modification_date',
-
+    "id",
+    "creation_date",
+    "modification_date",
     # Constrain types are not regular behaviors.
-    'constrainTypesMode',
-    'locallyAllowedTypes',
-    'immediatelyAddableTypes',
-
+    "constrainTypesMode",
+    "locallyAllowedTypes",
+    "immediatelyAddableTypes",
     # The location field is no longer available in Dexterity.
-    'location',
-
+    "location",
     # The presentation field is no longer available in Dexterity.
-    'presentation',
+    "presentation",
 )
 
 
-DEFAULT_OMIT_INDEXES = (
-    'SearchableText',  # expensive; should be calculated afterwards
-)
+DEFAULT_OMIT_INDEXES = ("SearchableText",)  # expensive; should be calculated afterwards
 
 
 STANDARD_FIELD_MAPPING = {
-    'subject': 'subjects',
-    'allowDiscussion': 'allow_discussion',
-    'effectiveDate': 'effective',
-    'expirationDate': 'expires',
-    'excludeFromNav': 'exclude_from_nav',
-    'tableContents': 'table_of_contents',
+    "subject": "subjects",
+    "allowDiscussion": "allow_discussion",
+    "effectiveDate": "effective",
+    "expirationDate": "expires",
+    "excludeFromNav": "exclude_from_nav",
+    "tableContents": "table_of_contents",
 }
 
 
@@ -144,32 +145,33 @@ class IgnoreField(Exception):
 
 
 class FieldNotMappedError(ValueError):
-    """A field was not mapped properly.
-    """
+    """A field was not mapped properly."""
 
 
 class FieldsNotMappedError(ValueError):
-    """A field was not mapped properly.
-    """
+    """A field was not mapped properly."""
 
     message_template = (
-        'Some fields are not mapped correctly when migrating'
+        "Some fields are not mapped correctly when migrating"
         ' from "{old_type}" to "{new_type}":\n\n'
-        'Not mapped:\n- {not_mapped}\n\n'
-        'Target fields:\n- {target_fields}\n\n'
+        "Not mapped:\n- {not_mapped}\n\n"
+        "Target fields:\n- {target_fields}\n\n"
     )
 
     def __init__(self, not_mapped, old_type, new_type, target_fields):
-        if getFSVersionTuple() > (5, ):
+        if getFSVersionTuple() > (5,):
             raise NotImplementedError(
-                'The inplace migrator migrates from Archetypes.'
-                ' Plone 5 has no Archetypes objects.')
+                "The inplace migrator migrates from Archetypes."
+                " Plone 5 has no Archetypes objects."
+            )
         super().__init__(
             self.message_template.format(
-                not_mapped='\n- '.join(sorted(not_mapped)),
+                not_mapped="\n- ".join(sorted(not_mapped)),
                 old_type=old_type,
                 new_type=new_type,
-                target_fields='\n- '.join(sorted(target_fields))))
+                target_fields="\n- ".join(sorted(target_fields)),
+            )
+        )
         self.not_mapped_fields = not_mapped
         self.old_type = old_type
         self.new_type = new_type
@@ -184,14 +186,16 @@ class InplaceMigrator:
     produce Dexterity objects as destination.
     """
 
-    def __init__(self,
-                 new_portal_type,
-                 field_mapping=None,
-                 options=0,
-                 ignore_fields=(),
-                 attributes_to_migrate=DEFAULT_ATTRIBUTES_TO_COPY,
-                 additional_steps=(),
-                 omit_indexes=DEFAULT_OMIT_INDEXES):
+    def __init__(
+        self,
+        new_portal_type,
+        field_mapping=None,
+        options=0,
+        ignore_fields=(),
+        attributes_to_migrate=DEFAULT_ATTRIBUTES_TO_COPY,
+        additional_steps=(),
+        omit_indexes=DEFAULT_OMIT_INDEXES,
+    ):
 
         self.new_portal_type = new_portal_type
         self.field_mapping = field_mapping or {}
@@ -203,9 +207,7 @@ class InplaceMigrator:
         if not (options & IGNORE_DEFAULT_IGNORE_FIELDS):
             self.ignore_fields.extend(DEFAULT_IGNORED_FIELDS)
 
-        self.steps_before_clone = (
-            self.dump_and_remove_references,
-        )
+        self.steps_before_clone = (self.dump_and_remove_references,)
         self.steps_after_clone = (
             self.migrate_intid,
             self.migrate_field_values,
@@ -223,13 +225,16 @@ class InplaceMigrator:
         )
 
     def migrate_object(self, old_object):
-        list(map(lambda func: func(old_object),
-                 self.steps_before_clone))
+        list(map(lambda func: func(old_object), self.steps_before_clone))
         new_object = self.clone_object(old_object)
-        list(map(lambda func: func(old_object, new_object),
-                 list(self.steps_after_clone)
-                 + list(self.additional_steps)
-                 + list(self.final_steps)))
+        list(
+            map(
+                lambda func: func(old_object, new_object),
+                list(self.steps_after_clone)
+                + list(self.additional_steps)
+                + list(self.final_steps),
+            )
+        )
         return new_object
 
     def dump_and_remove_references(self, old_object):
@@ -273,7 +278,7 @@ class InplaceMigrator:
         IMutableUUID(new_object).set(IUUID(old_object))
 
     def migrate_intid(self, old_object, new_object):
-        if '_intids' not in dir(self):
+        if "_intids" not in dir(self):
             self._intids = getUtility(IIntIds)
 
         old_key = IKeyReference(old_object)
@@ -283,13 +288,14 @@ class InplaceMigrator:
         except KeyError:
             # Key was missing in catalog
             uid = self._intids.register(new_object)
-            LOG.info('Add previously unregistered object to IIntIds catalog %s', new_object)
+            LOG.info(
+                "Add previously unregistered object to IIntIds catalog %s", new_object
+            )
         else:
             del self._intids.ids[old_key]
         finally:
             self._intids.refs[uid] = new_key
             self._intids.ids[new_key] = uid
-
 
     def migrate_attributes(self, old_object, new_object):
         old_object = aq_base(old_object)
@@ -305,16 +311,16 @@ class InplaceMigrator:
         position_in_parent = parent.getObjectPosition(old_object.id)
 
         parent._delOb(old_object.id)
-        objects = [info for info in parent._objects
-                   if info['id'] != new_object.id]
+        objects = [info for info in parent._objects if info["id"] != new_object.id]
         objects = tuple(objects)
-        objects += ({'id': new_object.id,
-                     'meta_type': getattr(new_object, 'meta_type', None)},)
+        objects += (
+            {"id": new_object.id, "meta_type": getattr(new_object, "meta_type", None)},
+        )
         parent._objects = objects
         parent._setOb(new_object.id, new_object)
         notifyContainerModified(parent)
 
-        if hasattr(aq_base(parent), '_tree'):
+        if hasattr(aq_base(parent), "_tree"):
             del parent._tree[new_object.id]
             parent._tree[new_object.id] = new_object
 
@@ -328,10 +334,9 @@ class InplaceMigrator:
 
         for old_fieldname, value in self.get_field_values(old_object):
             try:
-                new_field = self.get_new_field(old_object,
-                                               new_object,
-                                               old_fieldname,
-                                               new_field_map)
+                new_field = self.get_new_field(
+                    old_object, new_object, old_fieldname, new_field_map
+                )
 
             except FieldNotMappedError:
                 not_mapped[old_fieldname] = value
@@ -346,19 +351,19 @@ class InplaceMigrator:
         if not_mapped and self.options & BACKUP_AND_IGNORE_UNMAPPED_FIELDS:
             annotations = IAnnotations(new_object)
             if UNMAPPED_FIELDS_BACKUP_ANN_KEY not in annotations:
-                annotations[UNMAPPED_FIELDS_BACKUP_ANN_KEY] = (
-                    PersistentMapping())
+                annotations[UNMAPPED_FIELDS_BACKUP_ANN_KEY] = PersistentMapping()
 
             annotations[UNMAPPED_FIELDS_BACKUP_ANN_KEY].update(not_mapped)
 
         elif not_mapped:
-            raise FieldsNotMappedError(list(not_mapped.keys()),
-                                       old_object.portal_type,
-                                       new_object.portal_type,
-                                       new_field_map)
+            raise FieldsNotMappedError(
+                list(not_mapped.keys()),
+                old_object.portal_type,
+                new_object.portal_type,
+                new_field_map,
+            )
 
-    def get_new_field(self, old_object, new_object,
-                      old_fieldname, new_field_map):
+    def get_new_field(self, old_object, new_object, old_fieldname, new_field_map):
         if old_fieldname in self.field_mapping:
             new_fieldname = self.field_mapping[old_fieldname]
             if new_fieldname in new_field_map:
@@ -385,7 +390,7 @@ class InplaceMigrator:
         elif IDexterityContent.providedBy(old_object):
             return self.get_dx_field_values(old_object)
         else:
-            raise NotImplementedError('Only AT and DX is supported.')
+            raise NotImplementedError("Only AT and DX is supported.")
 
     def get_at_field_values(self, old_object):
         for field in old_object.Schema().values():
@@ -396,17 +401,15 @@ class InplaceMigrator:
             if fieldname in self.ignore_fields:
                 continue
 
-            value = self.removed_field_values.get(
-                fieldname, field.getRaw(old_object))
+            value = self.removed_field_values.get(fieldname, field.getRaw(old_object))
             value = self.normalize_at_field_value(field, fieldname, value)
             yield fieldname, value
 
     def normalize_at_field_value(self, old_field, old_fieldname, value):
-        recurse = partial(self.normalize_at_field_value,
-                          old_field, old_fieldname)
+        recurse = partial(self.normalize_at_field_value, old_field, old_fieldname)
 
         if isinstance(value, bytes):
-            return recurse(value.decode('utf-8'))
+            return recurse(value.decode("utf-8"))
 
         if isinstance(value, list):
             return list(map(recurse, value))
@@ -447,7 +450,7 @@ class InplaceMigrator:
         recurse = partial(self.prepare_field_value, new_object, field)
 
         if isinstance(value, bytes):
-            return recurse(value.decode('utf-8'))
+            return recurse(value.decode("utf-8"))
 
         if isinstance(value, list):
             return list(map(recurse, value))
@@ -455,46 +458,52 @@ class InplaceMigrator:
         if isinstance(value, tuple):
             return tuple(map(recurse, value))
 
-        relation_fields = list(filter(
-            IRelation.providedBy, (field, getattr(field, 'value_type', None))))
+        relation_fields = list(
+            filter(IRelation.providedBy, (field, getattr(field, "value_type", None)))
+        )
         if relation_fields and isinstance(value, str):
             target = uuidToObject(value)
-            return create_relation('/'.join(target.getPhysicalPath()))
+            return create_relation("/".join(target.getPhysicalPath()))
 
-        if IRichText.providedBy(field) \
-           and not IRichTextValue.providedBy(value):
+        if IRichText.providedBy(field) and not IRichTextValue.providedBy(value):
             if not value:
                 return None
             else:
                 return recurse(field.fromUnicode(value))
 
-        if INamedField.providedBy(field) and value is not None \
-           and not isinstance(value, field._type):
+        if (
+            INamedField.providedBy(field)
+            and value is not None
+            and not isinstance(value, field._type)
+        ):
 
-            if value == '':
+            if value == "":
                 return None
 
-            if hasattr(value, 'get_size') and value.get_size() == 0:
+            if hasattr(value, "get_size") and value.get_size() == 0:
                 return None
 
             source_is_blobby = IBlobWrapper.providedBy(value)
-            target_is_blobby = INamedBlobFileField.providedBy(field) or \
-                               INamedBlobImageField.providedBy(field)
+            target_is_blobby = INamedBlobFileField.providedBy(
+                field
+            ) or INamedBlobImageField.providedBy(field)
 
             if source_is_blobby and target_is_blobby:
                 filename = value.filename
                 if isinstance(filename, bytes):
-                    filename = filename.decode('utf-8')
+                    filename = filename.decode("utf-8")
 
                 new_value = field._type(
-                    data='',  # empty blob, will be replaced
+                    data="",  # empty blob, will be replaced
                     contentType=value.content_type,
-                    filename=filename)
-                if not hasattr(new_value, '_blob'):
+                    filename=filename,
+                )
+                if not hasattr(new_value, "_blob"):
                     raise ValueError(
-                        ('Unsupported file value type {!r}'
-                         ', missing _blob.').format(
-                             new_value.__class__))
+                        ("Unsupported file value type {!r}" ", missing _blob.").format(
+                            new_value.__class__
+                        )
+                    )
 
                 # Simply copy the persistent blob object (with the file system
                 # pointer) to the new value so that the file is not copied.
@@ -506,14 +515,15 @@ class InplaceMigrator:
             else:
                 filename = value.filename
                 if isinstance(filename, bytes):
-                    filename = filename.decode('utf-8')
+                    filename = filename.decode("utf-8")
 
                 data = value.data
-                data = getattr(data, 'data', data)  # extract Pdata
-                return recurse(field._type(
-                    data=data,
-                    contentType=value.content_type,
-                    filename=filename))
+                data = getattr(data, "data", data)  # extract Pdata
+                return recurse(
+                    field._type(
+                        data=data, contentType=value.content_type, filename=filename
+                    )
+                )
 
         return value
 
@@ -526,34 +536,36 @@ class InplaceMigrator:
                     continue
 
                 fieldmap[new_fieldname] = field
-                fieldmap['.'.join((field.interface.__identifier__,
-                                   new_fieldname))] = field
+                fieldmap[".".join((field.interface.__identifier__, new_fieldname))] = (
+                    field
+                )
 
         return fieldmap
 
     def add_relations_to_relation_catalog(self, old_object, new_object):
-        for behavior_interface, name, relation in extract_relations(
-                new_object):
+        for behavior_interface, name, relation in extract_relations(new_object):
             if isinstance(relation, str):
                 # We probably got a UID, but we are working with intids
                 # and can not do anything with it, so we skip it.
-                LOG.warning('Got a invalid relation ({!r}), which is not '
-                            'z3c.relationfield compatible.'.format(relation))
+                LOG.warning(
+                    "Got a invalid relation ({!r}), which is not "
+                    "z3c.relationfield compatible.".format(relation)
+                )
                 continue
 
             _setRelation(new_object, name, relation)
 
     def migrate_properties(self, old_object, new_object):
         for item in old_object.propertyMap():
-            key = item['id']
-            if key == 'title':
+            key = item["id"]
+            if key == "title":
                 continue
 
             value = old_object.getProperty(key)
             if new_object.hasProperty(key):
                 new_object._updateProperty(key, value)
             else:
-                new_object._setProperty(key, value, item['type'])
+                new_object._setProperty(key, value, item["type"])
 
     def migrate_constrain_types_configuration(self, old_object, new_object):
         old_ct = constrains.IConstrainTypes(old_object, None)
@@ -575,13 +587,16 @@ class InplaceMigrator:
         if old_mode != constrains.ENABLED:
             return
 
-        allowed_types = list(map(methodcaller('getId'),
-                                 new_ct.getDefaultAddableTypes()))
+        allowed_types = list(
+            map(methodcaller("getId"), new_ct.getDefaultAddableTypes())
+        )
         isallowed = allowed_types.__contains__
         new_ct.setLocallyAllowedTypes(
-            list(filter(isallowed, old_ct.getLocallyAllowedTypes())))
+            list(filter(isallowed, old_ct.getLocallyAllowedTypes()))
+        )
         new_ct.setImmediatelyAddableTypes(
-            list(filter(isallowed, old_ct.getImmediatelyAddableTypes())))
+            list(filter(isallowed, old_ct.getImmediatelyAddableTypes()))
+        )
 
     def update_creators(self, old_object, new_object):
         """When the dublin core behavior is active, the creators are migrated already.
@@ -592,7 +607,8 @@ class InplaceMigrator:
 
     def update_creation_date(self, old_object, new_object):
         new_object.creation_date = (
-            old_object.created().asdatetime().replace(tzinfo=None))
+            old_object.created().asdatetime().replace(tzinfo=None)
+        )
 
     def update_security(self, old_object, new_object):
         update_security_for(new_object, reindex_security=False)
@@ -605,7 +621,8 @@ class InplaceMigrator:
 
     def update_modification_date(self, old_object, new_object):
         new_object.setModificationDate(
-            old_object.modified().asdatetime().replace(tzinfo=None))
+            old_object.modified().asdatetime().replace(tzinfo=None)
+        )
 
         if not (self.options & SKIP_MODIFIED_EVENT):
-            new_object.reindexObject(idxs=['modified'])
+            new_object.reindexObject(idxs=["modified"])

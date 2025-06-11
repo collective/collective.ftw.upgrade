@@ -17,14 +17,17 @@ DOCS = """
 $ bin/upgrade plone_upgrade_needed --site Plone
 [/quote]
 
-""".format(t=TERMINAL).strip()
+""".format(
+    t=TERMINAL
+).strip()
 
 
 def setup_argparser(commands):
     command = commands.add_parser(
-        'plone_upgrade_needed',
-        help='Should the Plone site be upgraded?',
-        description=DOCS)
+        "plone_upgrade_needed",
+        help="Should the Plone site be upgraded?",
+        description=DOCS,
+    )
     command.set_defaults(func=plone_upgrade_command)
     add_requestor_authentication_argument(command)
     add_requestor_instance_argument(command)
@@ -34,7 +37,7 @@ def setup_argparser(commands):
 @with_api_requestor
 @error_handling
 def plone_upgrade_command(args, requestor):
-    response = requestor.GET('plone_upgrade_needed')
+    response = requestor.GET("plone_upgrade_needed")
     print(response.text)
-    if response.text.strip() not in ('true', 'false'):
+    if response.text.strip() not in ("true", "false"):
         sys.exit(3)

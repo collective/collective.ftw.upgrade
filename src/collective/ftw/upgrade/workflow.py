@@ -10,28 +10,34 @@ from zope.component.hooks import getSite
 import logging
 
 
-LOG = logging.getLogger('ftw.upgrade.WorkflowChainUpdater')
+LOG = logging.getLogger("ftw.upgrade.WorkflowChainUpdater")
 
 
 class WorkflowChainUpdater:
 
-    def __init__(self, objects, review_state_mapping, update_security=True,
-                 migrate_workflow_history=True, transition_mapping=None, indexes=None):
+    def __init__(
+        self,
+        objects,
+        review_state_mapping,
+        update_security=True,
+        migrate_workflow_history=True,
+        transition_mapping=None,
+        indexes=None,
+    ):
         self.objects = tuple(objects)
         self.review_state_mapping = review_state_mapping
         self.update_security = update_security
         self.migrate_workflow_history = migrate_workflow_history
         self.transition_mapping = transition_mapping or {}
-        self.indexes = list(indexes or []) + ['review_state']
+        self.indexes = list(indexes or []) + ["review_state"]
         self.started = False
         self.wfs_and_states_before = None
 
     def __enter__(self):
-        assert not self.started, 'WorkflowChainUpdater was already started.'
+        assert not self.started, "WorkflowChainUpdater was already started."
         self._started = True
 
-        self.wfs_and_states_before = self.get_workflows_and_states(
-            self.get_objects())
+        self.wfs_and_states_before = self.get_workflows_and_states(self.get_objects())
 
         return self
 
@@ -45,58 +51,57 @@ class WorkflowChainUpdater:
         return self.objects
 
     def get_workflows_and_states(self, objects):
-        title = 'Get workflows and review states'
+        title = "Get workflows and review states"
 
         wftool = None
         result = {}
         for obj in ProgressLogger(title, objects):
             if wftool is None:
-                wftool = getToolByName(obj, 'portal_workflow')
+                wftool = getToolByName(obj, "portal_workflow")
 
-            path = '/'.join(obj.getPhysicalPath())
+            path = "/".join(obj.getPhysicalPath())
             workflow = self._get_workflow_id_for(obj, wftool)
             if workflow:
-                review_state = wftool.getInfoFor(obj, 'review_state')
+                review_state = wftool.getInfoFor(obj, "review_state")
             else:
                 review_state = None
 
-            result[path] = {'workflow': workflow,
-                            'review_state': review_state}
+            result[path] = {"workflow": workflow, "review_state": review_state}
 
         return result
 
     def update_workflow_states_with_mapping(self):
         status_before_activation = self.wfs_and_states_before
-        status_after_activation = self.get_workflows_and_states(
-            self.get_objects())
+        status_after_activation = self.get_workflows_and_states(self.get_objects())
 
-        LOG.info('Changing workflow states of objects which were'
-                 ' reset to the initial state according to mapping.')
+        LOG.info(
+            "Changing workflow states of objects which were"
+            " reset to the initial state according to mapping."
+        )
 
         portal = getSite()
-        wf_tool = getToolByName(portal, 'portal_workflow')
+        wf_tool = getToolByName(portal, "portal_workflow")
         origin_workflows = list(zip(*list(self.review_state_mapping.keys())))[0]
 
-        title = 'Change workflow states'
+        title = "Change workflow states"
         for path in ProgressLogger(title, status_before_activation):
-            wf_before = status_before_activation[path].get('workflow')
-            review_state_before = status_before_activation[path].get(
-                'review_state')
-            wf_after = status_after_activation[path].get('workflow')
+            wf_before = status_before_activation[path].get("workflow")
+            review_state_before = status_before_activation[path].get("review_state")
+            wf_after = status_after_activation[path].get("workflow")
 
             if wf_before not in origin_workflows:
                 # This object has not a workflow which is in the
                 # mapping, thus no migration is needed.
                 continue
 
-            mapping = self.review_state_mapping.get(
-                (wf_before, wf_after), {})
+            mapping = self.review_state_mapping.get((wf_before, wf_after), {})
             new_review_state = mapping.get(review_state_before)
             if not new_review_state:
                 LOG.warn(
-                    'Mapping not defined for old state %s when changing'
-                    ' workflow from %s to %s.' % (
-                        review_state_before, wf_before, wf_after))
+                    "Mapping not defined for old state %s when changing"
+                    " workflow from %s to %s."
+                    % (review_state_before, wf_before, wf_after)
+                )
                 continue
 
             obj = portal.unrestrictedTraverse(path)
@@ -104,12 +109,17 @@ class WorkflowChainUpdater:
             if self.migrate_workflow_history:
                 self._migrate_workflow_history(obj, wf_before, wf_after)
             else:
-                wf_tool.setStatusOf(wf_after, obj, {
-                    'review_state': new_review_state,
-                    'action': 'systemupdate',
-                    'actor': 'system',
-                    'comments': '',
-                    'time': DateTime()})
+                wf_tool.setStatusOf(
+                    wf_after,
+                    obj,
+                    {
+                        "review_state": new_review_state,
+                        "action": "systemupdate",
+                        "actor": "system",
+                        "comments": "",
+                        "time": DateTime(),
+                    },
+                )
 
             if self.update_security:
                 update_security_for(obj, reindex_security=True)
@@ -117,8 +127,10 @@ class WorkflowChainUpdater:
 
     def _get_workflow_id_for(self, context, wftool):
         workflows = wftool.getWorkflowsFor(context)
-        assert len(workflows) in (0, 1), \
-            'Only one workflow per object supported. %s' % str(context)
+        assert len(workflows) in (
+            0,
+            1,
+        ), "Only one workflow per object supported. %s" % str(context)
 
         if len(workflows) == 0:
             return None
@@ -127,24 +139,22 @@ class WorkflowChainUpdater:
             return workflows[0].id
 
     def _migrate_workflow_history(self, context, old_wf, new_wf):
-        wfhistory = getattr(context, 'workflow_history', None)
+        wfhistory = getattr(context, "workflow_history", None)
         if wfhistory is None or old_wf not in wfhistory:
             return
 
         def _migrate_action(entry):
-            action = entry.get('action', None)
+            action = entry.get("action", None)
             if action:
-                actionmapping = self.transition_mapping.get(
-                    (old_wf, new_wf), {})
+                actionmapping = self.transition_mapping.get((old_wf, new_wf), {})
                 if action in actionmapping:
-                    entry['action'] = actionmapping[action]
+                    entry["action"] = actionmapping[action]
 
-            state = entry.get('review_state', None)
+            state = entry.get("review_state", None)
             if state:
-                statemapping = self.review_state_mapping.get((old_wf, new_wf),
-                                                             {})
+                statemapping = self.review_state_mapping.get((old_wf, new_wf), {})
                 if state in statemapping:
-                    entry['review_state'] = statemapping[state]
+                    entry["review_state"] = statemapping[state]
 
         def _migrate_entry(entry):
             entry = entry.copy()
@@ -159,7 +169,7 @@ class WorkflowSecurityUpdater:
     def __init__(self):
         self._safe_object_getter = None
         self.portal = getSite()
-        self.catalog = getToolByName(self.portal, 'portal_catalog')
+        self.catalog = getToolByName(self.portal, "portal_catalog")
 
     def update(self, changed_workflows, reindex_security=True, savepoints=None):
         types = self.get_suspected_types(changed_workflows)
@@ -175,18 +185,21 @@ class WorkflowSecurityUpdater:
         return self._safe_object_getter
 
     def lookup_objects(self, types):
-        query = {'portal_type': types}
+        query = {"portal_type": types}
         brains = tuple(self.catalog.unrestrictedSearchResults(query))
 
         generator = SizedGenerator(
-            (self.safe_object_getter.catalog_unrestricted_get_object(brain)
-             for brain in brains),
-            len(brains))
-        return ProgressLogger('Update object security', generator)
+            (
+                self.safe_object_getter.catalog_unrestricted_get_object(brain)
+                for brain in brains
+            ),
+            len(brains),
+        )
+        return ProgressLogger("Update object security", generator)
 
     def get_suspected_types(self, changed_workflows):
         types = []
-        ttool = getToolByName(self.portal, 'portal_types')
+        ttool = getToolByName(self.portal, "portal_types")
 
         for fti in ttool.objectValues():
             portal_type = fti.getId()
@@ -196,13 +209,13 @@ class WorkflowSecurityUpdater:
         return types
 
     def type_workflow_is_one_of(self, portal_type, workflows):
-        wftool = getToolByName(self.portal, 'portal_workflow')
+        wftool = getToolByName(self.portal, "portal_workflow")
         default_chain = wftool.getChainForPortalType(portal_type)
         if set(default_chain) & set(workflows):
             return True
 
         try:
-            pwftool = getToolByName(self.portal, 'portal_placeful_workflow')
+            pwftool = getToolByName(self.portal, "portal_placeful_workflow")
         except AttributeError:
             return False
 
@@ -214,6 +227,6 @@ class WorkflowSecurityUpdater:
         return False
 
     def obj_has_workflow(self, obj, workflows):
-        wftool = getToolByName(self.portal, 'portal_workflow')
+        wftool = getToolByName(self.portal, "portal_workflow")
         obj_workflow_names = [wf.getId() for wf in wftool.getWorkflowsFor(obj)]
         return set(obj_workflow_names) & set(workflows)
