@@ -7,7 +7,6 @@ from datetime import datetime
 from ftw.builder import Builder
 from ftw.builder import create
 from Products.CMFCore.utils import getToolByName
-from Products.CMFPlone.utils import getFSVersionTuple
 from unittest import skipIf
 from zope.component import queryAdapter
 from zope.interface.verify import verifyClass
@@ -125,30 +124,6 @@ class TestExecutioner(UpgradeTestCase):
                 [],
                 list(transaction.get().getAfterCommitHooks()),
                 "Hook registrations should not persist across transactions",
-            )
-
-    @skipIf(
-        getFSVersionTuple() > (5, 1), "QuickInstaller has been deprecated in Plone 5.1"
-    )
-    def test_updates_quickinstaller_version(self):
-        quickinstaller = getToolByName(self.portal, "portal_quickinstaller")
-
-        self.package.with_profile(
-            Builder("genericsetup profile").with_upgrade(
-                Builder("plone upgrade step").upgrading("1000", to="1001")
-            )
-        )
-        self.package.with_version("1.1")
-
-        with self.package_created():
-            self.install_profile("the.package:default", version="1000")
-            quickinstaller.get("the.package").installedversion = "1.0"
-            self.assertEqual(
-                "1.0", quickinstaller.get("the.package").getInstalledVersion()
-            )
-            self.install_profile_upgrades("the.package:default")
-            self.assertEqual(
-                "1.1", quickinstaller.get("the.package").getInstalledVersion()
             )
 
     def test_install_profiles_by_profile_ids(self):
