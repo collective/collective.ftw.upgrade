@@ -65,3 +65,8 @@ dependencies_ignores = "['blessed','cgi','distutils','other.package']"
 
 [tox]
 use_mxdev = true
+
+[gitignore]
+extra_lines = """
+!/constraints-mxdev.txt
+"""
