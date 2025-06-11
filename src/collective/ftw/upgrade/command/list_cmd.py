@@ -37,14 +37,15 @@ Plone site. Only profiles installed on this Plone site are respected.
     $ ./bin/upgrade list --site Plone --upgrades --auth admin:admin
     $ ./bin/upgrade list --site Plone --upgrades --auth admin:admin --json
 [/quote]
-""".format(t=TERMINAL).strip()
+""".format(
+    t=TERMINAL
+).strip()
 
 
 def setup_argparser(commands):
     command = commands.add_parser(
-        'list',
-        help='List upgrades or profiles.',
-        description=DOCS)
+        "list", help="List upgrades or profiles.", description=DOCS
+    )
     command.set_defaults(func=list_command)
     add_requestor_authentication_argument(command)
     add_requestor_instance_argument(command)
@@ -52,17 +53,23 @@ def setup_argparser(commands):
     add_json_argument(command)
 
     group = command.add_mutually_exclusive_group(required=True)
-    group.add_argument('--upgrades', '-u',
-                       help='List all proposed upgrades.',
-                       dest='action',
-                       action='store_const',
-                       const='list_proposed_upgrades')
+    group.add_argument(
+        "--upgrades",
+        "-u",
+        help="List all proposed upgrades.",
+        dest="action",
+        action="store_const",
+        const="list_proposed_upgrades",
+    )
 
-    group.add_argument('--profiles', '-p',
-                       help='List all installed profiles.',
-                       dest='action',
-                       action='store_const',
-                       const='list_profiles')
+    group.add_argument(
+        "--profiles",
+        "-p",
+        help="List all installed profiles.",
+        dest="action",
+        action="store_const",
+        const="list_profiles",
+    )
 
 
 @with_api_requestor
@@ -73,7 +80,7 @@ def list_command(args, requestor):
         print(response.text)
         return
 
-    if args.action == 'list_proposed_upgrades':
+    if args.action == "list_proposed_upgrades":
         return format_proposed_upgrades(response)
     else:
         return format_profiles(response)
@@ -82,27 +89,31 @@ def list_command(args, requestor):
 def format_proposed_upgrades(response):
     proposed = []
     for upgrade in response.json():
-        is_deferrable = upgrade.get('deferrable', False)
+        is_deferrable = upgrade.get("deferrable", False)
 
-        omit_flags = ('proposed', 'orphan') if is_deferrable else ('proposed',)
+        omit_flags = ("proposed", "orphan") if is_deferrable else ("proposed",)
 
-        table_row = [upgrade_id_with_flags(upgrade, omit_flags=omit_flags),
-                     TERMINAL.bold(upgrade.get('title')),
-                     ]
+        table_row = [
+            upgrade_id_with_flags(upgrade, omit_flags=omit_flags),
+            TERMINAL.bold(upgrade.get("title")),
+        ]
         proposed.append(table_row)
 
-    print(TERMINAL.bold('Proposed upgrades:'))
-    print_table(proposed, ['ID:', 'Title:'])
+    print(TERMINAL.bold("Proposed upgrades:"))
+    print_table(proposed, ["ID:", "Title:"])
 
 
 def format_profiles(response):
     tabledata = []
     for profile in response.json():
         tabledata.append(
-            [colorize_profile_id(profile['id']),
-             colorized_profile_flags(profile),
-             TERMINAL.bold(profile['title']),
-             colorized_profile_versions(profile)])
+            [
+                colorize_profile_id(profile["id"]),
+                colorized_profile_flags(profile),
+                TERMINAL.bold(profile["title"]),
+                colorized_profile_versions(profile),
+            ]
+        )
 
-    print(TERMINAL.bold('Installed profiles:'))
-    print_table(tabledata, ['ID:', '', 'Title:', 'Versions (DB/FS):'])
+    print(TERMINAL.bold("Installed profiles:"))
+    print_table(tabledata, ["ID:", "", "Title:", "Versions (DB/FS):"])

@@ -15,26 +15,31 @@ DOCS = """
 $ bin/upgrade help
 $ bin/upgrade help create
 [/quote]
-""".format(t=TERMINAL).strip()
+""".format(
+    t=TERMINAL
+).strip()
 
 
 def setup_argparser(commands):
-    command = commands.add_parser('help',
-                                  help='Display help information.',
-                                  description=DOCS)
+    command = commands.add_parser(
+        "help", help="Display help information.", description=DOCS
+    )
     command.set_defaults(func=help_command)
 
-    command.add_argument('command', nargs='?',
-                         choices=list(get_commands(commands.container).keys()),
-                         help='Command to describe.')
+    command.add_argument(
+        "command",
+        nargs="?",
+        choices=list(get_commands(commands.container).keys()),
+        help="Command to describe.",
+    )
 
 
 def help_command(args):
     commands = get_commands(args.parser)
     parser = commands.get(args.command, args.parser)
     if sys.stdout.isatty():
-        if os.system('(less -R) 2>/dev/null') == 0:
-            return pydoc.pipepager(parser.format_help(), cmd='less -R')
+        if os.system("(less -R) 2>/dev/null") == 0:
+            return pydoc.pipepager(parser.format_help(), cmd="less -R")
     else:
         print(parser.format_help())
 

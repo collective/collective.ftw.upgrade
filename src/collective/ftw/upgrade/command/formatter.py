@@ -8,8 +8,7 @@ import textwrap
 
 
 def translate(text):
-    if text in ('positional arguments',
-                'optional arguments'):
+    if text in ("positional arguments", "optional arguments"):
         return TERMINAL.bold(_(text).upper())
     else:
         return _(text)
@@ -66,50 +65,49 @@ class FlexiFormatter(argparse.RawTextHelpFormatter):
     """
 
     def _fill_text(self, text, width, indent):
-        text = (re.compile(r'\[quote\].*?\[\/quote\]', re.DOTALL)
-                .sub(lambda match: (
-                    match.group(0)
-                    .replace('\n', '[QUOTE:NEWLINE]')),
-                     text))
+        text = re.compile(r"\[quote\].*?\[\/quote\]", re.DOTALL).sub(
+            lambda match: (match.group(0).replace("\n", "[QUOTE:NEWLINE]")), text
+        )
 
-        text = '\n'.join([indent + line for line
-                          in self._split_lines(text, width)])
+        text = "\n".join([indent + line for line in self._split_lines(text, width)])
 
-        text = (re.compile(r'\[quote\](.*?)\[\/quote\]', re.DOTALL)
-                .sub(lambda match: TERMINAL.green(
-                    match.group(1)
-                    .replace('\n', ' ')
-                    .replace('[QUOTE:NEWLINE]',
-                             TERMINAL.normal + '\n    ' + TERMINAL.green)
-                    .rstrip(' ').strip('\n')),
-                     text))
+        text = re.compile(r"\[quote\](.*?)\[\/quote\]", re.DOTALL).sub(
+            lambda match: TERMINAL.green(
+                match.group(1)
+                .replace("\n", " ")
+                .replace("[QUOTE:NEWLINE]", TERMINAL.normal + "\n    " + TERMINAL.green)
+                .rstrip(" ")
+                .strip("\n")
+            ),
+            text,
+        )
         return text
 
     def _split_lines(self, text, width):
         lines = list()
-        main_indent = TERMINAL.length(re.match(r'( *)', text).group(1))
+        main_indent = TERMINAL.length(re.match(r"( *)", text).group(1))
         # Wrap each line individually to allow for partial formatting
         for line in text.splitlines():
 
             # Get this line's indent and figure out what indent to use
             # if the line wraps. Account for lists of small variety.
-            indent = TERMINAL.length(re.match(r'( *)', line).group(1))
-            list_match = re.match(r'( *)(([*-+>]+|\w+\)|\w+\.) +)', line)
-            if(list_match):
+            indent = TERMINAL.length(re.match(r"( *)", line).group(1))
+            list_match = re.match(r"( *)(([*-+>]+|\w+\)|\w+\.) +)", line)
+            if list_match:
                 sub_indent = indent + TERMINAL.length(list_match.group(2))
             else:
                 sub_indent = indent
 
             # Textwrap will do all the hard work for us
-            line = self._whitespace_matcher.sub(' ', line).strip()
+            line = self._whitespace_matcher.sub(" ", line).strip()
             new_lines = textwrap.wrap(
                 text=line,
                 width=width,
-                initial_indent=' ' * (indent - main_indent),
-                subsequent_indent=' ' * (sub_indent - main_indent),
+                initial_indent=" " * (indent - main_indent),
+                subsequent_indent=" " * (sub_indent - main_indent),
             )
 
             # Blank lines get eaten by textwrap, put it back with [' ']
-            lines.extend(new_lines or [' '])
+            lines.extend(new_lines or [" "])
 
         return lines

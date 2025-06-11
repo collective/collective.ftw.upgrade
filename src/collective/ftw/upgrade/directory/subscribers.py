@@ -1,6 +1,6 @@
-from contextlib import contextmanager
 from collective.ftw.upgrade.gatherer import flatten_upgrades
 from collective.ftw.upgrade.interfaces import IUpgradeStepRecorder
+from contextlib import contextmanager
 from functools import partial
 from operator import itemgetter
 from Products.CMFCore.utils import getToolByName
@@ -10,14 +10,14 @@ import os
 import re
 
 
-DISABLE_UPGRADE_STEP_MARKING_KEY = 'ftw_upgrade_disable_upgrade_step_marking'
-ALL_FLAG = 'all'
+DISABLE_UPGRADE_STEP_MARKING_KEY = "ftw_upgrade_disable_upgrade_step_marking"
+ALL_FLAG = "all"
 
 
 @contextmanager
 def no_upgrade_step_marking(*only_profiles):
     if only_profiles:
-        value = ','.join(map(partial(re.sub, '^profile-', ''), only_profiles))
+        value = ",".join(map(partial(re.sub, "^profile-", ""), only_profiles))
     else:
         value = ALL_FLAG
 
@@ -40,14 +40,22 @@ def profile_installed(event):
     if not event.full_import:
         return
 
-    disabled_for_profiles = os.environ.get(DISABLE_UPGRADE_STEP_MARKING_KEY, '').split(',')
-    profile = re.sub('^profile-', '', event.profile_id)
+    disabled_for_profiles = os.environ.get(DISABLE_UPGRADE_STEP_MARKING_KEY, "").split(
+        ","
+    )
+    profile = re.sub("^profile-", "", event.profile_id)
     if profile in disabled_for_profiles or ALL_FLAG in disabled_for_profiles:
         return
 
-    portal = getToolByName(event.tool, 'portal_url').getPortalObject()
+    portal = getToolByName(event.tool, "portal_url").getPortalObject()
     recorder = getMultiAdapter((portal, profile), IUpgradeStepRecorder)
 
-    list(map(recorder.mark_as_installed, map(
-        itemgetter('sdest'), flatten_upgrades(
-            event.tool.listUpgrades(profile, show_old=True)))))
+    list(
+        map(
+            recorder.mark_as_installed,
+            map(
+                itemgetter("sdest"),
+                flatten_upgrades(event.tool.listUpgrades(profile, show_old=True)),
+            ),
+        )
+    )

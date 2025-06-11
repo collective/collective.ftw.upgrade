@@ -1,21 +1,22 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
-    xmlns:meta="http://namespaces.zope.org/meta">
+    xmlns:meta="http://namespaces.zope.org/meta"
+    >
 
-    <meta:directives namespace="http://namespaces.zope.org/ftw.upgrade">
+  <meta:directives namespace="http://namespaces.zope.org/ftw.upgrade">
 
-        <meta:directive
-            name="importProfile"
-            schema=".zcml.IImportProfileUpgradeStep"
-            handler=".zcml.importProfileUpgradeStep"
-            />
+    <meta:directive
+        name="importProfile"
+        handler=".zcml.importProfileUpgradeStep"
+        schema=".zcml.IImportProfileUpgradeStep"
+        />
 
-        <meta:directive
-            name="directory"
-            schema=".directory.zcml.IUpgradeStepDirectoryDirective"
-            handler=".directory.zcml.upgrade_step_directory_handler"
-            />
+    <meta:directive
+        name="directory"
+        handler=".directory.zcml.upgrade_step_directory_handler"
+        schema=".directory.zcml.IUpgradeStepDirectoryDirective"
+        />
 
-    </meta:directives>
+  </meta:directives>
 
 </configure>

@@ -1,26 +1,7 @@
-import pkg_resources
+from Products.CMFCore.indexing import getQueue
 
 
-HAS_INDEXING = False
-
-try:
-    # Plone 5
-    from Products.CMFCore.indexing import processQueue
-    from Products.CMFCore.indexing import getQueue
-except ImportError:
-    try:
-        # Plone 4 with collective.indexing
-        pkg_resources.get_distribution('collective.indexing')
-    except pkg_resources.DistributionNotFound:
-        def processQueue():
-            # Plone 4 without collective.indexing
-            pass
-    else:
-        from collective.indexing.queue import getQueue
-        from collective.indexing.queue import processQueue
-        HAS_INDEXING = True
-else:
-    HAS_INDEXING = True
+HAS_INDEXING = True
 
 
 if HAS_INDEXING:
@@ -39,6 +20,7 @@ if HAS_INDEXING:
         For larger deployments with a lot of objects that process may take a
         while, thus we display a progress bar while reindexing.
         """
+
         should_log = False
 
         def begin(self):
@@ -48,8 +30,8 @@ if HAS_INDEXING:
 
             indexing_queue_length = getQueue().length()
             self.logger = ProgressLogger(
-                'Processing indexing queue',
-                indexing_queue_length)
+                "Processing indexing queue", indexing_queue_length
+            )
 
         def commit(self):
             pass

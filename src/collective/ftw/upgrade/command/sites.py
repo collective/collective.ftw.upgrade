@@ -4,8 +4,7 @@ from collective.ftw.upgrade.command.jsonapi import add_requestor_instance_argume
 from collective.ftw.upgrade.command.jsonapi import error_handling
 from collective.ftw.upgrade.command.jsonapi import with_api_requestor
 from collective.ftw.upgrade.command.terminal import TERMINAL
-
-import six
+from plone.base.utils import safe_text
 
 
 DOCS = """
@@ -18,14 +17,15 @@ DOCS = """
     $ bin/upgrade sites --auth admin:admin
     $ bin/upgrade sites --auth admin:admin --json
 [/quote]
-""".format(t=TERMINAL).strip()
+""".format(
+    t=TERMINAL
+).strip()
 
 
 def setup_argparser(commands):
     command = commands.add_parser(
-        'sites',
-        help='Discover Plone sites.',
-        description=DOCS)
+        "sites", help="Discover Plone sites.", description=DOCS
+    )
     command.set_defaults(func=sites_command)
     add_requestor_authentication_argument(command)
     add_requestor_instance_argument(command)
@@ -35,10 +35,10 @@ def setup_argparser(commands):
 @with_api_requestor
 @error_handling
 def sites_command(args, requestor):
-    response = requestor.GET('list_plone_sites')
+    response = requestor.GET("list_plone_sites")
 
     if args.json:
         print(response.text)
     else:
         for site in response.json():
-            print(site['path'].ljust(20), six.ensure_str(site['title']))
+            print(site["path"].ljust(20), safe_text(site["title"]))

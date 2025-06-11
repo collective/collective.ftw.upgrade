@@ -1,13 +1,13 @@
-from contextlib import closing
 from collective.ftw.upgrade.command.jsonapi import add_requestor_authentication_argument
 from collective.ftw.upgrade.command.jsonapi import add_requestor_instance_argument
 from collective.ftw.upgrade.command.jsonapi import add_site_path_argument
 from collective.ftw.upgrade.command.jsonapi import error_handling
 from collective.ftw.upgrade.command.jsonapi import with_api_requestor
 from collective.ftw.upgrade.command.terminal import TERMINAL
+from contextlib import closing
+from plone.base.utils import safe_text
 
 import re
-import six
 import sys
 
 
@@ -51,108 +51,132 @@ $ bin/upgrade install --site Plone --profiles Products.PloneFormGen:default \
 unwanted.addon:uninstall
 [/quote]
 
-""".format(t=TERMINAL).strip()
+""".format(
+    t=TERMINAL
+).strip()
 
 
 def valid_upgrade_step_id(value):
-    if not re.match(r'^\w+@[\w\.]+:\w+$', value):
+    if not re.match(r"^\w+@[\w\.]+:\w+$", value):
         raise ValueError(value)
     return value
 
 
 def valid_profile_id(value):
-    if ':' not in value:
+    if ":" not in value:
         raise ValueError(value)
     return value
 
 
 def setup_argparser(commands):
     command = commands.add_parser(
-        'install',
-        help='Install upgrades or profiles.',
-        description=DOCS)
+        "install", help="Install upgrades or profiles.", description=DOCS
+    )
     command.set_defaults(func=install_command)
     add_requestor_authentication_argument(command)
     add_requestor_instance_argument(command)
     add_site_path_argument(command)
 
-    command.add_argument('--force', '-f', action='store_true',
-                         dest='force_reinstall',
-                         default=False,
-                         help='Force reinstall already installed profiles.')
+    command.add_argument(
+        "--force",
+        "-f",
+        action="store_true",
+        dest="force_reinstall",
+        default=False,
+        help="Force reinstall already installed profiles.",
+    )
 
     group = command.add_mutually_exclusive_group(required=True)
-    group.add_argument('--upgrades', '-u', nargs='+',
-                       help='One or many upgrade step API ids.',
-                       type=valid_upgrade_step_id,
-                       metavar='UPGRADE-STEP')
-    group.add_argument('--proposed', '-p', nargs='*',
-                       help='Installs all proposed upgrades of all or specific profiles.',
-                       metavar='PROFILE')
-    group.add_argument('--profiles', nargs='+',
-                       help='One or many profile ids.',
-                       type=valid_profile_id,
-                       metavar='PROFILE')
+    group.add_argument(
+        "--upgrades",
+        "-u",
+        nargs="+",
+        help="One or many upgrade step API ids.",
+        type=valid_upgrade_step_id,
+        metavar="UPGRADE-STEP",
+    )
+    group.add_argument(
+        "--proposed",
+        "-p",
+        nargs="*",
+        help="Installs all proposed upgrades of all or specific profiles.",
+        metavar="PROFILE",
+    )
+    group.add_argument(
+        "--profiles",
+        nargs="+",
+        help="One or many profile ids.",
+        type=valid_profile_id,
+        metavar="PROFILE",
+    )
 
-    command.add_argument('--skip-deferrable', '-D',
-                         help='Do not propose deferrable upgrades. Only takes '
-                              'effect if specified in combination with '
-                              '--proposed.',
-                         default=False,
-                         dest='skip_deferrable',
-                         action='store_true')
+    command.add_argument(
+        "--skip-deferrable",
+        "-D",
+        help="Do not propose deferrable upgrades. Only takes "
+        "effect if specified in combination with "
+        "--proposed.",
+        default=False,
+        dest="skip_deferrable",
+        action="store_true",
+    )
 
-    command.add_argument('--allow-outdated',
-                         help='Allow installing on outdated Plone site. '
-                              'By default we do not allow this, '
-                              'because it is better to first run the '
-                              'plone_upgrade command.',
-                         default=False,
-                         dest='allow_outdated',
-                         action='store_true')
+    command.add_argument(
+        "--allow-outdated",
+        help="Allow installing on outdated Plone site. "
+        "By default we do not allow this, "
+        "because it is better to first run the "
+        "plone_upgrade command.",
+        default=False,
+        dest="allow_outdated",
+        action="store_true",
+    )
 
-    command.add_argument('--intermediate-commit',
-                         help='Commit after installing an upgrade step.',
-                         default=False,
-                         dest='intermediate_commit',
-                         action='store_true')
+    command.add_argument(
+        "--intermediate-commit",
+        help="Commit after installing an upgrade step.",
+        default=False,
+        dest="intermediate_commit",
+        action="store_true",
+    )
 
 
 @with_api_requestor
 @error_handling
 def install_command(args, requestor):
     if args.force_reinstall and not args.profiles:
-        print('ERROR: --force can only be used with --profiles.', file=sys.stderr)
+        print("ERROR: --force can only be used with --profiles.", file=sys.stderr)
         sys.exit(3)
 
     if args.proposed is not None:
-        action = 'execute_proposed_upgrades'
-        params = [('profiles:list', name) for name in args.proposed]
+        action = "execute_proposed_upgrades"
+        params = [("profiles:list", name) for name in args.proposed]
         if args.skip_deferrable:
-            params.append(('propose_deferrable', False))
+            params.append(("propose_deferrable", False))
     elif args.profiles:
         if args.intermediate_commit:
-            print('ERROR: --intermediate-commit is not implemented for --profiles.',
-                  file=sys.stderr)
+            print(
+                "ERROR: --intermediate-commit is not implemented for --profiles.",
+                file=sys.stderr,
+            )
             sys.exit(3)
-        action = 'execute_profiles'
-        params = [('profiles:list', name) for name in set(args.profiles)]
+        action = "execute_profiles"
+        params = [("profiles:list", name) for name in set(args.profiles)]
         if args.force_reinstall:
-            params.append(('force_reinstall', True))
+            params.append(("force_reinstall", True))
     else:
-        action = 'execute_upgrades'
-        params = [('upgrades:list', name) for name in set(args.upgrades)]
+        action = "execute_upgrades"
+        params = [("upgrades:list", name) for name in set(args.upgrades)]
     if args.allow_outdated:
-        params.append(('allow_outdated', True))
+        params.append(("allow_outdated", True))
     if args.intermediate_commit:
-        params.append(('intermediate_commit', True))
+        params.append(("intermediate_commit", True))
 
-    with closing(requestor.POST(action, params=params,
-                                stream=True)) as response:
+    with closing(requestor.POST(action, params=params, stream=True)) as response:
         for line in response.iter_lines(chunk_size=30):
-            line = six.ensure_str(line)
+            line = safe_text(line)
 
             print(line)
 
-    if line.strip() != 'Result: SUCCESS':
+    if line.strip() != "Result: SUCCESS":
         sys.exit(3)

@@ -1,6 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
 <layers>
 
-    <layer name="ftw.upgrade"
-           interface="collective.ftw.upgrade.interfaces.IUpgradeLayer" />
+  <layer interface="collective.ftw.upgrade.interfaces.IUpgradeLayer"
+         name="ftw.upgrade"
+  />
 
 </layers>

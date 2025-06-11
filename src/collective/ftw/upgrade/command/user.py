@@ -14,14 +14,15 @@ DOCS = """
     $ bin/upgrade user --auth admin:admin
     Authenticated as "admin".
 [/quote]
-""".format(t=TERMINAL).strip()
+""".format(
+    t=TERMINAL
+).strip()
 
 
 def setup_argparser(commands):
     command = commands.add_parser(
-        'user',
-        help='Test authentication and print user.',
-        description=DOCS)
+        "user", help="Test authentication and print user.", description=DOCS
+    )
     command.set_defaults(func=sites_command)
     add_requestor_authentication_argument(command)
     add_requestor_instance_argument(command)
@@ -30,5 +31,5 @@ def setup_argparser(commands):
 @with_api_requestor
 @error_handling
 def sites_command(args, requestor):
-    response = requestor.GET('current_user')
+    response = requestor.GET("current_user")
     print(f'Authenticated as "{response.json()}".')

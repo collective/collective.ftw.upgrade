@@ -6,6 +6,7 @@
 from zope.interface import Attribute
 from zope.interface import Interface
 
+
 try:
     from zope.interface.interfaces import IObjectEvent
 except ImportError:
@@ -14,8 +15,7 @@ except ImportError:
 
 
 class IUpgradeLayer(Interface):
-    """ftw.upgrade specific browser layer.
-    """
+    """ftw.upgrade specific browser layer."""
 
 
 class IDuringUpgrade(Interface):
@@ -41,25 +41,23 @@ class IUpgradeInformationGatherer(Interface):
     """
 
     def __init__(portal_setup):
-        """Adapts portal_setup.
-        """
+        """Adapts portal_setup."""
 
     def get_profiles():
         """Returns upgrades grouped by done / proposed and assigned profile.
 
         Example output:
-        >>> [{'db_version': u'3',
+        >>> [{'db_version': '3',
         ...   'product': 'Products.CMFEditions',
-        ...   'description': u'Extension profile for default ' + \
-        ...       'CMFEditions setup.',
-        ...   'title': u'CMFEditions',
-        ...   'version': u'3',
+        ...   'description': 'Extension profile for default CMFEditions setup.',
+        ...   'title': 'CMFEditions',
+        ...   'version': '3',
         ...   'upgrades': [
         ...       {'haspath': ('3',
         ...                   ),
         ...        'description': None,
         ...        'proposed': False,
-        ...        'title': u'Fix portal_historyidhandler',
+        ...        'title': 'Fix portal_historyidhandler',
         ...        'dest': ('3',
         ...                ),
         ...        'ssource': '2.0',
@@ -69,13 +67,13 @@ class IUpgradeInformationGatherer(Interface):
         ...        'done': True,
         ...        'id': '8159946379289711266',
         ...        'sdest': '3'}],
-        ...   'path': u'/.../profiles/default',
+        ...   'path': '/.../profiles/default',
         ...   'type': 2,
-        ...   'id': u'Products.CMFEditions:CMFEditions'}]
+        ...   'id': 'Products.CMFEditions:CMFEditions'}]
         """
 
     def get_upgrades_by_api_ids(*api_ids):
-        """Returns a list of ugprade information dicts for each upgrade which
+        """Returns a list of upgrade information dicts for each upgrade which
         is selected with a positional argument.
         The upgrades are ordered in the proposed installation order.
         """
@@ -87,13 +85,12 @@ class IExecutioner(Interface):
     """
 
     def __init__(portal_setup):
-        """Adapts portal_setup.
-        """
+        """Adapts portal_setup."""
 
     def install(data):
         """Installs the dict data.
         data example:
-        >>> {u'Products.CMFEditions:CMFEditions': '8159946379289711266'}
+        >>> {'Products.CMFEditions:CMFEditions': '8159946379289711266'}
         """
 
 
@@ -104,7 +101,7 @@ class IUpgradeStep(Interface):
     Register the classmethod ``upgrade`` in ZCML.
     """
 
-    portal_setup = Attribute('The portal_setup tool.')
+    portal_setup = Attribute("The portal_setup tool.")
 
     def __call__():
         """This method is implemented in each upgrade step with the
@@ -124,24 +121,20 @@ class IUpgradeStep(Interface):
         """
 
     def catalog_rebuild_index(name):
-        """Reindex the ``portal_catalog`` index identified by ``name``.
-        """
+        """Reindex the ``portal_catalog`` index identified by ``name``."""
 
     def catalog_has_index(name):
-        """Returns whether there is a catalog index ``name``.
-        """
+        """Returns whether there is a catalog index ``name``."""
 
     def catalog_add_index(name, type_, extra=None):
-        """Adds a new index to the ``portal_catalog`` tool.
-        """
+        """Adds a new index to the ``portal_catalog`` tool."""
 
     def catalog_remove_index(name):
-        """Removes an index to from ``portal_catalog`` tool.
-        """
+        """Removes an index to from ``portal_catalog`` tool."""
 
     def actions_remove_action(category, action_id):
         """Removes an action identified by ``action_id`` from
-        the ``portal_actions`` tool from a particulary ``category``.
+        the ``portal_actions`` tool from a particular ``category``.
         """
 
     def actions_remove_type_action(portal_type, action_id):
@@ -149,7 +142,7 @@ class IUpgradeStep(Interface):
         by ``portal_type`` with the action id ``action_id``.
         """
 
-    def set_property(context, key, value, data_type='string'):
+    def set_property(context, key, value, data_type="string"):
         """Set a property with the key ``value`` and the value ``value``
         on the ``context`` safely. The property is created with the
         type ``data_type`` if it does not exist.
@@ -183,12 +176,10 @@ class IPostUpgrade(Interface):
     """
 
     def __init__(portal, request):
-        """The adapter adapts portal and request.
-        """
+        """The adapter adapts portal and request."""
 
     def __call__():
-        """Runs the post upgrade adapter.
-        """
+        """Runs the post upgrade adapter."""
 
 
 class IUpgradeStepRecorder(Interface):
