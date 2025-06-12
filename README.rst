@@ -144,7 +144,7 @@ Example upgrade step definition (defined in a ``upgrades.py``):
 
 .. code:: python
 
-    from ftw.upgrade import UpgradeStep
+    from collective.ftw.upgrade import UpgradeStep
 
     class UpdateFooIndex(UpgradeStep):
        """The index ``foo`` is a ``FieldIndex`` instead of a
@@ -193,8 +193,8 @@ Here is an example for updating all objects of a particular type:
 
 .. code:: python
 
-    from ftw.upgrade import ProgressLogger
-    from ftw.upgrade import UpgradeStep
+    from collective.ftw.upgrade import ProgressLogger
+    from collective.ftw.upgrade import UpgradeStep
 
     class ExcludeFilesFromNavigation(UpgradeStep):
 
@@ -339,7 +339,7 @@ The ``UpgradeStep`` class has various helper functions:
 
 ``self.update_security(obj, reindex_security=True)``
     Update the security of a single object (checkboxes in manage_access).
-    This is usefuly in combination with the ``ProgressLogger``.
+    This is useful in combination with the ``ProgressLogger``.
     It is possible to skip reindexing the object security in the catalog
     (``allowedRolesAndUsers``). This speeds up the update but should only be disabled
     when there are no changes for the ``View`` permission.
@@ -387,8 +387,8 @@ The ``ProgressLogger`` makes logging progress very easy:
 
 .. code:: python
 
-    from ftw.upgrade import ProgressLogger
-    from ftw.upgrade import UpgradeStep
+    from collective.ftw.upgrade import ProgressLogger
+    from collective.ftw.upgrade import UpgradeStep
 
     class MyUpgrade(UpgradeStep):
 
@@ -425,8 +425,8 @@ state after changing the chain (the workflow for the type):
 
 .. code:: python
 
-    from ftw.upgrade.workflow import WorkflowChainUpdater
-    from ftw.upgrade import UpgradeStep
+    from collective.ftw.upgrade.workflow import WorkflowChainUpdater
+    from collective.ftw.upgrade import UpgradeStep
 
     class UpdateWorkflowChains(UpgradeStep):
 
@@ -484,8 +484,8 @@ breaking the review state by mapping it from the old to the new workflows:
 
 .. code:: python
 
-    from ftw.upgrade.placefulworkflow import PlacefulWorkflowPolicyActivator
-    from ftw.upgrade import UpgradeStep
+    from collective.ftw.upgrade.placefulworkflow import PlacefulWorkflowPolicyActivator
+    from collective.ftw.upgrade import UpgradeStep
 
     class ActivatePlacefulWorkflowPolicy(UpgradeStep):
 
@@ -524,81 +524,7 @@ the new states (value, plone_workflow).
 Inplace Migrator
 ----------------
 
-The inplace migrator provides a fast and easy way for migrating content in
-upgrade steps.
-It can be used for example to migrate from Archetypes to Dexterity.
-
-The difference between Plone's standard migration and the inplace migration
-is that the standard migration creates a new sibling and moves the children
-and the inplace migration simply replaces the objects within the tree and
-attaches the children to the new parent.
-This is a much faster approach since no move / rename events are fired.
-
-Example usage:
-
-.. code:: python
-
-    from ftw.upgrade import UpgradeStep
-    from ftw.upgrade.migration import InplaceMigrator
-
-    class MigrateContentPages(UpgradeStep):
-
-        def __call__(self):
-            self.install_upgrade_profile()
-
-            migrator = InplaceMigrator(
-                new_portal_type='DXContentPage',
-                field_mapping={'text': 'content'},
-            )
-
-            for obj in self.objects({'portal_type': 'ATContentPage'},
-                                    'Migrate content pages to dexterity'):
-                migrator.migrate_object(obj)
-
-
-**Arguments:**
-
-- ``new_portal_type`` (required): The portal_type name of the destination type.
-- ``field_mapping``: A mapping of old fieldnames to new fieldnames.
-- ``options``: One or many options (binary flags).
-- ``ignore_fields``: A list of fields which should be ignored.
-- ``attributes_to_migrate``: A list of attributes (not fields!) which should be
-  copied from the old to the new object. This defaults to
-  ``DEFAULT_ATTRIBUTES_TO_COPY``.
-
-**Options:**
-
-The options are binary flags: multiple options can be or-ed.
-Example:
-
-.. code:: python
-
-   from ftw.upgrade.migration import IGNORE_STANDARD_FIELD_MAPPING
-   from ftw.upgrade.migration import IGNORE_UNMAPPED_FIELDS
-   from ftw.upgrade.migration import InplaceMigrator
-
-    migrator = InplaceMigrator(
-        'DXContentPage',
-        options=IGNORE_UNMAPPED_FIELDS | IGNORE_STANDARD_FIELD_MAPPING,
-    })
-
-- ``DISABLE_FIELD_AUTOMAPPING``: by default, fields with the same name on the
-  old and the new implementation are automatically mapped. This flags disables
-  the automatic mapping.
-- ``IGNORE_UNMAPPED_FIELDS``: by default, a ``FieldsNotMappedError`` is raised
-  when unmapped fields are detected. This flags disables this behavior and
-  unmapped fields are simply ignored.
-- ``BACKUP_AND_IGNORE_UNMAPPED_FIELDS``: ignores unmapped fields but stores the
-  values of unmapped fields in the annotations of the new object (using the
-  key from the constant ``UNMAPPED_FIELDS_BACKUP_ANN_KEY``), so that the values
-  can be handled later. This is useful when having additional fields (schema
-  extender).
-- ``IGNORE_STANDARD_FIELD_MAPPING`` by default, the ``STANDARD_FIELD_MAPPING``
-  is merged into each field mapping, containing standard Plone field mappings
-  from Archetypes to Dexterity. This flag disables this behavior.
-- ``IGNORE_DEFAULT_IGNORE_FIELDS`` by default, the fields listed in
-  ``DEFAULT_IGNORED_FIELDS`` are skipped. This flag disables this behavior.
-- ``SKIP_MODIFIED_EVENT`` when `True`, no modified event is triggered.
+This feature has been removed in collective.ftw.upgrade. If you still need AT to DX migration please use ftw.upgrade.
 
 
 Upgrade directories
@@ -757,7 +683,7 @@ Creating an upgrade step manually
 
     # my/package/upgrades/20141218093045_add_controlpanel_action/upgrade.py
 
-    from ftw.upgrade import UpgradeStep
+    from collective.ftw.upgrade import UpgradeStep
 
     class AddControlPanelAction(UpgradeStep):
         """Adds a new control panel action for the package.
@@ -822,7 +748,7 @@ Upgrade-steps can be marked as deferrable by setting a class attribute
 
     # my/package/upgrades/20180709135657_long_running_upgrade/upgrade.py
 
-    from ftw.upgrade import UpgradeStep
+    from collective.ftw.upgrade import UpgradeStep
 
     class LongRunningUpgrade(UpgradeStep):
         """Potentially long running upgrade which is deferrable.
@@ -1141,31 +1067,6 @@ For checking whether a Plone upgrade is needed, you can do:
     $ curl -uadmin:admin -X POST "http://localhost:8080/test/upgrades-api/plone_upgrade_needed"
 
 
-Recook resources
-----------------
-
-CSS and JavaScript resource bundles can be recooked:
-
-.. code:: sh
-
-    $ curl -uadmin:admin -X POST http://localhost:8080/Plone/upgrades-api/recook_resources
-    "OK"
-
-
-Combine bundles
----------------
-
-CSS and JavaScript bundles can be combined:
-
-.. code:: sh
-
-    $ curl -uadmin:admin -X POST http://localhost:8080/Plone/upgrades-api/combine_bundles
-    "OK"
-
-This is for Plone 5 or higher.
-This runs the same code that runs when you import a profile that makes changes in the resource registries.
-
-
 Import-Profile Upgrade Steps
 ============================
 
@@ -1229,7 +1130,7 @@ Example adapter:
 
 .. code:: python
 
-    from ftw.upgrade.interfaces import IPostUpgrade
+    from collective.ftw.upgrade.interfaces import IPostUpgrade
     from zope.interface import implements
 
     class MyPostUpgradeAdapter(object):
@@ -1303,7 +1204,7 @@ You can do that like this for all generic setup profiles:
 
 .. code:: python
 
-    from ftw.upgrade.directory.subscribers import no_upgrade_step_marking
+    from collective.ftw.upgrade.directory.subscribers import no_upgrade_step_marking
 
     with no_upgrade_step_marking():
         # install profile with portal_setup
@@ -1312,7 +1213,7 @@ or for certain generic setup profiles:
 
 .. code:: python
 
-    from ftw.upgrade.directory.subscribers import no_upgrade_step_marking
+    from collective.ftw.upgrade.directory.subscribers import no_upgrade_step_marking
 
     with no_upgrade_step_marking('my.package:default'):
         # install profile with portal_setup

@@ -5,7 +5,10 @@ Changelog
 3.3.2 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Remove streaming the upgrade results, since it only worked with Zope2 server. [mathias.leimgruber]
+- Remove ftw.testbrowser dependency [mathias.leimgruber]
+- Remove combine_bundle [mathias.leimgruber]
+- Remove recook feature [mathias.leimgruber]
 
 
 3.3.1 (2022-07-08)
@@ -76,7 +79,7 @@ Changelog
 
 - This Plone add-on now requires six >= 1.12.0. [mbaechtold]
 - Instance port number discovery in ``wsgi.ini`` works also when the fast listen
-  option is choosen.
+  option is chosen.
   Fixes `issue 200 <https://github.com/4teamwork/ftw.upgrade/issues/200>`. [ale-rt]
 
 - The plone_upgrade subcommand does not break on Python3
@@ -473,7 +476,7 @@ Changelog
 -------------------
 
 - Fix error in upgrade-step:directory directive.
-  The error occured when the directory was a subdirectory relative to the
+  The error occurred when the directory was a subdirectory relative to the
   ZCML directory, causing the package module to be replaced with the
   upgrades package directory in sys.modules.
   [jone]
@@ -542,7 +545,7 @@ Changelog
   [jone]
 
 - Executioner: `install_upgrades_by_api_ids` was added, allowing to install
-  a selection of upgrades identified by API ugprade ids.
+  a selection of upgrades identified by API upgrade ids.
   [jone]
 
 - Gatherer: `get_upgrades_by_api_ids` was added, returning upgrade infos
@@ -675,7 +678,7 @@ Changelog
 1.7.1 (2014-01-09)
 ------------------
 
-- Fix LocationError on manage-ugprades view on cyclic dependencies.
+- Fix LocationError on manage-upgrades view on cyclic dependencies.
   [jone]
 
 
@@ -730,7 +733,7 @@ Changelog
 - Add ``update_security`` helper.
   [jone]
 
-- Fix incomplete status info entry prodcued by
+- Fix incomplete status info entry produced by
   placeful workflow policy activator.
   [jone]
 
@@ -748,7 +751,7 @@ Changelog
 1.2.1 (2013-04-23)
 ------------------
 
-- Keep modification date on reindexObject wihtout idxs.
+- Keep modification date on reindexObject without idxs.
   [mathias.leimgruber]
 
 1.2 (2013-01-24)
@@ -764,7 +767,7 @@ Changelog
 - Add IPostUpgrade adapter hook.
   [jone]
 
-- Refactor dependency sorting into seperate function.
+- Refactor dependency sorting into separate function.
   [jone]
 
 - Add security declarations.

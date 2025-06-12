@@ -1,0 +1,330 @@
+[project]
+name = "collective.ftw.upgrade"
+dynamic = ["version"]
+description = "An upgrade control panel and upgrade helpers for plone upgrades."
+readme = "README.rst"
+license = "GPL-2.0-only"
+requires-python = ">=3.10"
+authors = [
+    { name = "Plone Community", email = "collective@plone.org" },
+]
+keywords = [
+    "CMS",
+    "Plone",
+    "Python",
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: Web Environment",
+    "Framework :: Plone","Framework :: Plone :: 6.0","Framework :: Plone :: 6.1",
+    "Framework :: Plone :: Addon",
+    "License :: OSI Approved :: GNU General Public License v2 (GPLv2)",
+    "Operating System :: OS Independent",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python","Programming Language :: Python :: 3.10","Programming Language :: Python :: 3.11","Programming Language :: Python :: 3.12","Programming Language :: Python :: 3.13",
+]
+dependencies = [
+    "Products.CMFPlone",
+    "argcomplete",
+    "inflection",
+    "path.py >= 6.2",
+    "requests",
+    "setuptools",
+    "six >= 1.12.0",
+    "tarjan",
+    "psutil",
+]
+
+[project.optional-dependencies]
+test = [
+    "plone.app.testing",
+    "plone.classicui","plone.restapi[test]",
+    "ftw.builder >= 2.0.0.dev0",
+    "plone.testing",
+    "plone.app.testing",
+    "zc.buildout",
+    "zc.recipe.egg",
+    "freezegun",
+]
+
+[project.urls]
+Homepage = "https://github.com/collective/collective.ftw.upgrade"
+PyPI = "https://pypi.org/project/collective.ftw.upgrade"
+Source = "https://github.com/collective/collective.ftw.upgrade"
+Tracker = "https://github.com/collective/collective.ftw.upgrade/issues"
+
+
+[project.entry-points."plone.autoinclude.plugin"]
+target = "plone"
+
+[project.scripts]
+upgrade = "collective.ftw.upgrade.command:main"
+
+[tool.uv]
+managed = false
+
+[tool.hatch.version]
+path = "src/collective/ftw/upgrade/__init__.py"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build]
+strict-naming = true
+
+[tool.hatch.build.targets.sdist]
+exclude = [
+  "/.github",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/collective"]
+
+[tool.towncrier]
+directory = "news/"
+filename = "CHANGELOG.md"
+start_string = "<!-- towncrier release notes start -->\n"
+title_format = "## {version} ({project_date})"
+template = "news/.changelog_template.jinja"
+issue_format = "[#{issue}](https://github.com/collective/collective.ftw.upgrade/issues/{issue})"
+underlines = ["", "", ""]
+
+[[tool.towncrier.type]]
+directory = "breaking"
+name = "Breaking changes:"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "feature"
+name = "New features:"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "bugfix"
+name = "Bug fixes:"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "internal"
+name = "Internal:"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "documentation"
+name = "Documentation:"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "tests"
+name = "Tests"
+showcontent = true
+
+[tool.ruff]
+target-version = "py310"
+line-length = 88
+fix = true
+lint.select = [
+    # flake8-2020
+    "YTT",
+    # flake8-bandit
+    "S",
+    # flake8-bugbear
+    "B",
+    # flake8-builtins
+    "A",
+    # flake8-comprehensions
+    "C4",
+    # flake8-debugger
+    "T10",
+    # flake8-simplify
+    "SIM",
+    # mccabe
+    "C90",
+    # pycodestyle
+    "E", "W",
+    # pyflakes
+    "F",
+    # pygrep-hooks
+    "PGH",
+    # pyupgrade
+    "UP",
+    # ruff
+    "RUF",
+]
+lint.ignore = [
+    # DoNotAssignLambda
+    "E731",
+]
+
+[tool.ruff.lint.isort]
+profile = "plone"
+
+[tool.isort]
+profile = "plone"
+
+[tool.ruff.format]
+preview = true
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["E501", "RUF001", "S101"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.coverage.run]
+source_pkgs = ["collective.ftw.upgrade", "tests"]
+branch = true
+parallel = true
+omit = [
+  "src/collective/ftw/upgrade/locales/*.py",
+]
+
+[tool.codespell]
+ignore-words-list = "discreet,assertin,thet,requestor,"
+skip = "*.po,"
+##
+# Add extra configuration options in .meta.toml:
+#  [pyproject]
+#  codespell_ignores = "foo,bar"
+#  codespell_skip = "*.po,*.map,package-lock.json"
+##
+
+[tool.dependencychecker]
+Zope = [
+  # Zope own provided namespaces
+  'App', 'OFS', 'Products.Five', 'Products.OFSP', 'Products.PageTemplates',
+  'Products.SiteAccess', 'Shared', 'Testing', 'ZPublisher', 'ZTUtils',
+  'Zope2', 'webdav', 'zmi',
+  # ExtensionClass own provided namespaces
+  'ExtensionClass', 'ComputedAttribute', 'MethodObject',
+  # Zope dependencies
+  'AccessControl', 'Acquisition', 'AuthEncoding', 'beautifulsoup4', 'BTrees',
+  'cffi', 'Chameleon', 'DateTime', 'DocumentTemplate',
+  'MultiMapping', 'multipart', 'PasteDeploy', 'Persistence', 'persistent',
+  'pycparser', 'python-gettext', 'pytz', 'RestrictedPython', 'roman',
+  'soupsieve', 'transaction', 'waitress', 'WebOb', 'WebTest', 'WSGIProxy2',
+  'z3c.pt', 'zc.lockfile', 'ZConfig', 'zExceptions', 'ZODB', 'zodbpickle',
+  'zope.annotation', 'zope.browser', 'zope.browsermenu', 'zope.browserpage',
+  'zope.browserresource', 'zope.cachedescriptors', 'zope.component',
+  'zope.configuration', 'zope.container', 'zope.contentprovider',
+  'zope.contenttype', 'zope.datetime', 'zope.deferredimport',
+  'zope.deprecation', 'zope.dottedname', 'zope.event', 'zope.exceptions',
+  'zope.filerepresentation', 'zope.globalrequest', 'zope.hookable',
+  'zope.i18n', 'zope.i18nmessageid', 'zope.interface', 'zope.lifecycleevent',
+  'zope.location', 'zope.pagetemplate', 'zope.processlifetime', 'zope.proxy',
+  'zope.ptresource', 'zope.publisher', 'zope.schema', 'zope.security',
+  'zope.sequencesort', 'zope.site', 'zope.size', 'zope.structuredtext',
+  'zope.tal', 'zope.tales', 'zope.testbrowser', 'zope.testing',
+  'zope.traversing', 'zope.viewlet'
+]
+'Products.CMFCore' = [
+  'docutils', 'five.localsitemanager', 'Missing', 'Products.BTreeFolder2',
+  'Products.GenericSetup', 'Products.MailHost', 'Products.PythonScripts',
+  'Products.StandardCacheManagers', 'Products.ZCatalog', 'Record',
+  'zope.sendmail', 'Zope'
+]
+'plone.base' = [
+  'plone.batching', 'plone.registry', 'plone.schema','plone.z3cform',
+  'Products.CMFCore', 'Products.CMFDynamicViewFTI',
+]
+python-dateutil = ['dateutil']
+pytest-plone = ['pytest', 'zope.pytestlayer', 'plone.testing', 'plone.app.testing']
+ignore-packages = ['blessed','cgi','distutils','other.package']
+'Plone' = [
+        'AccessControl',
+        'Acquisition',
+        'App',
+        'BTrees',
+        'lxml',
+        'OFS',
+        'persistent',
+        'plone.app.contenttypes',
+        'plone.app.intid',
+        'plone.app.relationfield',
+        'plone.app.textfield',
+        'plone.app.uuid',
+        'plone.base',
+        'plone.browserlayer',
+        'plone.dexterity',
+        'plone.namedfile',
+        'plone.portlets',
+        'plone.protect',
+        'plone.registry',
+        'plone.uuid',
+        'Products.BTreeFolder2',
+        'Products.CMFCore',
+        'Products.CMFPlacefulWorkflow',
+        'Products.CMFPlone',
+        'Products.GenericSetup',
+        'Products.SiteAccess',
+        'Products.ZCatalog',
+        'transaction',
+        'z3c.relationfield',
+        'zExceptions',
+        'zope.annotation',
+        'zope.browser',
+        'zope.component',
+        'zope.configuration',
+        'zope.container',
+        'zope.deprecation',
+        'zope.event',
+        'zope.globalrequest',
+        'zope.interface',
+        'zope.intid',
+        'zope.keyreference',
+        'zope.lifecycleevent',
+        'zope.publisher',
+        'zope.schema',
+        'zope.security',
+        'ZPublisher',
+    ]
+    'plone.app.testing' = [
+        'plone.testing',
+    ]
+
+
+##
+# Add extra configuration options in .meta.toml:
+#  [pyproject]
+#  dependencies_ignores = "['zestreleaser.towncrier']"
+#  dependencies_mappings = [
+#    "gitpython = ['git']",
+#    "pygithub = ['github']",
+#  ]
+##
+
+[tool.check-manifest]
+ignore = [
+    ".editorconfig",
+    ".flake8",
+    ".meta.toml",
+    ".pre-commit-config.yaml",
+    "dependabot.yml",
+    "mx.ini",
+    "tox.ini",
+
+]
+
+##
+# Add extra configuration options in .meta.toml:
+#  [pyproject]
+#  check_manifest_ignores = """
+#      "*.map.js",
+#      "*.pyc",
+#  """
+#  check_manifest_extra_lines = """
+#  ignore-bad-ideas = [
+#      "some/test/file/PKG-INFO",
+#  ]
+#  """
+##
+
+
+##
+# Add extra configuration options in .meta.toml:
+#  [pyproject]
+#  extra_lines = """
+#  _your own configuration lines_
+#  """
+##
