@@ -1,8 +1,6 @@
 from Acquisition import aq_chain
 from ftw.upgrade.tests.base import CommandAndInstanceTestCase
 from ftw.upgrade.utils import get_portal_migration
-from Products.CMFCore.utils import getToolByName
-from unittest import skipIf
 from ZPublisher.BaseRequest import RequestContainer
 from ZPublisher.HTTPRequest import HTTPRequest
 
