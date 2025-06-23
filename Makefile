@@ -113,7 +113,7 @@ check: format lint ## Check and fix code base according to Plone standards
 .PHONY: i18n
 i18n: $(VENV_FOLDER) ## Update locales
 	@echo "$(GREEN)==> Updating locales$(RESET)"
-	@uv run python -m collective.ftw.upgrade.locales
+	@uv run python -m ftw.upgrade.locales
 
 # Tests
 .PHONY: test
