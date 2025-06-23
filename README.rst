@@ -144,7 +144,7 @@ Example upgrade step definition (defined in a ``upgrades.py``):
 
 .. code:: python
 
-    from collective.ftw.upgrade import UpgradeStep
+    from ftw.upgrade import UpgradeStep
 
     class UpdateFooIndex(UpgradeStep):
        """The index ``foo`` is a ``FieldIndex`` instead of a
@@ -193,8 +193,8 @@ Here is an example for updating all objects of a particular type:
 
 .. code:: python
 
-    from collective.ftw.upgrade import ProgressLogger
-    from collective.ftw.upgrade import UpgradeStep
+    from ftw.upgrade import ProgressLogger
+    from ftw.upgrade import UpgradeStep
 
     class ExcludeFilesFromNavigation(UpgradeStep):
 
@@ -387,8 +387,8 @@ The ``ProgressLogger`` makes logging progress very easy:
 
 .. code:: python
 
-    from collective.ftw.upgrade import ProgressLogger
-    from collective.ftw.upgrade import UpgradeStep
+    from ftw.upgrade import ProgressLogger
+    from ftw.upgrade import UpgradeStep
 
     class MyUpgrade(UpgradeStep):
 
@@ -425,8 +425,8 @@ state after changing the chain (the workflow for the type):
 
 .. code:: python
 
-    from collective.ftw.upgrade.workflow import WorkflowChainUpdater
-    from collective.ftw.upgrade import UpgradeStep
+    from ftw.upgrade.workflow import WorkflowChainUpdater
+    from ftw.upgrade import UpgradeStep
 
     class UpdateWorkflowChains(UpgradeStep):
 
@@ -484,8 +484,8 @@ breaking the review state by mapping it from the old to the new workflows:
 
 .. code:: python
 
-    from collective.ftw.upgrade.placefulworkflow import PlacefulWorkflowPolicyActivator
-    from collective.ftw.upgrade import UpgradeStep
+    from ftw.upgrade.placefulworkflow import PlacefulWorkflowPolicyActivator
+    from ftw.upgrade import UpgradeStep
 
     class ActivatePlacefulWorkflowPolicy(UpgradeStep):
 
@@ -524,7 +524,7 @@ the new states (value, plone_workflow).
 Inplace Migrator
 ----------------
 
-This feature has been removed in collective.ftw.upgrade. If you still need AT to DX migration please use ftw.upgrade.
+This feature has been removed in ftw.upgrade. If you still need AT to DX migration please use ftw.upgrade.
 
 
 Upgrade directories
@@ -683,7 +683,7 @@ Creating an upgrade step manually
 
     # my/package/upgrades/20141218093045_add_controlpanel_action/upgrade.py
 
-    from collective.ftw.upgrade import UpgradeStep
+    from ftw.upgrade import UpgradeStep
 
     class AddControlPanelAction(UpgradeStep):
         """Adds a new control panel action for the package.
@@ -748,7 +748,7 @@ Upgrade-steps can be marked as deferrable by setting a class attribute
 
     # my/package/upgrades/20180709135657_long_running_upgrade/upgrade.py
 
-    from collective.ftw.upgrade import UpgradeStep
+    from ftw.upgrade import UpgradeStep
 
     class LongRunningUpgrade(UpgradeStep):
         """Potentially long running upgrade which is deferrable.
@@ -1130,7 +1130,7 @@ Example adapter:
 
 .. code:: python
 
-    from collective.ftw.upgrade.interfaces import IPostUpgrade
+    from ftw.upgrade.interfaces import IPostUpgrade
     from zope.interface import implements
 
     class MyPostUpgradeAdapter(object):
@@ -1204,7 +1204,7 @@ You can do that like this for all generic setup profiles:
 
 .. code:: python
 
-    from collective.ftw.upgrade.directory.subscribers import no_upgrade_step_marking
+    from ftw.upgrade.directory.subscribers import no_upgrade_step_marking
 
     with no_upgrade_step_marking():
         # install profile with portal_setup
@@ -1213,7 +1213,7 @@ or for certain generic setup profiles:
 
 .. code:: python
 
-    from collective.ftw.upgrade.directory.subscribers import no_upgrade_step_marking
+    from ftw.upgrade.directory.subscribers import no_upgrade_step_marking
 
     with no_upgrade_step_marking('my.package:default'):
         # install profile with portal_setup

@@ -1,5 +1,5 @@
 [project]
-name = "collective.ftw.upgrade"
+name = "ftw.upgrade"
 dynamic = ["version"]
 description = "An upgrade control panel and upgrade helpers for plone upgrades."
 readme = "README.rst"
@@ -58,13 +58,13 @@ Tracker = "https://github.com/collective/collective.ftw.upgrade/issues"
 target = "plone"
 
 [project.scripts]
-upgrade = "collective.ftw.upgrade.command:main"
+upgrade = "ftw.upgrade.command:main"
 
 [tool.uv]
 managed = false
 
 [tool.hatch.version]
-path = "src/collective/ftw/upgrade/__init__.py"
+path = "src/ftw/upgrade/__init__.py"
 
 [build-system]
 requires = ["hatchling"]
@@ -87,7 +87,7 @@ filename = "CHANGELOG.md"
 start_string = "<!-- towncrier release notes start -->\n"
 title_format = "## {version} ({project_date})"
 template = "news/.changelog_template.jinja"
-issue_format = "[#{issue}](https://github.com/collective/collective.ftw.upgrade/issues/{issue})"
+issue_format = "[#{issue}](https://github.com/collective/ftw.upgrade/issues/{issue})"
 underlines = ["", "", ""]
 
 [[tool.towncrier.type]]
@@ -173,11 +173,11 @@ preview = true
 testpaths = ["tests"]
 
 [tool.coverage.run]
-source_pkgs = ["collective.ftw.upgrade", "tests"]
+source_pkgs = ["ftw.upgrade", "tests"]
 branch = true
 parallel = true
 omit = [
-  "src/collective/ftw/upgrade/locales/*.py",
+  "src/ftw/upgrade/locales/*.py",
 ]
 
 [tool.codespell]
