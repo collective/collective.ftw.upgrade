@@ -49,6 +49,7 @@ local.cfg
 .installed.txt
 
 !/constraints-mxdev.txt
+/.mxdev_cache
 
 ##
 # Add extra configuration options in .meta.toml:
