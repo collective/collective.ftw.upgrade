@@ -13,6 +13,8 @@ from zope.configuration.config import ConfigurationExecutionError
 from zope.interface import Interface
 from zope.interface import providedBy
 
+import os
+
 
 class IFoo(Interface):
     """Dummy interface."""
@@ -46,6 +48,34 @@ class TestDirectoryMetaDirective(UpgradeTestCase):
                     {
                         "source": ("20110101080000",),
                         "dest": ("20110202080000",),
+                        "title": "Remove action.",
+                    },
+                ]
+            )
+
+    def test_upgrade_steps_are_registered_multiple_sources(self):
+        self.profile.with_upgrade(
+            Builder("ftw upgrade step")
+            .to(os.path.join("v2011", "20110101080000"))
+            .named("add_action")
+        )
+        self.profile.with_upgrade(
+            Builder("ftw upgrade step")
+            .to(os.path.join("v2012", "20120101080000"))
+            .named("remove_action")
+        )
+
+        with self.package_created():
+            self.assert_upgrades(
+                [
+                    {
+                        "source": ("10000000000000",),
+                        "dest": ("20110101080000",),
+                        "title": "Add action.",
+                    },
+                    {
+                        "source": ("20110101080000",),
+                        "dest": ("20120101080000",),
                         "title": "Remove action.",
                     },
                 ]
