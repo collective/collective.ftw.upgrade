@@ -2,7 +2,7 @@
 name = "collective.ftw.upgrade"
 dynamic = ["version"]
 description = "An upgrade control panel and upgrade helpers for plone upgrades."
-readme = "README.rst"
+readme = "README.md"
 license = "GPL-2.0-only"
 requires-python = ">=3.10"
 authors = [
@@ -51,6 +51,7 @@ Homepage = "https://github.com/collective/collective.ftw.upgrade"
 PyPI = "https://pypi.org/project/collective.ftw.upgrade"
 Source = "https://github.com/collective/collective.ftw.upgrade"
 Tracker = "https://github.com/collective/collective.ftw.upgrade/issues"
+Changelog = "https://github.com/collective/collective.ftw.upgrade/blob/main/CHANGELOG.md"
 
 
 [project.entry-points."plone.autoinclude.plugin"]
