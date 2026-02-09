@@ -71,6 +71,10 @@ dependencies_mappings = [
     """,
 ]
 dependencies_ignores = "['blessed','cgi','distutils','other.package']"
+extra_lines = """
+[tool.zest-releaser]
+python-file-with-version = "src/collective/ftw/upgrade/__init__.py"
+"""
 
 [tox]
 use_mxdev = true

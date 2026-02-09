@@ -327,3 +327,6 @@ ignore = [
 #  _your own configuration lines_
 #  """
 ##
+
+[tool.zest-releaser]
+python-file-with-version = "src/collective/ftw/upgrade/__init__.py"
