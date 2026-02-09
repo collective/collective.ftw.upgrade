@@ -2,13 +2,35 @@
 
 <!-- towncrier release notes start -->
 
-## 3.3.2 (unreleased)
+## 4.0.0a1 (2026-02-09)
+
+> [!NOTE]
+> This is the first alpha release of version 4.0.0 happening after the fork of ftw.upgrade to the new repository [`collective/collective.ftw.upgrade`](https://github.com/collective/collective.ftw.upgrade) on GitHub.
+
+### Breaking:
 
 - Remove streaming the upgrade results, since it only worked with
   Zope2 server. [mathias.leimgruber]
+
 - Remove ftw.testbrowser dependency [mathias.leimgruber]
+
 - Remove combine_bundle [mathias.leimgruber]
+
 - Remove recook feature [mathias.leimgruber]
+
+### New features:
+
+- Added the possibility to group upgrade steps in subdirectories. [ale-rt] [#5](https://github.com/collective/collective.ftw.upgrade/issues/5)
+
+### Internal:
+
+- Remove the dependency from `pkg_resources`
+- Update configuration files.
+  [plone devs]
+
+### Documentation:
+
+- Update the documentation
 
 ## 3.3.1 (2022-07-08)
 
