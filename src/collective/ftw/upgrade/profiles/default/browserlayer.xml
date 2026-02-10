@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layers>
 
+  <!-- Ensure the ftw.upgrade layer is removed before registering the collective.ftw.upgrade layer -->
+  <layer name="ftw.upgrade"
+         remove="true"
+  />
+
   <layer interface="collective.ftw.upgrade.interfaces.IUpgradeLayer"
-         name="ftw.upgrade"
+         name="collective.ftw.upgrade"
   />
 
 </layers>
