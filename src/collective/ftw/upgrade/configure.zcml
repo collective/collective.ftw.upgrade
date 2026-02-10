@@ -18,10 +18,18 @@
 
   <genericsetup:registerProfile
       name="default"
-      title="ftw.upgrade"
+      title="collective.ftw.upgrade"
       description="An advanced upgrade control panel."
       provides="Products.GenericSetup.interfaces.EXTENSION"
       directory="profiles/default"
+      />
+
+  <genericsetup:registerProfile
+      name="uninstall"
+      title="collective.ftw.upgrade uninstall profile"
+      description="Uninstall profile for collective.ftw.upgrade."
+      provides="Products.GenericSetup.interfaces.EXTENSION"
+      directory="profiles/uninstall"
       />
 
   <adapter factory=".gatherer.UpgradeInformationGatherer" />
