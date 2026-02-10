@@ -6,7 +6,7 @@
 >
 
   <configlet action_id="Upgrades"
-             appId="ftw.upgrade"
+             appId="collective.ftw.upgrade"
              category="Products"
              condition_expr=""
              icon_expr="string:$portal_url/++resource++ftw.upgrade/icon.png"
