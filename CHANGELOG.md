@@ -2,6 +2,18 @@
 
 <!-- towncrier release notes start -->
 
+## 4.0.0a2 (2026-02-10)
+
+
+### New features:
+
+- Clean up the leftovers of `ftw.upgrade` [ale-rt] [#14](https://github.com/collective/collective.ftw.upgrade/issues/14)
+
+
+### Bug fixes:
+
+- Fix the installation profile title and add an uninstall profile [ale-rt] [#16](https://github.com/collective/collective.ftw.upgrade/issues/16)
+
 ## 4.0.0a1 (2026-02-09)
 
 > [!NOTE]
