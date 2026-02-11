@@ -2,6 +2,7 @@ from collective.ftw.upgrade import UpgradeStep
 from collective.ftw.upgrade.directory import scaffold
 from ftw.builder import builder_registry
 from ftw.builder.utils import serialize_callable
+from ftw.builder.zcml import ZCMLBuilder
 from path import Path
 
 import inflection
@@ -14,6 +15,20 @@ class DeferrableUpgrade(UpgradeStep):
 
     def __call__(self):
         pass
+
+
+class FixedZCMLBuilder(ZCMLBuilder):
+
+    def generate(self):
+        # Fix hardcoded ftw.upgrade namespace in zcml builder
+        zcml = super().generate()
+        return zcml.replace(
+            "http://namespaces.zope.org/ftw.upgrade",
+            "http://namespaces.zope.org/collective.ftw.upgrade",
+        )
+
+
+builder_registry.register("zcml", FixedZCMLBuilder, force=True)
 
 
 class UpgradeStepBuilder:

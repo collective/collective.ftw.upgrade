@@ -520,7 +520,7 @@ upgrade step definition syntax with these **advantages**:
 ```xml
 <configure
     xmlns="http://namespaces.zope.org/zope"
-    xmlns:upgrade-step="http://namespaces.zope.org/ftw.upgrade"
+    xmlns:upgrade-step="http://namespaces.zope.org/collective.ftw.upgrade"
     i18n_domain="my.package">
 
     <include package="ftw.upgrade" file="meta.zcml" />
@@ -563,7 +563,7 @@ them with whitespace.
 ```xml
 <configure
     xmlns="http://namespaces.zope.org/zope"
-    xmlns:upgrade-step="http://namespaces.zope.org/ftw.upgrade"
+    xmlns:upgrade-step="http://namespaces.zope.org/collective.ftw.upgrade"
     i18n_domain="my.package">
 
     <include package="ftw.upgrade" file="meta.zcml" />
@@ -1017,7 +1017,7 @@ sub-package:
 ```xml
 <configure
     xmlns="http://namespaces.zope.org/zope"
-    xmlns:upgrade-step="http://namespaces.zope.org/ftw.upgrade"
+    xmlns:upgrade-step="http://namespaces.zope.org/collective.ftw.upgrade"
     i18n_domain="my.package">
 
     <include package="ftw.upgrade" file="meta.zcml" />
