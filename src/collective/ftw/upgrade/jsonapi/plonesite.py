@@ -204,22 +204,26 @@ class PloneSiteAPI(APIView):
 
         executioner = IExecutioner(self.portal_setup)
         try:
-            with ResponseLogger(self.request.RESPONSE, annotate_result=True):
+            with ResponseLogger(annotate_result=True) as logger:
                 executioner.install_upgrades_by_api_ids(
                     *api_ids,
                     propose_deferrable=propose_deferrable,
                     intermediate_commit=intermediate_commit,
                 )
         except Exception as exc:
+            self.request.RESPONSE.setBody(logger.get_output())
             raise AbortTransactionWithStreamedResponse(exc)
+        return logger.get_output()
 
     def _install_profiles(self, *profile_ids, **options):
         executioner = IExecutioner(self.portal_setup)
         try:
-            with ResponseLogger(self.request.RESPONSE, annotate_result=True):
+            with ResponseLogger(annotate_result=True) as logger:
                 executioner.install_profiles_by_profile_ids(*profile_ids, **options)
         except Exception as exc:
+            self.request.RESPONSE.setBody(logger.get_output())
             raise AbortTransactionWithStreamedResponse(exc)
+        return logger.get_output()
 
     def _require_up_to_date_plone_site(self):
         portal_migration = get_portal_migration(self.context)

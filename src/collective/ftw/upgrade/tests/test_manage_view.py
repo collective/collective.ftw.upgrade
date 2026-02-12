@@ -2,7 +2,6 @@ from collective.ftw.upgrade.browser.manage import ResponseLogger
 from collective.ftw.upgrade.tests.base import JsonApiTestCase
 from datetime import datetime
 from ftw.builder import Builder
-from io import BytesIO
 from Products.CMFCore.utils import getToolByName
 from unittest import TestCase
 
@@ -14,88 +13,70 @@ import transaction
 class TestResponseLogger(TestCase):
 
     def test_logging(self):
-        response = BytesIO()
-
-        with ResponseLogger(response):
+        with ResponseLogger() as logger:
             logging.error("foo")
             logging.error("bar")
 
-        response.seek(0)
-        self.assertEqual([b"foo", b"bar"], response.read().strip().split(b"\n"))
-
-    def test_logged_tags_get_escaped(self):
-        response = BytesIO()
-
-        with ResponseLogger(response):
-            logging.error("ERROR: Something at <TextBlock at /bla/blub>")
-
-        response.seek(0)
-        self.assertEqual(
-            [b"ERROR: Something at &lt;TextBlock at /bla/blub&gt;"],
-            response.read().strip().split(b"\n"),
-        )
+        output = logger.get_output().strip()
+        self.assertEqual(["foo", "bar"], output.split("\n"))
 
     def test_logging_exceptions(self):
-        response = BytesIO()
-
         with self.assertRaises(KeyError):
-            with ResponseLogger(response):
+            with ResponseLogger() as logger:
                 raise KeyError("foo")
 
-        response.seek(0)
-        output = response.read().strip()
-        # Dynamically replace paths so that it works on all machines
-        output = re.sub(rb'(File ").*(ftw/upgrade/.*")', rb"\1/.../\2", output)
-        output = re.sub(rb"(line )\d*", rb"line XX", output)
+        output = logger.get_output().strip()
+        output = re.sub(r'(File ").*(ftw/upgrade/.*")', r"\1/.../\2", output)
+        output = re.sub(r"(line )\d*", r"line XX", output)
 
         self.assertEqual(
             [
-                b"FAILED",
-                b"Traceback (most recent call last):",
-                b'  File "/.../ftw/upgrade/tests/'
-                b'test_manage_view.py", line XX, in test_logging_exceptions',
-                b'    raise KeyError("foo")',
-                b"KeyError: 'foo'",
+                "FAILED",
+                "Traceback (most recent call last):",
+                '  File "/.../ftw/upgrade/tests/'
+                'test_manage_view.py", line XX, in test_logging_exceptions',
+                '    raise KeyError("foo")',
+                "KeyError: 'foo'",
             ],
-            output.split(b"\n"),
+            output.split("\n"),
         )
 
     def test_annotate_result_on_success(self):
-        response = BytesIO()
-
-        with ResponseLogger(response, annotate_result=True):
+        with ResponseLogger(annotate_result=True) as logger:
             logging.error("foo")
             logging.error("bar")
 
-        response.seek(0)
-        self.assertEqual(
-            [b"foo", b"bar", b"Result: SUCCESS"], response.read().strip().split(b"\n")
-        )
+        output = logger.get_output().strip()
+        self.assertEqual(["foo", "bar", "Result: SUCCESS"], output.split("\n"))
 
     def test_annotate_result_on_error(self):
-        response = BytesIO()
-
         with self.assertRaises(KeyError):
-            with ResponseLogger(response, annotate_result=True):
+            with ResponseLogger(annotate_result=True) as logger:
                 raise KeyError("foo")
 
-        response.seek(0)
-        output = response.read().strip()
-        # Dynamically replace paths so that it works on all machines
-        output = re.sub(rb'(File ").*(ftw/upgrade/.*")', rb"\1/.../\2", output)
-        output = re.sub(rb"(line )\d*", rb"line XX", output)
+        output = logger.get_output().strip()
+        output = re.sub(r'(File ").*(ftw/upgrade/.*")', r"\1/.../\2", output)
+        output = re.sub(r"(line )\d*", r"line XX", output)
         self.assertEqual(
             [
-                b"FAILED",
-                b"Traceback (most recent call last):",
-                b'  File "/.../ftw/upgrade/tests/'
-                b'test_manage_view.py", line XX, in test_annotate_result_on_error',
-                b'    raise KeyError("foo")',
-                b"KeyError: 'foo'",
-                b"Result: FAILURE",
+                "FAILED",
+                "Traceback (most recent call last):",
+                '  File "/.../ftw/upgrade/tests/'
+                'test_manage_view.py", line XX, in test_annotate_result_on_error',
+                '    raise KeyError("foo")',
+                "KeyError: 'foo'",
+                "Result: FAILURE",
             ],
-            output.split(b"\n"),
+            output.split("\n"),
         )
+
+    def test_get_output_returns_string(self):
+        with ResponseLogger() as logger:
+            logging.error("test message")
+
+        output = logger.get_output()
+        self.assertIsInstance(output, str)
+        self.assertIn("test message", output)
 
 
 class TestManageUpgrades(JsonApiTestCase):
@@ -129,6 +110,20 @@ class TestManageUpgrades(JsonApiTestCase):
                 response.content, 'input[value="plone.app.event:default"]'
             )
         )
+
+    def test_manage_view_has_spinner_container(self):
+        response = self.html_request("GET", "manage-upgrades")
+        self.assertIsNotNone(self.find_content(response.content, "#upgrade-progress"))
+
+    def test_manage_view_has_log_output_container(self):
+        response = self.html_request("GET", "manage-upgrades")
+        self.assertIsNotNone(self.find_content(response.content, "#upgrade-log"))
+
+    def test_manage_view_form_targets_execute_endpoint(self):
+        response = self.html_request("GET", "manage-upgrades")
+        form = self.find_content(response.content, "#upgrade-form")
+        self.assertIn("@@upgrade-execute", form.attrs["action"])
+        self.assertNotIn("target", form.attrs)
 
     def test_manage_plain_view_renders(self):
         response = self.html_request("GET", "manage-upgrades-plain")
@@ -179,10 +174,9 @@ class TestManageUpgrades(JsonApiTestCase):
             self.assertFalse(self.portal.upgrade_installed)
 
             response = self.html_request("GET", "manage-upgrades")
-            # Install proposed upgrades
-            action = self.find_content(
-                response.content, '[value="Install"]'
-            ).parent.attrs["action"]
+            action = self.find_content(response.content, "#upgrade-form").attrs[
+                "action"
+            ]
             input_elements = self.find_content(
                 response.content, "input:checked", "select"
             )
@@ -192,7 +186,10 @@ class TestManageUpgrades(JsonApiTestCase):
             data["_authenticator"] = self.find_content(
                 response.content, '[name="_authenticator"]'
             ).attrs["value"]
-            self.html_request("POST", action, data=data)
+            response = self.html_request("POST", action, data=data)
+
+            self.assertIn("Result: SUCCESS", response.text)
+            self.assertIn("FINISHED", response.text)
 
             transaction.begin()  # sync transaction
             self.assertTrue(self.portal.upgrade_installed)
