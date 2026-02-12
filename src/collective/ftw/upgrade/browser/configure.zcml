@@ -29,4 +29,11 @@
       permission="cmf.ManagePortal"
       />
 
+  <browser:page
+      name="upgrade-execute"
+      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      class=".manage.ExecuteUpgradesView"
+      permission="cmf.ManagePortal"
+      />
+
 </configure>

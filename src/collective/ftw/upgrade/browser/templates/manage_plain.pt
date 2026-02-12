@@ -88,14 +88,13 @@
 
           <form id="upgrade-form"
                 method="post"
-                target="upgrade-output"
                 tal:define="
                   profiles view/get_data;
                   cyclic_dependencies view/cyclic_dependencies;
                 "
                 tal:condition="not:plone_needs_upgrading"
                 tal:attributes="
-                  action string:${context/absolute_url}/@@manage-upgrades;
+                  action string:${context/absolute_url}/@@upgrade-execute;
                 "
           >
 
@@ -306,9 +305,13 @@
 
           </form>
 
-          <iframe id="upgrade-output"
-                  name="upgrade-output"
-          ></iframe>
+          <div id="upgrade-progress">
+            <div class="upgrade-spinner"></div>
+            <p i18n:translate="">Installing upgrades, please wait...</p>
+          </div>
+          <div id="upgrade-output">
+            <pre id="upgrade-log"></pre>
+          </div>
           <input id="back-to-upgrades"
                  type="button"
                  value="Back"

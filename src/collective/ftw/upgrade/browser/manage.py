@@ -4,6 +4,7 @@ from collective.ftw.upgrade.interfaces import IExecutioner
 from collective.ftw.upgrade.interfaces import IUpgradeInformationGatherer
 from collective.ftw.upgrade.utils import format_duration
 from collective.ftw.upgrade.utils import get_portal_migration
+from io import StringIO
 from Products.CMFCore.utils import getToolByName
 from zope.component import getAdapter
 from zope.publisher.browser import BrowserView
@@ -20,14 +21,14 @@ class ResponseLogger:
 
     security = ClassSecurityInformation()
 
-    def __init__(self, response, annotate_result=False):
-        self.response = response
+    def __init__(self, annotate_result=False):
+        self.buffer = StringIO()
         self.handler = None
         self.formatter = None
         self.annotate_result = annotate_result
 
     def __enter__(self):
-        self.handler = logging.StreamHandler(self)
+        self.handler = logging.StreamHandler(self.buffer)
         self.formatter = logging.root.handlers[-1].formatter
         self.handler.setFormatter(self.formatter)
         logging.root.addHandler(self.handler)
@@ -36,38 +37,17 @@ class ResponseLogger:
     def __exit__(self, exc_type, exc_value, tb):
         if exc_type is not None:
             LOG.error("FAILED")
-            traceback.print_exception(exc_type, exc_value, tb, None, self)
+            traceback.print_exception(exc_type, exc_value, tb, None, self.buffer)
             if self.annotate_result:
-                self.write("Result: FAILURE\n")
+                self.buffer.write("Result: FAILURE\n")
 
         elif self.annotate_result:
-            self.write("Result: SUCCESS\n")
+            self.buffer.write("Result: SUCCESS\n")
 
         logging.root.removeHandler(self.handler)
 
-        # Plone testing does not collect data written to the response stream
-        # but only data set directly as body.
-        # Since we want to test the response body, we need to re-set the
-        # stream data as body for testing..
-        if self.response.__class__.__name__ == "TestResponse":
-            self.response.setBody(self.response.stdout.getvalue())
-
-    security.declarePrivate("write")
-
-    def write(self, line):
-        if isinstance(line, str):
-            line = line.encode("utf8")
-
-        line = line.replace(b"<", b"&lt;").replace(b">", b"&gt;")
-
-        self.response.write(line)
-        self.response.flush()
-
-    security.declarePrivate("writelines")
-
-    def writelines(self, lines):
-        for line in lines:
-            self.write(line)
+    def get_output(self):
+        return self.buffer.getvalue()
 
 
 class ManageUpgrades(BrowserView):
@@ -77,33 +57,6 @@ class ManageUpgrades(BrowserView):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.cyclic_dependencies = False
-
-    def __call__(self):
-        if self.request.get("submitted", False):
-            assert (
-                not self.plone_needs_upgrading()
-            ), "Plone is outdated. Upgrading add-ons is disabled."
-
-            self.install()
-        return super().__call__(self)
-
-    security.declarePrivate("install")
-
-    def install(self):
-        """Installs the selected upgrades."""
-        start = time.time()
-
-        gstool = getToolByName(self.context, "portal_setup")
-        executioner = getAdapter(gstool, IExecutioner)
-        data = self._get_upgrades_to_install()
-        executioner.install(data)
-
-        logging.getLogger("collective.ftw.upgrade").info("FINISHED")
-
-        logging.getLogger("collective.ftw.upgrade").info(
-            "Duration for all selected upgrade steps: %s"
-            % (format_duration(time.time() - start))
-        )
 
     security.declarePrivate("get_data")
 
@@ -122,13 +75,53 @@ class ManageUpgrades(BrowserView):
         portal_migration = get_portal_migration(self.context)
         return portal_migration.needUpgrading()
 
+
+class ManageUpgradesPlain(ManageUpgrades):
+
+    def __getitem__(self, key):
+        return self.index.macros[key]
+
+    def __call__(self):
+        self.request.response.setHeader("X-Theme-Disabled", "true")
+        return super().__call__()
+
+
+class ExecuteUpgradesView(ManageUpgrades):
+
+    security = ClassSecurityInformation()
+
+    def __call__(self):
+        self.request.response.setHeader("Content-Type", "text/plain; charset=utf-8")
+        self.request.response.setHeader("X-Theme-Disabled", "true")
+
+        assert (
+            not self.plone_needs_upgrading()
+        ), "Plone is outdated. Upgrading add-ons is disabled."
+
+        return self._execute_upgrades()
+
+    security.declarePrivate("_execute_upgrades")
+
+    def _execute_upgrades(self):
+        start = time.time()
+
+        with ResponseLogger(annotate_result=True) as logger:
+            gstool = getToolByName(self.context, "portal_setup")
+            executioner = getAdapter(gstool, IExecutioner)
+            data = self._get_upgrades_to_install()
+            executioner.install(data)
+
+            LOG.info("FINISHED")
+            LOG.info(
+                "Duration for all selected upgrade steps: %s"
+                % (format_duration(time.time() - start))
+            )
+
+        return logger.get_output()
+
     security.declarePrivate("_get_upgrades_to_install")
 
     def _get_upgrades_to_install(self):
-        """Returns a dict where the key is a profileid and the value
-        is a list of upgrade ids.
-        """
-
         data = {}
         for item in self.request.get("upgrade", []):
             item = dict(item)
@@ -156,13 +149,3 @@ class ManageUpgrades(BrowserView):
                     profile_upgrades.append(upgrade.get("id"))
 
         return upgrades
-
-
-class ManageUpgradesPlain(ManageUpgrades):
-
-    def __getitem__(self, key):
-        return self.index.macros[key]
-
-    def __call__(self):
-        self.request.response.setHeader("X-Theme-Disabled", "true")
-        return super().__call__()

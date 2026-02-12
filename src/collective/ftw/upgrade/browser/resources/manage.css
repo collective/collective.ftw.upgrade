@@ -86,14 +86,54 @@
   background-color: #F8CE92;
 }
 
-#upgrade-output {
-  width: 100%;
-  min-height: 500px;
-  border: 1px solid #eee;
+#upgrade-progress {
   display: none;
-  overflow: visible;
+  text-align: center;
+  padding: 2em;
+}
+
+#upgrade-progress p {
+  margin-top: 1em;
+  font-size: 1.1em;
+  color: #555;
+}
+
+.upgrade-spinner {
+  display: inline-block;
+  width: 40px;
+  height: 40px;
+  border: 4px solid #ddd;
+  border-top-color: #007bb1;
+  border-radius: 50%;
+  animation: upgrade-spin 0.8s linear infinite;
+}
+
+@keyframes upgrade-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+#upgrade-output {
+  display: none;
+  width: 100%;
+  margin-top: 1em;
+}
+
+#upgrade-log {
+  background-color: #f5f5f5;
+  border: 1px solid #ddd;
+  padding: 1em;
+  font-family: monospace;
+  font-size: 0.85em;
+  line-height: 1.4;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  max-height: 1000px;
+  overflow-y: auto;
 }
 
 #back-to-upgrades {
   display: none;
+  margin-top: 1em;
 }
