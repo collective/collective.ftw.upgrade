@@ -2,6 +2,13 @@
 
 <!-- towncrier release notes start -->
 
+## 4.0.0a3 (2026-02-12)
+
+
+### Bug fixes:
+
+- Change directive namespace to collective.ftw.upgrade. [mathias.leigmruber] [#18](https://github.com/collective/collective.ftw.upgrade/issues/18)
+
 ## 4.0.0a2 (2026-02-10)
 
 
