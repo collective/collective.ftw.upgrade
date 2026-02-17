@@ -2,6 +2,13 @@
 
 <!-- towncrier release notes start -->
 
+## 4.0.0a4 (2026-02-17)
+
+
+### New features:
+
+- Reimplement manage-uprades view displaying the actual result of the upgrade. [mathias.leimgruber] [#20](https://github.com/collective/collective.ftw.upgrade/issues/20)
+
 ## 4.0.0a3 (2026-02-12)
 
 
