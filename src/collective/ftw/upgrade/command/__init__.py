@@ -49,7 +49,13 @@ instance must be running, where "ftw.upgrade" is available and the \
     The Zope instance is discovered automatically by searching for all \
 "parts/*/etc/zope.conf" files in the buildout directory, looking up \
 the instance port and testing whether the port is bound on localhost.
-If multiple instances are running, the first one running is used.
+    If multiple instances are running, the first one running is used.
+
+    If you are not using buildout, \
+or if the instance discovery does not work for some reason, \
+or if if you want to specify a custom URL, \
+you can set the environment variable "UPGRADE_ZOPE_URL" \
+to the URL of your instance, for example "http://localhost:8080/".
 
 {t.bold}AUTHENTICATION:{t.normal}
     There are three authentication options which are tested and used in this \
@@ -88,6 +94,13 @@ named "system-upgrade". The user has a random password. All requests are \
 then authenticated with this user.
     The temporary file is written to \
 [buildout-directory]var/ftw.upgrade-authentication
+
+    If you are not using buildout, \
+or if you want to specify a custom directory for the \
+temporary file, \
+you can set the environment variable "UPGRADE_TEMPFILE_AUTH_DIR" \
+to the absolute or relative path of the directory where the temporary file \
+should be created, for example "/var/run/ftw.upgrade-authentication".
 
 {t.bold}VIRTUAL HOSTING:{t.normal}
     For some upgrade steps it is important that "absolute_url()" returns a \

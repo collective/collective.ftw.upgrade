@@ -226,7 +226,12 @@ def extend_url_with_virtualhost_config(zope_url, public_url, site):
     return url
 
 
-def get_zope_url(instance_name=None):
+def get_zope_url(instance_name=None) -> str:
+    zope_url = os.environ.get("UPGRADE_ZOPE_URL", None)
+    if zope_url:
+        if not zope_url.endswith("/"):
+            zope_url += "/"
+        return zope_url
     instance = get_running_instance(Path.cwd(), instance_name)
     if not instance:
         raise NoRunningInstanceFound()
