@@ -355,11 +355,13 @@ def subject_from_docstring(docstring):
     return " ".join(lines).strip()
 
 
-def get_tempfile_authentication_directory(directory=None):
+def get_tempfile_authentication_directory(directory=None) -> Path:
     """Finds the buildout directory and returns the absolute path to the
     relative directory var/ftw.upgrade-authentication/.
     If the directory does not exist it is created.
     """
+    if os.environ.get("UPGRADE_TEMPFILE_AUTH_DIR", None):
+        return Path(os.environ["UPGRADE_TEMPFILE_AUTH_DIR"])
     directory = Path(directory) or Path.cwd()
     if not directory.joinpath("bin", "buildout").is_file():
         return get_tempfile_authentication_directory(directory.parent)
