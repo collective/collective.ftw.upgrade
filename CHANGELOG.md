@@ -2,6 +2,17 @@
 
 <!-- towncrier release notes start -->
 
+## 4.0.0a5 (2026-02-27)
+
+
+### New features:
+
+- Allow to specify the zope  URL using the `UPGRADE_ZOPE_URL` environment variable.
+  This helps when using the package in non buildout installed Plone sites. [#22](https://github.com/collective/collective.ftw.upgrade/issues/22)
+- Allow to specify the directory that stores the authentication file
+  with the `UPGRADE_TEMPFILE_AUTH_DIR` environment variable.
+  This helps when using the package in non buildout installed Plone sites. [#22](https://github.com/collective/collective.ftw.upgrade/issues/22)
+
 ## 4.0.0a4 (2026-02-17)
 
 
