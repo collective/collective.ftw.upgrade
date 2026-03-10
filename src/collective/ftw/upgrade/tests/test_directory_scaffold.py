@@ -22,7 +22,7 @@ class TestUpgradeStepCreator(TestCase):
             UpgradeStepCreator(self.upgrades_directory).create("AddControlpanelAction")
 
         upgrade_directory = os.path.join(
-            self.upgrades_directory, "20141114224455_add_controlpanel_action"
+            self.upgrades_directory, "v20141114224455_add_controlpanel_action"
         )
         upgrade_code_file = os.path.join(upgrade_directory, "upgrade.py")
 
@@ -56,7 +56,7 @@ class TestUpgradeStepCreator(TestCase):
 
         self.assert_upgrade(
             {
-                "name": "20141114224455_add_controlpanel_action",
+                "name": "v20141114224455_add_controlpanel_action",
                 "classname": "AddControlpanelAction",
                 "docstring": "Add controlpanel action.",
             }
@@ -70,7 +70,7 @@ class TestUpgradeStepCreator(TestCase):
 
         self.assert_upgrade(
             {
-                "name": "20141114224455_add_controlpanel_action",
+                "name": "v20141114224455_add_controlpanel_action",
                 "classname": "AddControlpanelAction",
                 "docstring": "Add controlpanel action.",
             }
@@ -84,7 +84,7 @@ class TestUpgradeStepCreator(TestCase):
 
         self.assert_upgrade(
             {
-                "name": "20141114224455_add_controlpanel_action",
+                "name": "v20141114224455_add_controlpanel_action",
                 "classname": "AddControlpanelAction",
                 "docstring": "Add controlpanel action.",
             }
@@ -98,7 +98,7 @@ class TestUpgradeStepCreator(TestCase):
 
         self.assert_upgrade(
             {
-                "name": "20140304050607_update_ftw_subsite_to_newest_version",
+                "name": "v20140304050607_update_ftw_subsite_to_newest_version",
                 "classname": "UpdateFtwSubsiteToNewestVersion",
                 "docstring": "Update ftw.subsite to newest Version.",
             }

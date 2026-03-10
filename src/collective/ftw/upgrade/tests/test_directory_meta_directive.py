@@ -117,7 +117,7 @@ class TestDirectoryMetaDirective(UpgradeTestCase):
         with self.package_created() as package:
             upgrade_path = str(
                 package.package_path.joinpath(
-                    "upgrades", "20110101080000_add_an_action"
+                    "upgrades", "v20110101080000_add_an_action"
                 )
             )
             self.assert_profile(
@@ -225,7 +225,7 @@ class TestDirectoryMetaDirective(UpgradeTestCase):
         # Remove upgrade-step directory upgrade in order to have the
         # manually created upgrade step as last version
         # but still declaring an upgrade-step:directory:
-        package.package_path.joinpath("upgrades", "20110202080000_upgrade").rmtree()
+        package.package_path.joinpath("upgrades", "v20110202080000_upgrade").rmtree()
 
         profile_path = package.package_path.joinpath("profiles", "default")
         self.assertNotIn("<version", profile_path.joinpath("metadata.xml").read_text())

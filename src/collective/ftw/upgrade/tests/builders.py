@@ -145,7 +145,7 @@ class UpgradeStepBuilder:
 
     def _create_upgrade(self):
         name = self.name.replace(" ", "_").replace(r"\.$", "")
-        step_name = "{}_{}".format(
+        step_name = "v{}_{}".format(
             self.destination_version, inflection.underscore(name)
         )
         if self.code is None:
