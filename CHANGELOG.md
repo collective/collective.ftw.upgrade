@@ -2,6 +2,13 @@
 
 <!-- towncrier release notes start -->
 
+## 4.0.0a6 (2026-03-12)
+
+
+### New features:
+
+- New upgrade step directories are now created with a `v` prefix (e.g., `v20260301125502_plone_6_upgrade`) to make them importable as Python modules. Existing directories without the prefix continue to work. [#24](https://github.com/collective/collective.ftw.upgrade/issues/24)
+
 ## 4.0.0a5 (2026-02-27)
 
 
