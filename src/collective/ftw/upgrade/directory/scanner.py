@@ -12,7 +12,7 @@ import os.path
 import re
 
 
-UPGRADESTEP_DATETIME_REGEX = re.compile(r"^.*/?(\d{14})[^/]*/upgrade.py$")
+UPGRADESTEP_DATETIME_REGEX = re.compile(r"^.*/?v?(\d{14})[^/]*/upgrade.py$")
 
 
 class Scanner:

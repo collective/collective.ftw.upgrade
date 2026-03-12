@@ -25,7 +25,7 @@ class TestCreateCommand(CommandTestCase):
         )
 
         (step_path,) = upgrades_dir.dirs()
-        self.assertRegex(step_path.name, r"^\d{14}_add_controlpanel_action$")
+        self.assertRegex(step_path.name, r"^v\d{14}_add_controlpanel_action$")
 
         code_path = step_path.joinpath("upgrade.py")
         self.assertTrue(code_path.exists(), "upgrade.py is missing")
@@ -84,7 +84,7 @@ class TestCreateCommand(CommandTestCase):
 
         upgrades_dir = package.package_path.joinpath("upgrades")
         (step_path,) = upgrades_dir.dirs()
-        self.assertRegex(step_path.name, r"^\d{14}_update_ftw_upgrade_to_version_3$")
+        self.assertRegex(step_path.name, r"^v\d{14}_update_ftw_upgrade_to_version_3$")
 
         code_path = step_path.joinpath("upgrade.py")
         self.assertTrue(code_path.exists(), "upgrade.py is missing")

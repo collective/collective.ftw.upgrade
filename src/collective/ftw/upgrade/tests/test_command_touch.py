@@ -26,7 +26,7 @@ class TestTouchCommand(CommandTestCase):
         )
 
         path = self.package.package_path.joinpath(
-            "upgrades", "20110101000000_add_action"
+            "upgrades", "v20110101000000_add_action"
         )
         self.assertTrue(path.exists(), f"Expected path to exist: {path}")
         self.upgrade_script(f"touch {path}")
@@ -34,7 +34,7 @@ class TestTouchCommand(CommandTestCase):
 
         (new_step_path,) = path.dirname().dirs()
         self.assertRegex(
-            new_step_path.name, rf"^{datetime.now().year}\d{{10}}_add_action"
+            new_step_path.name, rf"^v{datetime.now().year}\d{{10}}_add_action"
         )
 
     def test_moving_after_another(self):
@@ -63,9 +63,9 @@ class TestTouchCommand(CommandTestCase):
             "touch {update_action} --after {add_action}".format(**self.upgrades())
         )
         self.assert_upgrades(
-            "20111105000000_add_action",
-            "20111115000000_update_action",
-            "20111125000000_remove_action",
+            "v20111105000000_add_action",
+            "v20111115000000_update_action",
+            "v20111125000000_remove_action",
         )
 
     def test_moving_explicitly_to_the_end(self):
@@ -90,7 +90,7 @@ class TestTouchCommand(CommandTestCase):
         )
 
         self.assert_upgrades(
-            "20111105000055_add_action", "20111106000055_remove_action"
+            "v20111105000055_add_action", "v20111106000055_remove_action"
         )
 
     def test_moving_before_another(self):
@@ -120,9 +120,9 @@ class TestTouchCommand(CommandTestCase):
         )
 
         self.assert_upgrades(
-            "20111105000000_add_action",
-            "20111115000000_update_action",
-            "20111125000000_remove_action",
+            "v20111105000000_add_action",
+            "v20111115000000_update_action",
+            "v20111125000000_remove_action",
         )
 
     def test_moving_explicitly_to_the_beginning(self):
@@ -147,7 +147,7 @@ class TestTouchCommand(CommandTestCase):
         )
 
         self.assert_upgrades(
-            "20111105000055_add_action", "20111106000055_remove_action"
+            "v20111105000055_add_action", "v20111106000055_remove_action"
         )
 
     def test_moving_before_and_after_at_same_time_is_not_allowed(self):
@@ -216,7 +216,7 @@ class TestTouchCommand(CommandTestCase):
         )
 
         self.assert_upgrades(
-            "20111105000055_add_action", "20111106000055_remove_action"
+            "v20111105000055_add_action", "v20111106000055_remove_action"
         )
 
     def upgrades(self):

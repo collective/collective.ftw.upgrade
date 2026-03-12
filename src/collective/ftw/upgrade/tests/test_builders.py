@@ -21,7 +21,7 @@ class TestUpgradeStepBuilder(UpgradeTestCase):
 
         with self.package_created() as package:
             upgrade_path = package.package_path.joinpath(
-                "upgrades", "20110101000000_migrate_file_content_type"
+                "upgrades", "v20110101000000_migrate_file_content_type"
             )
             self.assertTrue(
                 upgrade_path.is_dir(),
@@ -82,7 +82,7 @@ class TestUpgradeStepBuilder(UpgradeTestCase):
 
         with self.package_created() as package:
             upgrade_path = package.package_path.joinpath(
-                "upgrades", "20110101000000_upgrade"
+                "upgrades", "v20110101000000_upgrade"
             )
             self.assertTrue(
                 upgrade_path.is_dir(),

@@ -1,0 +1,1 @@
+New upgrade step directories are now created with a `v` prefix (e.g., `v20260301125502_plone_6_upgrade`) to make them importable as Python modules. Existing directories without the prefix continue to work.

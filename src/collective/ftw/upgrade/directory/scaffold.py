@@ -35,7 +35,7 @@ class UpgradeStepCreator:
             # Lets make it human readable for use as docstring.
             docstring = inflection.humanize(inflection.underscore(name))
 
-        step_name = "{}_{}".format(
+        step_name = "v{}_{}".format(
             datetime.now().strftime(DATETIME_FORMAT), inflection.underscore(name)
         )
         step_directory = os.path.join(self.upgrades_directory, step_name)

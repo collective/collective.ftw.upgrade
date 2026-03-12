@@ -41,8 +41,8 @@ $ bin/upgrade touch ...upgrades/20110101000000_foo --before \
 ).strip()
 
 
-NAME_RE = re.compile(r"^.*/?\d{14}_([^/]*)$")
-TIMESTAMP_RE = re.compile(r"^.*/?(\d{14})_[^/]*$")
+NAME_RE = re.compile(r"^.*/?v?\d{14}_([^/]*)$")
+TIMESTAMP_RE = re.compile(r"^.*/?v?(\d{14})_[^/]*$")
 
 
 def setup_argparser(commands):
@@ -91,7 +91,7 @@ def touch_command(args):
         sys.exit(1)
 
     new_date = find_new_date(args)
-    new_name = NAME_RE.sub(rf"{new_date.strftime(DATETIME_FORMAT)}_\1", args.path.name)
+    new_name = NAME_RE.sub(rf"v{new_date.strftime(DATETIME_FORMAT)}_\1", args.path.name)
     new_path = args.path.dirname().joinpath(new_name)
     args.path.rename(new_path)
     print("New path:", new_path)
