@@ -1,7 +1,7 @@
 # pylint: disable=W0104
 # W0104: Statement seems to have no effect
 
-__version__ = "4.0.0a6"
+__version__ = "4.0.0a7.dev0"
 
 
 from collective.ftw.upgrade.progresslogger import ProgressLogger
