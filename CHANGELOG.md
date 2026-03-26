@@ -2,6 +2,13 @@
 
 <!-- towncrier release notes start -->
 
+## 4.0.0 (2026-03-26)
+
+
+### Bug fixes:
+
+- Provide a module alias for ftw.upgrade.interfaces [#26](https://github.com/collective/collective.ftw.upgrade/issues/26)
+
 ## 4.0.0a6 (2026-03-12)
 
 
