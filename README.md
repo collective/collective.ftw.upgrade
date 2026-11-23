@@ -1077,7 +1077,7 @@ Registration in ZCML:
     <adapter
         factory=".adapters.MyPostUpgradeAdapter"
         provides="collective.ftw.upgrade.interfaces.IPostUpgrade"
-        for="Products.CMFPlone.interfaces.siteroot.IPloneSiteRoot
+        for="plone.base.interfaces.siteroot.IPloneSiteRoot
                 zope.interface.Interface"
         name="my.package:default" />
 </configure>

@@ -1,6 +1,6 @@
 from BTrees.OOBTree import OOBTree
 from collective.ftw.upgrade.interfaces import IUpgradeStepRecorder
-from Products.CMFPlone.interfaces import IPloneSiteRoot
+from plone.base.interfaces import IPloneSiteRoot
 from zope.annotation import IAnnotations
 from zope.component import adapts
 from zope.interface import implementer

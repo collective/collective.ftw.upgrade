@@ -6,7 +6,7 @@ from datetime import datetime
 from ftw.builder import Builder
 from ftw.builder import create
 from Products.CMFCore.utils import getToolByName
-from Products.CMFPlone.interfaces import IMigratingPloneSiteRoot
+from plone.base.interfaces import IMigratingPloneSiteRoot
 from Products.GenericSetup.interfaces import EXTENSION
 from Products.GenericSetup.upgrade import listUpgradeSteps
 from zope.configuration.config import ConfigurationExecutionError
