@@ -10,6 +10,7 @@ from collective.ftw.upgrade.utils import log_silencer
 from collective.ftw.upgrade.utils import SafeObjectGetter
 from collective.ftw.upgrade.utils import SavepointIterator
 from collective.ftw.upgrade.utils import SizedGenerator
+from plone.base.utils import get_installer
 from plone.browserlayer.interfaces import ILocalBrowserLayerType
 from plone.portlets.interfaces import IPortletManager
 from plone.portlets.interfaces import IPortletManagerRenderer
@@ -33,11 +34,6 @@ try:
     from Products.GenericSetup.tool import DEPENDENCY_STRATEGY_NEW
 except ImportError:
     DEPENDENCY_STRATEGY_NEW = None
-
-try:
-    from Products.CMFPlone.utils import get_installer
-except ImportError:
-    get_installer = None
 
 
 LOG = logging.getLogger("collective.ftw.upgrade")
@@ -375,27 +371,17 @@ class UpgradeStep:
 
     def is_product_installed(self, product_name):
         """Check whether a product is installed."""
-        if get_installer is not None:
-            quickinstaller = get_installer(self.portal, self.portal.REQUEST)
-            return quickinstaller.is_product_installable(
-                product_name
-            ) and quickinstaller.is_product_installed(product_name)
-        else:
-            quickinstaller = self.getToolByName("portal_quickinstaller")
-            return quickinstaller.isProductInstallable(
-                product_name
-            ) and quickinstaller.isProductInstalled(product_name)
+        quickinstaller = get_installer(self.portal, self.portal.REQUEST)
+        return quickinstaller.is_product_installable(
+            product_name
+        ) and quickinstaller.is_product_installed(product_name)
 
     security.declarePrivate("uninstall_product")
 
     def uninstall_product(self, product_name):
         """Uninstalls a product using the quick installer."""
-        if get_installer is not None:
-            quickinstaller = get_installer(self.portal, self.portal.REQUEST)
-            quickinstaller.uninstall_product(product_name)
-        else:
-            quickinstaller = self.getToolByName("portal_quickinstaller")
-            quickinstaller.uninstallProducts([product_name])
+        quickinstaller = get_installer(self.portal, self.portal.REQUEST)
+        quickinstaller.uninstall_product(product_name)
 
     security.declarePrivate("migrate_class")
 

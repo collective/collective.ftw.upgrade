@@ -15,7 +15,7 @@
 
   <browser:page
       name="manage-upgrades"
-      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      for="plone.base.interfaces.IPloneSiteRoot"
       class=".manage.ManageUpgrades"
       template="templates/manage.pt"
       permission="cmf.ManagePortal"
@@ -23,7 +23,7 @@
 
   <browser:page
       name="manage-upgrades-plain"
-      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      for="plone.base.interfaces.IPloneSiteRoot"
       class=".manage.ManageUpgradesPlain"
       template="templates/manage_plain.pt"
       permission="cmf.ManagePortal"
@@ -31,7 +31,7 @@
 
   <browser:page
       name="upgrade-execute"
-      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      for="plone.base.interfaces.IPloneSiteRoot"
       class=".manage.ExecuteUpgradesView"
       permission="cmf.ManagePortal"
       />

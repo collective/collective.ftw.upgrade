@@ -12,6 +12,7 @@ from ftw.builder import Builder
 from ftw.builder import create
 from plone.app.testing import setRoles
 from plone.app.testing import TEST_USER_ID
+from plone.base.utils import get_installer
 from plone.browserlayer.utils import register_layer
 from Products.CMFCore.indexing import processQueue
 from Products.CMFCore.utils import getToolByName
@@ -20,13 +21,7 @@ from zope.interface import alsoProvides
 from zope.interface import Interface
 from zope.interface.verify import verifyClass
 
-import pkg_resources
 
-
-try:
-    from Products.CMFPlone.utils import get_installer
-except ImportError:
-    get_installer = None
 
 ALLOWED_ROLES_AND_USERS_PERMISSION = "Access contents information"
 
@@ -558,11 +553,6 @@ class TestUpgradeStep(UpgradeTestCase):
         with self.package_created():
             Step(self.portal_setup)
 
-    @skipIf(
-        pkg_resources.get_distribution("Products.GenericSetup").parsed_version
-        < pkg_resources.parse_version("1.8"),
-        "Old GenericSetup version does not support dependency_strategy option.",
-    )
     def test_setup_install_profile_does_not_reinstall_installed_profiles(self):
         # In upgrades we want to avoid accidental reinstalls of dependencies
         # when they are already installed.
@@ -741,14 +731,9 @@ class TestUpgradeStep(UpgradeTestCase):
                 )
 
     def test_uninstall_product(self):
-        if get_installer is not None:
-            quickinstaller = get_installer(self.portal, self.portal.REQUEST)
-            quickinstaller.install_product("CMFPlacefulWorkflow")
-            is_product_installed = quickinstaller.is_product_installed
-        else:
-            quickinstaller = getToolByName(self.portal, "portal_quickinstaller")
-            quickinstaller.installProduct("CMFPlacefulWorkflow")
-            is_product_installed = quickinstaller.isProductInstalled
+        quickinstaller = get_installer(self.portal, self.portal.REQUEST)
+        quickinstaller.install_product("CMFPlacefulWorkflow")
+        is_product_installed = quickinstaller.is_product_installed
 
         class Step(UpgradeStep):
             def __call__(self):

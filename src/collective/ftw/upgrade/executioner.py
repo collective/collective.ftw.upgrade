@@ -25,11 +25,6 @@ import time
 import transaction
 
 
-try:
-    from Products.CMFPlone.utils import get_installer
-except ImportError:
-    get_installer = None
-
 
 logger = logging.getLogger("collective.ftw.upgrade")
 
@@ -155,15 +150,6 @@ class Executioner:
         except KeyError:
             return
         product = profileinfo["product"]
-
-        if get_installer is None:
-            quickinstaller = getToolByName(self.portal_setup, "portal_quickinstaller")
-            if not quickinstaller.isProductInstalled(product):
-                return
-
-            version = quickinstaller.getProductVersion(product)
-            if version:
-                quickinstaller.get(product).installedversion = version
 
     security.declarePrivate("_set_portal_setup_version")
 
