@@ -27,7 +27,6 @@ import re
 import stat
 import transaction
 
-
 try:
     from plone.protect.interfaces import IDisableCSRFProtection
 except ImportError:

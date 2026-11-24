@@ -9,7 +9,6 @@ import argparse
 import re
 import sys
 
-
 DOCS = """
 {t.bold}DESCRIPTION:{t.normal}
     Update the order of upgrades on the filesystem by changing the \
@@ -36,9 +35,7 @@ $ bin/upgrade touch ...upgrades/20110101000000_foo --before \
 [/quote]
 
 
-""".format(
-    t=TERMINAL
-).strip()
+""".format(t=TERMINAL).strip()
 
 
 NAME_RE = re.compile(r"^.*/?v?\d{14}_([^/]*)$")

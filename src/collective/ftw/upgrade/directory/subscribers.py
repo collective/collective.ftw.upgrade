@@ -9,7 +9,6 @@ from zope.component import getMultiAdapter
 import os
 import re
 
-
 DISABLE_UPGRADE_STEP_MARKING_KEY = "ftw_upgrade_disable_upgrade_step_marking"
 ALL_FLAG = "all"
 

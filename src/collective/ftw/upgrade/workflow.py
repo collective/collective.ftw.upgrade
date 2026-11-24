@@ -9,7 +9,6 @@ from zope.component.hooks import getSite
 
 import logging
 
-
 LOG = logging.getLogger("ftw.upgrade.WorkflowChainUpdater")
 
 

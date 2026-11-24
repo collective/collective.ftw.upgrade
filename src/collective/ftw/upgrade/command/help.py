@@ -5,7 +5,6 @@ import os
 import pydoc
 import sys
 
-
 DOCS = """
 {t.bold}DESCRIPTION:{t.normal}
     Display help information about the bin/upgrade commands.
@@ -15,9 +14,7 @@ DOCS = """
 $ bin/upgrade help
 $ bin/upgrade help create
 [/quote]
-""".format(
-    t=TERMINAL
-).strip()
+""".format(t=TERMINAL).strip()
 
 
 def setup_argparser(commands):

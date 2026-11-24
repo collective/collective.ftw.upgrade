@@ -24,8 +24,6 @@ import os
 import time
 import transaction
 
-
-
 logger = logging.getLogger("collective.ftw.upgrade")
 
 
@@ -80,8 +78,7 @@ class Executioner:
             # to support older versions as well, which only support it without
             # the prefix.
             prefix = "profile-"
-            if profile_id.startswith(prefix):
-                profile_id = profile_id[len(prefix) :]
+            profile_id = profile_id.removeprefix(prefix)
             installed = self.portal_setup.getLastVersionForProfile(profile_id)
             if installed != "unknown" and not force_reinstall:
                 logger.info("Ignoring already installed profile %s.", profile_id)
@@ -146,10 +143,9 @@ class Executioner:
 
     def _set_quickinstaller_version(self, profileid):
         try:
-            profileinfo = self.portal_setup.getProfileInfo(profileid)
+            self.portal_setup.getProfileInfo(profileid)
         except KeyError:
             return
-        product = profileinfo["product"]
 
     security.declarePrivate("_set_portal_setup_version")
 

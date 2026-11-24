@@ -29,7 +29,6 @@ from zope.publisher.interfaces.browser import IBrowserRequest
 import logging
 import re
 
-
 try:
     from Products.GenericSetup.tool import DEPENDENCY_STRATEGY_NEW
 except ImportError:

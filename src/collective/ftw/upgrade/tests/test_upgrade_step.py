@@ -21,8 +21,6 @@ from zope.interface import alsoProvides
 from zope.interface import Interface
 from zope.interface.verify import verifyClass
 
-
-
 ALLOWED_ROLES_AND_USERS_PERMISSION = "Access contents information"
 
 

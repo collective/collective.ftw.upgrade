@@ -9,7 +9,6 @@ from ftw.builder import create
 from Products.CMFCore.utils import getToolByName
 from zope.component.hooks import getSite
 
-
 ALLOWED_ROLES_AND_USERS_PERMISSION = "Access contents information"
 
 

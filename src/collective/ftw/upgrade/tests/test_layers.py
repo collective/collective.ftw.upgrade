@@ -5,7 +5,6 @@ from plone.app.testing import IntegrationTesting
 from Products.CMFCore.utils import getToolByName
 from unittest import TestCase
 
-
 COMPONENT_REGISTRY_ISOLATION_INTEGRATION = IntegrationTesting(
     bases=(COMPONENT_REGISTRY_ISOLATION,),
     name="collective.ftw.upgrade:test_component_registry_isolation_layer:integration",

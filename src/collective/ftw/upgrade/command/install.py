@@ -10,7 +10,6 @@ from plone.base.utils import safe_text
 import re
 import sys
 
-
 DOCS = """
 {t.bold}DESCRIPTION:{t.normal}
     Install upgrades or profiles. Either the "--proposed" or the \
@@ -51,9 +50,7 @@ $ bin/upgrade install --site Plone --profiles Products.PloneFormGen:default \
 unwanted.addon:uninstall
 [/quote]
 
-""".format(
-    t=TERMINAL
-).strip()
+""".format(t=TERMINAL).strip()
 
 
 def valid_upgrade_step_id(value):

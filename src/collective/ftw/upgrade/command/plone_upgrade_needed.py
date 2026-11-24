@@ -7,7 +7,6 @@ from collective.ftw.upgrade.command.terminal import TERMINAL
 
 import sys
 
-
 DOCS = """
 {t.bold}DESCRIPTION:{t.normal}
     Tells whether the Plone-site needs to be upgraded.
@@ -17,9 +16,7 @@ DOCS = """
 $ bin/upgrade plone_upgrade_needed --site Plone
 [/quote]
 
-""".format(
-    t=TERMINAL
-).strip()
+""".format(t=TERMINAL).strip()
 
 
 def setup_argparser(commands):

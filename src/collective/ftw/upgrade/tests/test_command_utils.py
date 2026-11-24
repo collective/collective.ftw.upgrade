@@ -10,7 +10,6 @@ from io import StringIO
 from path import Path
 from unittest import TestCase
 
-
 LAYER = TempDirectoryLayer(
     bases=(BUILDER_LAYER,), name="ftw.upgrade.test_command_utils"
 )
