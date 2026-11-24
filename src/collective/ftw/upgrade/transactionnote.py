@@ -1,6 +1,5 @@
 import transaction
 
-
 TRANSACTION_NOTE_MAX_LENGTH = 65533
 
 

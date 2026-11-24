@@ -7,7 +7,6 @@ __version__ = "4.0.1.dev0"
 from collective.ftw.upgrade.progresslogger import ProgressLogger
 from collective.ftw.upgrade.step import UpgradeStep
 
-
 try:
     import ftw.upgrade.interfaces
 

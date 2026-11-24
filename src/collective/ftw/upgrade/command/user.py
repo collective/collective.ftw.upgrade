@@ -4,7 +4,6 @@ from collective.ftw.upgrade.command.jsonapi import error_handling
 from collective.ftw.upgrade.command.jsonapi import with_api_requestor
 from collective.ftw.upgrade.command.terminal import TERMINAL
 
-
 DOCS = """
 {t.bold}DESCRIPTION:{t.normal}
     Test authentication, printing the user you are authenticated with.
@@ -14,9 +13,7 @@ DOCS = """
     $ bin/upgrade user --auth admin:admin
     Authenticated as "admin".
 [/quote]
-""".format(
-    t=TERMINAL
-).strip()
+""".format(t=TERMINAL).strip()
 
 
 def setup_argparser(commands):

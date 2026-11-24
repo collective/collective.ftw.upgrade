@@ -11,7 +11,6 @@ from collective.ftw.upgrade.command.terminal import print_table
 from collective.ftw.upgrade.command.terminal import TERMINAL
 from collective.ftw.upgrade.command.terminal import upgrade_id_with_flags
 
-
 DOCS = """
 {t.bold}DESCRIPTION:{t.normal}
     List profiles or upgrades of a Plone site.
@@ -37,9 +36,7 @@ Plone site. Only profiles installed on this Plone site are respected.
     $ ./bin/upgrade list --site Plone --upgrades --auth admin:admin
     $ ./bin/upgrade list --site Plone --upgrades --auth admin:admin --json
 [/quote]
-""".format(
-    t=TERMINAL
-).strip()
+""".format(t=TERMINAL).strip()
 
 
 def setup_argparser(commands):

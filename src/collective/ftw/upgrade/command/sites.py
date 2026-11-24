@@ -6,7 +6,6 @@ from collective.ftw.upgrade.command.jsonapi import with_api_requestor
 from collective.ftw.upgrade.command.terminal import TERMINAL
 from plone.base.utils import safe_text
 
-
 DOCS = """
 {t.bold}DESCRIPTION:{t.normal}
     Discover Plone sites on this Zope instance and list them.
@@ -17,9 +16,7 @@ DOCS = """
     $ bin/upgrade sites --auth admin:admin
     $ bin/upgrade sites --auth admin:admin --json
 [/quote]
-""".format(
-    t=TERMINAL
-).strip()
+""".format(t=TERMINAL).strip()
 
 
 def setup_argparser(commands):

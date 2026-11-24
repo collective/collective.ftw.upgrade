@@ -1,6 +1,5 @@
 from Products.CMFCore.indexing import getQueue
 
-
 HAS_INDEXING = True
 
 

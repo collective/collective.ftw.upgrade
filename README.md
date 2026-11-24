@@ -78,6 +78,7 @@ This is the table that shows which versions of `collective.ftw.upgrade` is compa
 
 | Version | Plone | Python |
 | ------- | ----- | ------ |
+| 5.x     | 6.2+  | 3.11+  |
 | 4.x     | 6.0+  | 3.10+  |
 
 ## Manage upgrades

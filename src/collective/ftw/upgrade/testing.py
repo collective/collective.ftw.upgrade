@@ -14,7 +14,6 @@ from zope.configuration import xmlconfig
 
 import collective.ftw.upgrade.tests.builders
 
-
 collective.ftw.upgrade.tests.builders  # pyflakes
 
 

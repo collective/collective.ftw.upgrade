@@ -7,7 +7,6 @@ from path import Path
 import argparse
 import sys
 
-
 DOCS = """
 {t.bold}DESCRIPTION:{t.normal}
     The "create" command creates a new upgrade step in the "upgrades" \
@@ -27,9 +26,7 @@ upgrade step class in the generated "upgrade.py" file.
 $ bin/upgrade create AddIndexesToCatalog
 $ bin/upgrade create AddIndexesToCatalog --path src/my/package/upgrades
 [/quote]
-""".format(
-    t=TERMINAL
-).strip()
+""".format(t=TERMINAL).strip()
 
 
 def setup_argparser(commands):

@@ -18,7 +18,6 @@ import json
 import logging
 import sys
 
-
 VERSION = importlib.metadata.distribution("collective.ftw.upgrade").version
 logger = logging.getLogger("collective.ftw.upgrade")
 
@@ -120,9 +119,7 @@ $ UPGRADE_PUBLIC_URL="http://my.site.com/foo/bar" bin/upgrade
 {t.bold}MORE INFORMATION:{t.normal}
     Project Homepage: https://github.com/4teamwork/ftw.upgrade
     ftw.upgrade version: {version}
-""".format(
-    t=TERMINAL, version=VERSION
-).strip()
+""".format(t=TERMINAL, version=VERSION).strip()
 
 
 class UpgradeArgumentParser(argparse.ArgumentParser):

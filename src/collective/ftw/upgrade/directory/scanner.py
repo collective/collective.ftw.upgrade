@@ -11,7 +11,6 @@ import inspect
 import os.path
 import re
 
-
 UPGRADESTEP_DATETIME_REGEX = re.compile(r"^.*/?v?(\d{14})[^/]*/upgrade.py$")
 
 

@@ -13,7 +13,6 @@ import logging
 import time
 import traceback
 
-
 LOG = logging.getLogger("collective.ftw.upgrade")
 
 

@@ -5,7 +5,6 @@ import inflection
 import os
 import re
 
-
 PYTHON_TEMPLATE = '''from collective.ftw.upgrade import UpgradeStep
 
 

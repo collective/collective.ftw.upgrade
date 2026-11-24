@@ -9,7 +9,6 @@ from plone.base.utils import safe_text
 
 import sys
 
-
 DOCS = """
 {t.bold}DESCRIPTION:{t.normal}
     Upgrade Plone Site. \
@@ -20,9 +19,7 @@ This is what you would manually do in the @@plone-upgrade view.
 $ bin/upgrade plone_upgrade --site Plone
 [/quote]
 
-""".format(
-    t=TERMINAL
-).strip()
+""".format(t=TERMINAL).strip()
 
 
 def setup_argparser(commands):

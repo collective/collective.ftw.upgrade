@@ -5,8 +5,8 @@ from collective.ftw.upgrade.utils import get_sorted_profile_ids
 from datetime import datetime
 from ftw.builder import Builder
 from ftw.builder import create
-from Products.CMFCore.utils import getToolByName
 from plone.base.interfaces import IMigratingPloneSiteRoot
+from Products.CMFCore.utils import getToolByName
 from Products.GenericSetup.interfaces import EXTENSION
 from Products.GenericSetup.upgrade import listUpgradeSteps
 from zope.configuration.config import ConfigurationExecutionError

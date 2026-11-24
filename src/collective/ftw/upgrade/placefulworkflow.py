@@ -3,7 +3,6 @@ from Products.CMFCore.utils import getToolByName
 
 import logging
 
-
 LOG = logging.getLogger("collective.ftw.upgrade.PlacefulWorkflowPolicyActivator")
 
 

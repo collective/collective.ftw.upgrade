@@ -4,23 +4,24 @@ dynamic = ["version"]
 description = "An upgrade control panel and upgrade helpers for plone upgrades."
 readme = "README.md"
 license = "GPL-2.0-only"
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 authors = [{ name = "Plone Community", email = "collective@plone.org" }]
 keywords = ["CMS", "Plone", "Python"]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Environment :: Web Environment",
     "Framework :: Plone",
-    "Framework :: Plone :: 6.0",
-    "Framework :: Plone :: 6.1",
+    "Framework :: Plone :: 6.2",
+    "Framework :: Plone :: 6.3",
     "Framework :: Plone :: Addon",
     "Operating System :: OS Independent",
     "Intended Audience :: Developers",
     "Programming Language :: Python",
-    "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python :: 3.15",
 ]
 dependencies = [
     "Products.CMFPlone",

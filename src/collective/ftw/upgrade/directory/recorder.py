@@ -6,7 +6,6 @@ from zope.component import adapts
 from zope.interface import implementer
 from zope.interface import Interface
 
-
 ANNOTATION_KEY = "ftw.upgrade:recorder"
 
 
@@ -43,8 +42,7 @@ class UpgradeStepRecorder:
         return annotations[ANNOTATION_KEY][self.profile]
 
     def _normalize_profilename(self, profilename):
-        if profilename.startswith("profile-"):
-            profilename = profilename[len("profile-") :]
+        profilename = profilename.removeprefix("profile-")
 
         if not isinstance(profilename, str):
             profilename = profilename.decode("utf-8")
